@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Money Ready Virginia — Interactive Toolkit</title>
+  <meta name="description" content="A proposed student-led pilot that helps Virginia Jump$tart make Teen Teach-In and workshop content more interactive, practical, and measurable. Educational only. Privacy-safe by design." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💚</text></svg>" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="#/">
+        <span class="logo">$</span>
+        <span>Money Ready
+          <small>Virginia Interactive Toolkit</small>
+        </span>
+      </a>
+      <button class="btn btn-ghost nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+      <nav class="nav-links" id="navLinks">
+        <a href="#/modules" data-route="modules">Modules</a>
+        <a href="#/facilitator" data-route="facilitator">Facilitator</a>
+        <a href="#/prep" data-route="prep">Volunteer Prep</a>
+        <a href="#/builder" data-route="builder">Toolkit Builder</a>
+        <a href="#/portal" data-route="portal">Request / Partner</a>
+        <a href="#/helper" data-route="helper">Standards Helper</a>
+        <a href="#/impact" data-route="impact">Impact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- App content is rendered here -->
+  <main id="app"></main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <div class="brand" style="color:#fff">
+            <span class="logo">$</span>
+            <span>Money Ready<small style="color:#9fb6b1">Virginia Interactive Toolkit</small></span>
+          </div>
+          <p style="margin-top:14px;max-width:38ch;color:#bcd2cd">
+            A student-led prototype designed to support Virginia Jump$tart's
+            Teen Teach-In–style workshops. Concept for discussion — pending
+            review and approval.
+          </p>
+        </div>
+        <div>
+          <h4 style="color:#fff">Explore</h4>
+          <p style="line-height:2;margin:0">
+            <a href="#/modules">Module library</a><br />
+            <a href="#/facilitator">Facilitator dashboard</a><br />
+            <a href="#/prep">Volunteer prep</a><br />
+            <a href="#/impact">Impact snapshot</a>
+          </p>
+        </div>
+        <div>
+          <h4 style="color:#fff">Commitments</h4>
+          <p style="line-height:2;margin:0;color:#bcd2cd">
+            Educational only<br />
+            Privacy-safe by design<br />
+            No personal data collected<br />
+            Built on existing topics
+          </p>
+        </div>
+      </div>
+      <div class="footer-badges" id="footerBadges"></div>
+      <p class="footer-disclaimer" id="footerDisclaimer"></p>
+    </div>
+  </footer>
+
+  <!-- Scripts (no external dependencies — privacy-safe, works offline) -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/metrics.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
