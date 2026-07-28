@@ -761,6 +761,11 @@ const IMPACT_EXAMPLE = {
 
   // Measurement layer (volunteer hours, reach, participation, sponsor-visible)
   volunteerHours: 96,
+  // "Value of volunteer time": what those donated hours would have cost to
+  // pay for. Estimated as volunteerHours x volunteerHourValue. The rate below
+  // is an illustrative national estimate for the value of a volunteer hour
+  // (Independent Sector publishes ~$33/hr); replace with the current figure.
+  volunteerHourValue: 33.49,
   schoolsReached: 7,
   teenTeachInParticipation: 34, // teen volunteers who took part
   workshopAttendance: 92, // % of registered who attended

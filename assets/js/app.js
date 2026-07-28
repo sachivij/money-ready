@@ -843,6 +843,9 @@
   function renderImpact() {
     var x = IMPACT_EXAMPLE;
     var local = Metrics.summary();
+    // Value of donated volunteer time = hours x estimated hourly value.
+    var volunteerValue = Math.round(x.volunteerHours * x.volunteerHourValue);
+    var volunteerValueStr = "$" + volunteerValue.toLocaleString();
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Impact snapshot</div>' +
         '<div class="eyebrow">Impact snapshot &amp; measurement layer</div>' +
@@ -864,10 +867,23 @@
           metric("+" + x.knowledgeCheckGain + " pts", "Pre/post knowledge gain") +
         "</div>" +
 
+        // Spotlight: money saved through the value of volunteer hours
+        '<div class="card mt-3" style="border-left:5px solid var(--amber);background:linear-gradient(120deg,#fff,var(--amber-soft))">' +
+          '<div class="eyebrow">Value of volunteer time <span class="pill-note">example</span></div>' +
+          '<div class="flex items-center wrap-flex" style="gap:16px">' +
+            '<div class="m-num" style="font-size:2.8rem;color:#b5760f">' + volunteerValueStr + "</div>" +
+            '<div><strong>saved through ' + x.volunteerHours + " donated volunteer hours</strong>" +
+              '<div class="muted" style="font-size:.9rem">The workshops would have cost this much to deliver with paid staff — teen volunteers provide it for free.</div></div>' +
+          "</div>" +
+          '<p class="muted" style="font-size:.82rem;margin:10px 0 0">Estimated as ' + x.volunteerHours +
+            " volunteer hours × ~$" + x.volunteerHourValue + '/hour (a common "value of volunteer time" figure). Illustrative placeholder.</p>' +
+        "</div>" +
+
         '<div class="grid grid-2 mt-3">' +
           '<div class="card"><div class="eyebrow">Measurement layer <span class="pill-note">example</span></div>' +
             '<ul class="mc-meta" style="font-size:.95rem">' +
               metaRow("Volunteer hours", x.volunteerHours) +
+              metaRow("Value of volunteer time", volunteerValueStr) +
               metaRow("Schools reached", x.schoolsReached) +
               metaRow("Teen Teach-In participation", x.teenTeachInParticipation + " volunteers") +
               metaRow("Workshop attendance", x.workshopAttendance + "%") +
