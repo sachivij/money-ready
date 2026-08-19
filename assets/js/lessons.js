@@ -69,7 +69,12 @@ const ACCOUNT_TYPES = [
       "repeatabilityScore",
       "knowledgeGain",
     ],
-    programWide: ["confidenceImprovement", "facilitatorFeedback"],
+    programWide: [
+      "confidenceImprovement",
+      "facilitatorFeedback",
+      "repeatabilityScore",
+      "knowledgeGain",
+    ],
     showMeasurementLayer: true,
   },
 ];
