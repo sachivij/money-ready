@@ -981,7 +981,7 @@
     var local = Metrics.summary();
     var role = roleDef();
     var roleId = role ? role.id : "";
-    var showVolunteerValue = roleId !== "school";      // volunteers + organizations
+    var showVolunteerValue = roleId === "organization"; // organizations only
     var showProgramDetail = !!(role && role.showMeasurementLayer); // organizations
     // Value of donated volunteer time = hours x estimated hourly value.
     var volunteerValue = Math.round(x.volunteerHours * x.volunteerHourValue);
