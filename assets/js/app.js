@@ -369,17 +369,52 @@
     return '<li><span class="k">' + esc(k) + '</span><span class="v">' + esc(v) + "</span></li>";
   }
   function renderModules() {
+    // The library splits in two: the official Teen Teach-In sequence for
+    // Grades 1–4, and an extended set for older students that goes beyond
+    // the official program.
+    var core = officialModules();
+    var extended = MODULES.filter(function (m) { return !m.officialLesson; });
+
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Module library</div>' +
         '<div class="eyebrow">Module library</div>' +
-        "<h1>Ten ready-made, interactive modules</h1>" +
-        '<p class="muted" style="max-width:60ch">Each is built around an existing financial-literacy topic and ' +
-          "follows the same repeatable flow. Grade bands and lengths are starting points you can adjust.</p>" +
+        "<h1>" + MODULES.length + " ready-made, interactive modules</h1>" +
+        '<p class="muted" style="max-width:62ch">Each follows the same repeatable flow — challenge, vote, reveal, ' +
+          "discuss, take home. Grade bands and lengths are starting points you can adjust.</p>" +
       "</div>" +
       badgeStrip() +
-      '<section class="section tight"><div class="wrap"><div class="grid module-grid">' +
-        MODULES.map(function (m, i) { return moduleCard(m, i + 1); }).join("") +
-      "</div></div></section>";
+
+      // Core: the official Grades 1–4 sequence
+      '<section class="section tight"><div class="wrap">' +
+        '<div class="flex items-center wrap-flex gap" style="justify-content:space-between;margin-bottom:6px">' +
+          "<div><div class=\"eyebrow\">Core sequence</div>" +
+            "<h2 style=\"margin-bottom:4px\">⭐ Teen Teach-In · Grades 1–4</h2></div>" +
+          '<span class="badge">' + core.length + " official lessons</span>" +
+        "</div>" +
+        '<p class="muted" style="max-width:62ch;margin-bottom:20px">These line up with the official Teen Teach-In ' +
+          "lessons taught by teen volunteers in elementary classrooms. Each official lesson has its own presentation, " +
+          "toolkit, or worksheet — this adds the live, interactive layer on top. " +
+          '<a href="#/resources">See the official resources →</a></p>' +
+        '<div class="grid module-grid">' +
+          core.map(function (m, i) { return moduleCard(m, i + 1); }).join("") +
+        "</div>" +
+      "</div></section>" +
+
+      // Extended: older students, beyond the official program
+      '<section class="section tight" style="background:var(--cream-2);border-top:1px solid var(--line)"><div class="wrap">' +
+        '<div class="flex items-center wrap-flex gap" style="justify-content:space-between;margin-bottom:6px">' +
+          "<div><div class=\"eyebrow\">Extended library</div>" +
+            "<h2 style=\"margin-bottom:4px\">📚 For older students · Grades 5–12</h2></div>" +
+          '<span class="badge gray">' + extended.length + " additional modules</span>" +
+        "</div>" +
+        '<p class="muted" style="max-width:62ch;margin-bottom:20px">These go <strong>beyond the official Teen Teach-In ' +
+          "program</strong>, covering topics for middle and high school students — budgeting, credit, paychecks, scams, " +
+          "banking, college costs, and investing. Useful for older audiences, library programs, or a future expansion " +
+          "of the pilot. They are not part of the Grades 1–4 sequence.</p>" +
+        '<div class="grid module-grid">' +
+          extended.map(function (m, i) { return moduleCard(m, i + 1); }).join("") +
+        "</div>" +
+      "</div></section>";
     wireNav();
   }
 
@@ -1205,9 +1240,11 @@
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Games</div>' +
         '<div class="eyebrow">Game library</div>' +
         "<h1>Games students play — with or without devices</h1>" +
-        '<p class="muted" style="max-width:64ch"><strong>' + noDeviceCount + " of these " + GAME_FORMATS.length +
+        '<p class="muted" style="max-width:66ch"><strong>' + noDeviceCount + " of these " + GAME_FORMATS.length +
           " games need no technology at all</strong> — just you, the students, and maybe some paper. " +
-          "Every game works with any module: you plug in that topic's items, scenario, or vocabulary.</p>" +
+          "The rest use one shared screen at the front of the room. Both kinds are here on purpose: young classrooms " +
+          "rarely have student devices, but a projector is often available. " +
+          "Every game works with any module — you plug in that topic's items, scenario, or vocabulary.</p>" +
       "</div>" +
       '<section class="section tight"><div class="wrap">' +
         '<div class="filter-row">' +
