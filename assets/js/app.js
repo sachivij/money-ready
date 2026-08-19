@@ -175,7 +175,10 @@
   // LANDING
   // ================================================================
   function renderHome() {
-    var featured = MODULES.slice(0, 6);
+    // Lead with the official Teen Teach-In Grades 1–4 sequence, since that
+    // is the program this toolkit is actually built to support.
+    var official = officialModules();
+    var featured = official.length ? official : MODULES.slice(0, 6);
     app.innerHTML =
       // Hero
       '<section class="hero"><div class="wrap hero-grid">' +
@@ -185,6 +188,11 @@
             '<span class="hl">live, student-led learning moments.</span></h1>' +
           '<p class="sub">A proposed student-led pilot that helps Virginia Jump$tart make ' +
             "Teen Teach-In and workshop content more interactive, practical, and measurable.</p>" +
+          '<div class="badge-row" style="margin-bottom:18px">' +
+            '<span class="badge">👧 Built for Grades 1–4</span>' +
+            '<span class="badge amber">🙋 Taught by teen volunteers</span>' +
+            '<span class="badge blue">🙌 Works without devices</span>' +
+          "</div>" +
           '<div class="hero-cta">' +
             '<a class="btn btn-primary btn-lg" href="#/modules">See Example Modules</a>' +
             '<a class="btn btn-secondary btn-lg" href="#/facilitator">View Workshop Flow</a>' +
@@ -205,13 +213,13 @@
       '<section class="section"><div class="wrap">' +
         '<div class="center" style="max-width:680px;margin:0 auto 36px">' +
           '<div class="eyebrow">Why interactive learning</div>' +
-          "<h2>Students remember what they do — not what they sit through</h2>" +
-          '<p class="muted">Traditional workshops ask students to listen. This toolkit turns the same ' +
-            "approved topics into decisions students make, debate, and take home.</p>" +
+          "<h2>Young students remember what they do — not what they sit through</h2>" +
+          '<p class="muted">A first grader will not sit still for a lecture about money. This toolkit turns the same ' +
+            "approved Teen Teach-In topics into decisions elementary students make, argue about, and take home to their families.</p>" +
         "</div>" +
         '<div class="grid grid-3">' +
-          feature("green", "🙋", "Active, not passive", "Every module has a decision to make and a vote to cast, so students participate instead of just listening.") +
-          feature("amber", "💪", "Confidence for volunteers", "Say-this-out-loud scripts and a practice mode mean teen volunteers always know what comes next.") +
+          feature("green", "🙋", "Active, not passive", "Every module has a decision to make and a vote to cast, so young students participate instead of just listening.") +
+          feature("amber", "💪", "Confidence for volunteers", "Say-this-out-loud scripts and a practice mode mean a teen teaching first graders always knows what comes next.") +
           feature("blue", "🔁", "Repeatable by design", "A consistent flow — challenge, vote, reveal, discuss, take home — that works for any topic or grade.") +
         "</div>" +
         '<div class="grid grid-2 mt-3">' +
@@ -231,8 +239,8 @@
         '<div class="center" style="margin-bottom:34px"><div class="eyebrow">How the toolkit works</div>' +
           "<h2>One simple flow, every session</h2></div>" +
         '<div class="steps">' +
-          howStep(1, "Pick a module", "Choose a topic and grade band from the library of ready-made workshops.") +
-          howStep(2, "Run the challenge", "Students face a real-life money scenario and vote — on a shared screen or their own device.") +
+          howStep(1, "Pick a module", "Choose the official Grade 1–4 lesson you're teaching, or any module from the wider library.") +
+          howStep(2, "Run the challenge", "Students face a real-life money scenario and vote — on a shared screen, or by walking to a corner of the room.") +
           howStep(3, "Reveal & discuss", "Show the best answer, the key concept, and the common trap, then talk it through.") +
           howStep(4, "Take it home", "Students leave with a fridge-friendly card that keeps the money talk going with family.") +
         "</div>" +
@@ -241,8 +249,11 @@
       // Sample modules
       '<section class="section"><div class="wrap">' +
         '<div class="flex items-center wrap-flex" style="justify-content:space-between;margin-bottom:24px">' +
-          "<div><div class=\"eyebrow\">Sample modules</div><h2>Ready-made, standards-based topics</h2></div>" +
-          '<a class="btn btn-secondary" href="#/modules">See all 10 modules →</a>' +
+          "<div><div class=\"eyebrow\">Sample modules</div>" +
+            "<h2>The Grades 1–4 Teen Teach-In sequence</h2>" +
+            '<p class="muted mb-0" style="max-width:52ch">Every official lesson, with the interactive layer added. ' +
+            "More modules cover older students.</p></div>" +
+          '<a class="btn btn-secondary" href="#/modules">See all ' + MODULES.length + " modules →</a>" +
         "</div>" +
         '<div class="grid module-grid">' +
           featured.map(function (m, i) { return moduleCard(m, i + 1); }).join("") +
@@ -253,7 +264,7 @@
       '<section class="section" style="background:var(--cream-2)"><div class="wrap">' +
         '<div class="grid grid-2" style="align-items:center;gap:40px">' +
           "<div><div class=\"eyebrow\">Built for teen volunteers</div>" +
-            "<h2>So a nervous first-timer can teach with confidence</h2>" +
+            "<h2>So a nervous first-timer can walk into a classroom of second graders and teach</h2>" +
             '<ul class="privacy-list mt-2">' +
               liOk("A friendly opening script for every module — never wonder what to say") +
               liOk("Key vocabulary in plain, kid-ready language") +
@@ -290,7 +301,7 @@
           "<h2>A practical, repeatable model to test with real workshops</h2></div>" +
         '<div class="timeline" style="max-width:820px;margin:0 auto">' +
           tl("Phase 1", "Review & align", "Share this prototype with Virginia Jump$tart leadership; align modules to approved standards and resources.") +
-          tl("Phase 2", "Small pilot", "Run 2–3 Teen Teach-In–style workshops with teen volunteers using one or two modules.") +
+          tl("Phase 2", "Small pilot", "Run 2–3 Teen Teach-In workshops in Grade 1–4 classrooms with teen volunteers, using one or two modules.") +
           tl("Phase 3", "Measure", "Collect privacy-safe, aggregate feedback: participation, confidence, and facilitator notes.") +
           tl("Phase 4", "Refine & repeat", "Improve modules from what we learn, then expand to more schools and partners.") +
         "</div>" +
@@ -303,8 +314,8 @@
         '<div class="eyebrow">Designed to feel right for everyone in the room</div>' +
         "<h2 style=\"margin-bottom:20px\">Warm, credible, and educator-friendly</h2>" +
         '<div class="badge-row" style="justify-content:center;max-width:760px;margin:0 auto">' +
-          ["Virginia Jump$tart leadership", "Teachers", "High school volunteers", "Elementary & middle students",
-           "Parents", "Libraries", "Community partners", "Potential sponsors"]
+          ["Virginia Jump$tart leadership", "Elementary teachers", "High school volunteers", "Grades 1–4 students",
+           "Parents & families", "Libraries", "Community partners", "Potential sponsors"]
             .map(function (a) { return '<span class="badge gray">' + esc(a) + "</span>"; }).join("") +
         "</div>" +
         '<div class="hero-cta" style="justify-content:center;margin-top:28px">' +
@@ -1112,8 +1123,21 @@
   // ================================================================
   var TTI_URL = "https://www.jumpstart.org/awareness/check-your-school/teen-teach-in/resources/";
 
+  // The official lessons, in grade order (the story lessons span Grades 1–4
+  // and sort last).
+  function officialModules() {
+    return MODULES.filter(function (m) { return m.officialLesson; })
+      .sort(function (a, b) {
+        function gradeOf(m) {
+          var match = /Grade (\d)/.exec(m.officialLesson || "");
+          return match ? Number(match[1]) : 99;
+        }
+        return gradeOf(a) - gradeOf(b);
+      });
+  }
+
   function renderResources() {
-    var core = MODULES.filter(function (m) { return m.officialLesson; });
+    var core = officialModules();
     var partners = [
       { name: "Greenlight", what: "Money app and learning materials for families." },
       { name: "Take Charge Today", what: "Free classroom lesson plans and activities." },
@@ -1135,7 +1159,7 @@
         '<p class="muted">Each official lesson comes with its own materials. Download those from the resources page above; ' +
           "the module here gives you the live challenge, reveal, discussion, and take-home card to go with it.</p>" +
         '<div class="grid module-grid mt-2">' +
-          core.map(function (m) { return moduleCard(m, 0); }).join("") +
+          core.map(function (m, i) { return moduleCard(m, i + 1); }).join("") +
         "</div>" +
         '<h2 class="mt-4">Partner resources</h2>' +
         '<p class="muted">Additional programs listed on the official resources page.</p>' +
