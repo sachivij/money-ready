@@ -51,6 +51,49 @@
     document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(url); }, 500);
   }
+  // Copy text to clipboard, with a fallback for browsers/contexts where the
+  // async Clipboard API is unavailable (e.g. some mobile or file:// pages).
+  function copyText(text, done) {
+    function fallback() {
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = text; ta.setAttribute("readonly", "");
+        ta.style.position = "fixed"; ta.style.top = "-1000px";
+        document.body.appendChild(ta); ta.select();
+        var ok = document.execCommand("copy");
+        document.body.removeChild(ta); done(ok);
+      } catch (e) { done(false); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, fallback);
+    } else { fallback(); }
+  }
+  // Show a text summary on-screen with Copy + Download. This works on every
+  // device, including phones where an automatic download is blocked.
+  function showExitSummary(text, id) {
+    var out = document.getElementById("exitOut");
+    if (!out) return;
+    out.innerHTML =
+      '<div class="card"><div class="eyebrow">Exit-ticket summary <span class="pill-note">aggregate only</span></div>' +
+        '<pre id="exitText" style="white-space:pre-wrap;font-family:inherit;background:var(--cream-2);padding:16px;border-radius:12px;margin:0 0 12px;font-size:.9rem">' + esc(text) + "</pre>" +
+        '<div class="flex gap wrap-flex no-print">' +
+          '<button class="btn btn-primary" id="copyExit">📋 Copy summary</button>' +
+          '<button class="btn btn-secondary" id="dlExit">⬇ Download .txt</button>' +
+        "</div>" +
+        '<div id="copyMsg" class="muted mt-1" style="font-size:.85rem"></div>' +
+      "</div>";
+    document.getElementById("copyExit").addEventListener("click", function () {
+      copyText(text, function (ok) {
+        document.getElementById("copyMsg").textContent = ok
+          ? "Copied! Paste it into an email or doc."
+          : "Couldn't auto-copy — select the text above and copy it manually.";
+      });
+    });
+    document.getElementById("dlExit").addEventListener("click", function () {
+      download("exit-ticket-" + id + ".txt", text);
+    });
+    out.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
 
   // Status badge strip markup (reused).
   function badgeStrip() {
@@ -61,6 +104,71 @@
         return '<span class="badge' + cls + '">' + esc(b) + "</span>";
       }).join("") +
       "</div></div>";
+  }
+
+  // ================================================================
+  // ACCOUNT TYPE (volunteer / school / organization)
+  // Stored on this device only — it is a view preference, not a login.
+  // No password, no personal data, nothing sent anywhere.
+  // ================================================================
+  var ROLE_KEY = "moneyReady.accountType.v1";
+
+  function getRole() {
+    try { return localStorage.getItem(ROLE_KEY) || ""; } catch (e) { return ""; }
+  }
+  function setRole(id) {
+    try { localStorage.setItem(ROLE_KEY, id); } catch (e) {}
+    updateRoleChip();
+  }
+  function roleDef(id) {
+    var r = ACCOUNT_TYPES.filter(function (a) { return a.id === (id || getRole()); })[0];
+    return r || null;
+  }
+  function updateRoleChip() {
+    var lab = document.getElementById("roleChipLabel");
+    if (!lab) return;
+    var r = roleDef();
+    lab.textContent = r ? r.label : "Choose role";
+    var chip = document.getElementById("roleChip");
+    if (chip) chip.firstChild.nodeValue = (r ? r.emoji : "👤") + " ";
+  }
+
+  // The picker. `force` shows it even if a role is already chosen.
+  function showRolePicker(force) {
+    if (!force && getRole()) return;
+    var current = getRole();
+    var el = document.createElement("div");
+    el.className = "role-overlay";
+    el.id = "roleOverlay";
+    el.innerHTML =
+      '<div class="role-modal" role="dialog" aria-modal="true" aria-label="Choose your account type">' +
+        '<div class="eyebrow">Welcome to Money Ready</div>' +
+        "<h2>Who's using the toolkit?</h2>" +
+        '<p class="muted" style="margin-bottom:0">Everything in the toolkit is the same for everyone — this only changes which ' +
+          "impact numbers you see, so each group gets the view that's useful to them. You can switch anytime.</p>" +
+        '<div class="role-options">' +
+          ACCOUNT_TYPES.map(function (a) {
+            return '<button class="role-option' + (a.id === current ? " on" : "") + '" data-role="' + a.id + '">' +
+              '<span class="ro-emoji">' + a.emoji + "</span>" +
+              '<span class="ro-name">' + esc(a.label) + "</span>" +
+              '<span class="ro-blurb">' + esc(a.blurb) + "</span></button>";
+          }).join("") +
+        "</div>" +
+        '<p class="role-note">🔒 This is a view preference saved on this device only — not an account. ' +
+          "There is no password and no personal information is collected.</p>" +
+      "</div>";
+    document.body.appendChild(el);
+    el.querySelectorAll(".role-option").forEach(function (b) {
+      b.addEventListener("click", function () {
+        setRole(b.getAttribute("data-role"));
+        el.remove();
+        route(); // re-render so the impact view matches
+      });
+    });
+    // Clicking the dim background closes only if a role already exists.
+    el.addEventListener("click", function (ev) {
+      if (ev.target === el && getRole()) el.remove();
+    });
   }
 
   // ================================================================
@@ -105,6 +213,16 @@
           feature("green", "🙋", "Active, not passive", "Every module has a decision to make and a vote to cast, so students participate instead of just listening.") +
           feature("amber", "💪", "Confidence for volunteers", "Say-this-out-loud scripts and a practice mode mean teen volunteers always know what comes next.") +
           feature("blue", "🔁", "Repeatable by design", "A consistent flow — challenge, vote, reveal, discuss, take home — that works for any topic or grade.") +
+        "</div>" +
+        '<div class="grid grid-2 mt-3">' +
+          '<a class="card feature green" href="#/games" style="text-decoration:none;color:inherit">' +
+            '<div class="ico">🙌</div><h3>Games that need no devices</h3>' +
+            '<p class="muted mb-0">Nine of our twelve games run with zero screens — just movement, cards, and conversation. ' +
+            "A workshop should never fail because the wifi did.</p></a>" +
+          '<a class="card feature amber" href="#/generator" style="text-decoration:none;color:inherit">' +
+            '<div class="ico">✨</div><h3>Lesson generator</h3>' +
+            '<p class="muted mb-0">Pick a topic, age, length, and what technology you actually have — get a timed plan ' +
+            "with matching games, ready to print.</p></a>" +
         "</div>" +
       "</div></section>" +
 
@@ -486,9 +604,10 @@
           '<div class="card mt-3"><div class="eyebrow">Session controls</div>' +
             '<p class="muted" style="font-size:.9rem">Step: <strong id="stepName">—</strong></p>' +
             '<button class="btn btn-primary btn-block" id="nextBtn">Next activity →</button>' +
-            '<button class="btn btn-secondary btn-block mt-2" id="dlBtn">⬇ Download exit-ticket summary</button>' +
+            '<button class="btn btn-secondary btn-block mt-2" id="dlBtn">📋 Generate exit-ticket summary</button>' +
             '<p class="muted mt-2" style="font-size:.8rem;margin-bottom:0">Summary is aggregate only — no names, no personal data.</p>' +
           "</div>" +
+          '<div id="exitOut" class="mt-3"></div>' +
           '<div class="card mt-3"><div class="eyebrow">Mode</div><p id="modeLabel" class="mb-0">' +
             "📺 <strong>Shared screen</strong> — one projected view the whole class answers together.</p></div>" +
         "</div>" +
@@ -535,7 +654,7 @@
         "Discussion prompt: " + m.reveal.discussionPrompt + "\n" +
         "Apply it: " + m.reveal.applyIt + "\n\n" +
         "Privacy note: no names, logins, or personal data collected. Demo figures.\n";
-      download("exit-ticket-" + m.id + ".txt", txt);
+      showExitSummary(txt, m.id);
     });
     document.getElementById("modeToggle").querySelectorAll("button").forEach(function (b) {
       b.addEventListener("click", function () {
@@ -840,9 +959,30 @@
   // ================================================================
   // IMPACT SNAPSHOT + MEASUREMENT LAYER
   // ================================================================
+  // Build the metric cards this account type should see.
+  function roleMetricCards(role, x) {
+    var ids = role ? role.metrics : Object.keys(IMPACT_METRICS);
+    var programWide = (role && role.programWide) || [];
+    return ids.map(function (id) {
+      var def = IMPACT_METRICS[id];
+      if (!def) return "";
+      var raw = x[def.key];
+      var val = (def.prefix || "") + raw + (def.suffix || "");
+      var wide = programWide.indexOf(id) >= 0;
+      return '<div class="card metric-card"><div class="m-num">' + esc(val) + "</div>" +
+        '<div class="m-lab">' + esc(def.label) +
+        (wide ? '<br><span class="pill-note" style="margin-top:6px;display:inline-block">program-wide total</span>' : "") +
+        "</div></div>";
+    }).join("");
+  }
+
   function renderImpact() {
     var x = IMPACT_EXAMPLE;
     var local = Metrics.summary();
+    var role = roleDef();
+    var roleId = role ? role.id : "";
+    var showVolunteerValue = roleId !== "school";      // volunteers + organizations
+    var showProgramDetail = !!(role && role.showMeasurementLayer); // organizations
     // Value of donated volunteer time = hours x estimated hourly value.
     var volunteerValue = Math.round(x.volunteerHours * x.volunteerHourValue);
     var volunteerValueStr = "$" + volunteerValue.toLocaleString();
@@ -854,20 +994,20 @@
       '<section class="section tight"><div class="wrap">' +
         '<div class="example-flag" style="margin-bottom:22px">⚠️ <span><strong>Example / placeholder figures.</strong> ' +
           "Every number in this section is illustrative — a mock-up of what a pilot could measure. These are not real results.</span></div>" +
-        '<div class="grid grid-4">' +
-          metric(x.studentsReached, "Students reached") +
-          metric(x.workshopsDelivered, "Workshops delivered") +
-          metric(x.volunteersTrained, "Teen volunteers trained") +
-          metric(x.participationRate + "%", "Student participation rate") +
+        // Metrics chosen by account type. Everything else on this page is
+        // identical for every account type.
+        '<div class="role-banner" style="margin-bottom:20px">' +
+          "<span>" + (role ? role.emoji : "👤") + "</span>" +
+          "<span>Showing the <strong>" + esc(role ? role.label : "general") + "</strong> view — " +
+            (role ? role.metrics.length : 0) + " measures chosen for this audience.</span>" +
+          '<button class="btn btn-ghost no-print" id="switchRole" style="margin-left:auto;padding:6px 10px">Switch view</button>' +
         "</div>" +
-        '<div class="grid grid-4 mt-3">' +
-          metric("+" + x.confidenceImprovement + " pts", "Avg. confidence improvement") +
-          metric(x.facilitatorFeedback + "/5", "Teacher / facilitator feedback") +
-          metric(x.repeatabilityScore + "%", "Repeatability score") +
-          metric("+" + x.knowledgeCheckGain + " pts", "Pre/post knowledge gain") +
-        "</div>" +
+        '<div class="grid grid-4">' + roleMetricCards(role, x) + "</div>" +
 
-        // Spotlight: money saved through the value of volunteer hours
+        // Spotlight: money saved through the value of volunteer hours.
+        // Shown to volunteers (it's their hours) and organizations (it's a
+        // sponsor-facing figure); schools asked for neither.
+        (showVolunteerValue ?
         '<div class="card mt-3" style="border-left:5px solid var(--amber);background:linear-gradient(120deg,#fff,var(--amber-soft))">' +
           '<div class="eyebrow">Value of volunteer time <span class="pill-note">example</span></div>' +
           '<div class="flex items-center wrap-flex" style="gap:16px">' +
@@ -877,8 +1017,10 @@
           "</div>" +
           '<p class="muted" style="font-size:.82rem;margin:10px 0 0">Estimated as ' + x.volunteerHours +
             " volunteer hours × ~$" + x.volunteerHourValue + '/hour (a common "value of volunteer time" figure). Illustrative placeholder.</p>' +
-        "</div>" +
+        "</div>" : "") +
 
+        // Program-level detail: organizations only.
+        (showProgramDetail ?
         '<div class="grid grid-2 mt-3">' +
           '<div class="card"><div class="eyebrow">Measurement layer <span class="pill-note">example</span></div>' +
             '<ul class="mc-meta" style="font-size:.95rem">' +
@@ -893,7 +1035,7 @@
             '<div class="eyebrow mt-3">Sponsor-visible outcomes</div><ul class="privacy-list">' +
             x.sponsorOutcomes.map(function (o) { return "<li><span class=\"ok\">★</span><span>" + esc(o) + "</span></li>"; }).join("") +
             "</ul></div>" +
-        "</div>" +
+        "</div>" : "") +
 
         // Live on-device panel (real, privacy-safe)
         '<div class="card mt-3" style="border-left:5px solid var(--teal)">' +
@@ -913,6 +1055,8 @@
           "volunteer records stays on their own device unless they choose to copy a summary.</div></div>" +
       "</div></section>";
 
+    var sw = document.getElementById("switchRole");
+    if (sw) sw.addEventListener("click", function () { showRolePicker(true); });
     var exp = document.getElementById("expBtn");
     if (exp) exp.addEventListener("click", function () { download("money-ready-impact.txt", Metrics.textReport()); });
     var clr = document.getElementById("clrBtn");
@@ -958,6 +1102,172 @@
     wireNav();
   }
 
+  // ================================================================
+  // GAMES LIBRARY
+  // ================================================================
+  function renderGames(query) {
+    var filter = (query && query.devices) || "all";
+    function matches(g) {
+      if (filter === "all") return true;
+      if (filter === "none") return g.devices === "none";
+      return g.devices !== "none";
+    }
+    var shown = GAME_FORMATS.filter(matches);
+    var noDeviceCount = GAME_FORMATS.filter(function (g) { return g.devices === "none"; }).length;
+
+    app.innerHTML =
+      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Games</div>' +
+        '<div class="eyebrow">Game library</div>' +
+        "<h1>Games students play — with or without devices</h1>" +
+        '<p class="muted" style="max-width:64ch"><strong>' + noDeviceCount + " of these " + GAME_FORMATS.length +
+          " games need no technology at all</strong> — just you, the students, and maybe some paper. " +
+          "Every game works with any module: you plug in that topic's items, scenario, or vocabulary.</p>" +
+      "</div>" +
+      '<section class="section tight"><div class="wrap">' +
+        '<div class="filter-row">' +
+          gameFilterBtn("all", "All games", filter) +
+          gameFilterBtn("none", "🙌 No devices needed", filter) +
+          gameFilterBtn("screen", "📺 Uses a screen", filter) +
+        "</div>" +
+        '<div class="grid game-grid">' +
+          shown.map(gameCard).join("") +
+        "</div>" +
+        '<div class="callout mt-3"><div class="ico">💡</div><div><strong>Why unplugged games matter.</strong> ' +
+          "Not every classroom, library, or after-school room has working screens or reliable wifi — and younger students " +
+          "often engage more when they're moving and talking. A workshop should never depend on technology to succeed.</div></div>" +
+      "</div></section>";
+    wireNav();
+  }
+  function gameFilterBtn(val, label, current) {
+    return '<a class="btn ' + (current === val ? "btn-primary" : "btn-secondary") +
+      '" href="#/games?devices=' + val + '">' + esc(label) + "</a>";
+  }
+  function gameCard(g) {
+    var devLabel = g.devices === "none" ? "No devices needed"
+      : g.devices === "shared" ? "One shared screen" : "Own device";
+    return '<div class="card game-card dev-' + g.devices + '">' +
+      '<div class="g-top"><span class="g-emoji">' + g.emoji + "</span><h3 style=\"margin:0\">" + esc(g.name) + "</h3></div>" +
+      '<p class="muted mb-0" style="font-size:.92rem">' + esc(g.summary) + "</p>" +
+      '<div class="game-meta">' +
+        '<span class="badge ' + (g.devices === "none" ? "no-device-badge" : "gray") + '">' +
+          (g.devices === "none" ? "🙌 " : "📺 ") + esc(devLabel) + "</span>" +
+        '<span class="badge gray">⏱ ' + g.minutes + " min</span>" +
+        '<span class="badge gray">' + esc(g.group) + "</span>" +
+        '<span class="badge gray">Energy: ' + esc(g.energy) + "</span>" +
+      "</div>" +
+      '<div class="mt-2"><strong style="font-size:.88rem">Materials:</strong> ' +
+        '<span class="muted" style="font-size:.88rem">' + esc(g.materials.join(", ")) + "</span></div>" +
+      '<details class="mt-2"><summary style="cursor:pointer;font-weight:700;font-size:.9rem">How to play</summary>' +
+        '<ol class="numbered mt-1">' + g.howToPlay.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ol>" +
+        '<div class="script-box" style="font-size:.9rem;margin-top:10px"><strong>Teen tip:</strong> ' + esc(g.teenTip) + "</div>" +
+      "</details>" +
+    "</div>";
+  }
+
+  // ================================================================
+  // LESSON GENERATOR
+  // ================================================================
+  function renderGenerator() {
+    app.innerHTML =
+      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Lesson generator</div>' +
+        '<div class="eyebrow">Lesson generator</div>' +
+        "<h1>Build a lesson that fits your room</h1>" +
+        '<p class="muted" style="max-width:64ch">Tell it your topic, age group, how long you have, and what technology is ' +
+          "actually available — it writes a timed plan with matching games. Choose <em>no devices</em> and every activity " +
+          "works with nothing but paper and people.</p>" +
+      "</div>" +
+      '<section class="section tight"><div class="wrap">' +
+        '<div class="card"><div class="grid grid-2">' +
+          '<div class="field"><label for="gTopic">Topic</label><select id="gTopic">' +
+            MODULES.map(function (m) { return '<option value="' + m.id + '">' + m.emoji + " " + esc(m.title) + "</option>"; }).join("") +
+          "</select></div>" +
+          '<div class="field"><label for="gGrade">Age group</label><select id="gGrade">' +
+            ["Grades K–2", "Grades 3–5", "Grades 6–8", "Grades 9–12"].map(function (g) { return "<option>" + g + "</option>"; }).join("") +
+          "</select></div>" +
+          '<div class="field"><label for="gMin">How long do you have?</label><select id="gMin">' +
+            ["15", "20", "30", "40", "45", "60"].map(function (n) {
+              return '<option value="' + n + '"' + (n === "30" ? " selected" : "") + ">" + n + " minutes</option>"; }).join("") +
+          "</select></div>" +
+          '<div class="field"><label for="gGroup">Group size</label><select id="gGroup">' +
+            ["Whole class", "Small groups", "Pairs", "One-on-one"].map(function (g) { return "<option>" + g + "</option>"; }).join("") +
+          "</select></div>" +
+        "</div>" +
+        '<div class="field"><label>What technology is available?</label><div class="chips-select" id="gDev">' +
+          '<button class="chip-toggle on" data-dev="none">🙌 No devices at all</button>' +
+          '<button class="chip-toggle" data-dev="shared">📺 One shared screen</button>' +
+          '<button class="chip-toggle" data-dev="personal">📱 Students have devices</button>' +
+        "</div></div>" +
+        '<button class="btn btn-primary" id="genLesson">✨ Generate lesson plan</button></div>' +
+        '<div id="planOut" class="mt-3"></div>' +
+      "</div></section>";
+
+    var dev = "none";
+    document.getElementById("gDev").querySelectorAll(".chip-toggle").forEach(function (b) {
+      b.addEventListener("click", function () {
+        document.querySelectorAll("#gDev .chip-toggle").forEach(function (x) { x.classList.remove("on"); });
+        b.classList.add("on");
+        dev = b.getAttribute("data-dev");
+      });
+    });
+    document.getElementById("genLesson").addEventListener("click", function () {
+      var plan = buildLessonPlan(document.getElementById("gTopic").value, {
+        minutes: Number(document.getElementById("gMin").value),
+        grade: document.getElementById("gGrade").value,
+        groupSize: document.getElementById("gGroup").value,
+        devices: dev,
+      });
+      renderPlan(plan);
+    });
+    wireNav();
+  }
+
+  function renderPlan(plan) {
+    if (!plan) return;
+    var m = plan.module;
+    var out = document.getElementById("planOut");
+    var devLabel = plan.devices === "none" ? "🙌 No devices needed"
+      : plan.devices === "shared" ? "📺 One shared screen" : "📱 Students have devices";
+    out.innerHTML =
+      '<div class="card">' +
+        '<div class="flex items-center wrap-flex" style="justify-content:space-between;gap:12px">' +
+          "<div><div class=\"eyebrow\">Your lesson plan</div>" +
+            '<h2 style="margin-bottom:6px">' + m.emoji + " " + esc(m.title) + "</h2>" +
+            '<div class="badge-row">' +
+              '<span class="badge">' + esc(plan.grade) + "</span>" +
+              '<span class="badge gray">⏱ ' + plan.totalMinutes + " min total</span>" +
+              '<span class="badge ' + (plan.devices === "none" ? "no-device-badge" : "blue") + '">' + devLabel + "</span>" +
+              '<span class="badge gray">' + esc(plan.groupSize) + "</span>" +
+            "</div></div>" +
+          '<button class="btn btn-secondary no-print" onclick="window.print()">🖨 Print plan</button>' +
+        "</div>" +
+        '<div class="card mt-3" style="border-left:5px solid var(--green);box-shadow:none">' +
+          "<strong>Learning objective:</strong> " + esc(m.objective) + "</div>" +
+        '<div class="eyebrow mt-3">Run of show</div>' +
+        plan.steps.map(function (s) {
+          return '<div class="plan-step"><div class="plan-time">' + s.minutes + " min</div>" +
+            "<div><h4>" + esc(s.name) + "</h4><p>" + esc(s.what) + "</p>" +
+            (s.script ? '<div class="script-box mt-1" style="font-size:.9rem">' + esc(s.script) + "</div>" : "") +
+            "</div></div>";
+        }).join("") +
+        '<div class="grid grid-2 mt-3">' +
+          '<div class="card" style="box-shadow:none"><div class="eyebrow">Materials to bring</div><ul class="privacy-list">' +
+            plan.materials.map(function (mm) { return '<li><span class="ok">□</span><span>' + esc(mm) + "</span></li>"; }).join("") +
+          "</ul></div>" +
+          '<div class="card" style="box-shadow:none"><div class="eyebrow">Questions students actually ask</div>' +
+            ((plan.pack.commonQuestions || []).map(function (q) {
+              return '<div class="vocab-item"><strong>' + esc(q.q) + "</strong><br><span class=\"muted\" style=\"font-size:.9rem\">" + esc(q.a) + "</span></div>";
+            }).join("") || '<p class="muted mb-0">—</p>') +
+          "</div>" +
+        "</div>" +
+        '<div class="flex gap wrap-flex mt-3 no-print">' +
+          '<a class="btn btn-primary" href="#/take-home/' + m.id + '">Take-home card</a>' +
+          '<a class="btn btn-secondary" href="#/games?devices=' + (plan.devices === "none" ? "none" : "all") + '">Browse games</a>' +
+          '<a class="btn btn-ghost" href="#/prep?topic=' + m.id + '">Full volunteer prep</a>' +
+        "</div>" +
+      "</div>";
+    out.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
   function renderNotFound() {
     app.innerHTML = '<section class="section"><div class="wrap center">' +
       "<h1>Page not found</h1><p class=\"muted\">That link doesn't match a screen.</p>" +
@@ -987,6 +1297,8 @@
     // close mobile menu
     var nl = document.getElementById("navLinks");
     if (nl) nl.classList.remove("open");
+    // keep the header account chip current
+    updateRoleChip();
   }
 
   // ---------- router ----------
@@ -1011,6 +1323,8 @@
     switch (seg[0]) {
       case "": return renderHome();
       case "modules": return renderModules();
+      case "games": return renderGames(query);
+      case "generator": return renderGenerator();
       case "module": return renderModule(seg[1]);
       case "challenge": return renderChallenge(seg[1], query.practice === "1");
       case "facilitator": return renderFacilitator();
@@ -1028,9 +1342,17 @@
   document.getElementById("navToggle").addEventListener("click", function () {
     document.getElementById("navLinks").classList.toggle("open");
   });
+  // Account type chip in the header
+  var chipBtn = document.getElementById("roleChip");
+  if (chipBtn) chipBtn.addEventListener("click", function () { showRolePicker(true); });
 
+  // First visit: ask who's using the toolkit before anything else.
+  function start() {
+    route();
+    showRolePicker(false);
+  }
   window.addEventListener("hashchange", route);
-  window.addEventListener("DOMContentLoaded", route);
+  window.addEventListener("DOMContentLoaded", start);
   // In case DOMContentLoaded already fired
-  if (document.readyState !== "loading") route();
+  if (document.readyState !== "loading") start();
 })();

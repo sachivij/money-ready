@@ -368,6 +368,62 @@ a { color: var(--green-dark); }
 .footer-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .footer-badges .badge { background: rgba(255,255,255,.1); color: #dff0eb; border-color: rgba(255,255,255,.15); }
 
+/* ---------- Account type picker ---------- */
+.role-chip { padding: 8px 14px; font-size: .85rem; flex: none; }
+.role-overlay {
+  position: fixed; inset: 0; z-index: 200; display: grid; place-items: center;
+  background: rgba(22, 51, 60, .55); backdrop-filter: blur(4px); padding: 20px;
+}
+.role-modal {
+  background: var(--white); border-radius: var(--radius-lg); padding: 32px;
+  max-width: 760px; width: 100%; box-shadow: var(--shadow-lg); max-height: 90vh; overflow-y: auto;
+}
+.role-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 22px; }
+.role-option {
+  text-align: left; cursor: pointer; font: inherit; background: #fff;
+  border: 2px solid var(--line); border-radius: var(--radius); padding: 20px;
+  transition: .15s; display: flex; flex-direction: column; gap: 6px;
+}
+.role-option:hover { border-color: var(--green); transform: translateY(-2px); box-shadow: var(--shadow); }
+.role-option.on { border-color: var(--green); background: var(--green-soft); }
+.role-option .ro-emoji { font-size: 2rem; }
+.role-option .ro-name { font-weight: 800; }
+.role-option .ro-blurb { font-size: .87rem; color: var(--ink-soft); }
+.role-note { font-size: .82rem; color: var(--ink-soft); margin-top: 18px; }
+.role-banner {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: var(--blue-soft); border: 1px solid rgba(61,125,214,.25);
+  border-radius: var(--radius-sm); padding: 12px 16px; font-size: .9rem;
+}
+
+/* ---------- Games ---------- */
+.game-grid { grid-template-columns: repeat(3, 1fr); }
+.game-card { display: flex; flex-direction: column; gap: 8px; border-top: 5px solid var(--teal); }
+.game-card.dev-none { border-top-color: var(--green); }
+.game-card.dev-shared { border-top-color: var(--blue); }
+.game-card.dev-personal { border-top-color: var(--purple); }
+.game-card .g-top { display: flex; align-items: center; gap: 10px; }
+.game-card .g-emoji { font-size: 1.8rem; }
+.game-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.no-device-badge { background: var(--green-soft); color: var(--green-dark); border-color: rgba(31,157,107,.3); }
+.filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+
+/* ---------- Lesson plan output ---------- */
+.plan-step { display: grid; grid-template-columns: 74px 1fr; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.plan-step:last-child { border-bottom: none; }
+.plan-time { font-weight: 800; color: var(--green-dark); font-variant-numeric: tabular-nums; }
+.plan-step h4 { margin: 0 0 4px; font-size: 1.02rem; }
+.plan-step p { margin: 0; font-size: .93rem; color: var(--ink-soft); }
+
+@media (max-width: 900px) {
+  .role-options, .game-grid { grid-template-columns: repeat(2, 1fr); }
+  .role-chip { display: none; }
+}
+@media (max-width: 620px) {
+  .role-options, .game-grid { grid-template-columns: 1fr; }
+  .plan-step { grid-template-columns: 1fr; gap: 2px; }
+}
+
 /* ---------- Utility ---------- */
 .mt-0 { margin-top: 0; } .mb-0 { margin-bottom: 0; }
 .mt-1 { margin-top: 8px; } .mt-2 { margin-top: 16px; } .mt-3 { margin-top: 24px; } .mt-4 { margin-top: 40px; }
