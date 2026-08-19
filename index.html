@@ -21,6 +21,8 @@
       <button class="btn btn-ghost nav-toggle" id="navToggle" aria-label="Menu">☰</button>
       <nav class="nav-links" id="navLinks">
         <a href="#/modules" data-route="modules">Modules</a>
+        <a href="#/games" data-route="games">Games</a>
+        <a href="#/generator" data-route="generator">Lesson Generator</a>
         <a href="#/facilitator" data-route="facilitator">Facilitator</a>
         <a href="#/prep" data-route="prep">Volunteer Prep</a>
         <a href="#/builder" data-route="builder">Toolkit Builder</a>
@@ -28,6 +30,7 @@
         <a href="#/helper" data-route="helper">Standards Helper</a>
         <a href="#/impact" data-route="impact">Impact</a>
       </nav>
+      <button class="btn btn-secondary role-chip" id="roleChip" title="Change who you are">👤 <span id="roleChipLabel">Choose role</span></button>
     </div>
   </header>
 
@@ -75,6 +78,7 @@
 
   <!-- Scripts (no external dependencies — privacy-safe, works offline) -->
   <script src="assets/js/data.js"></script>
+  <script src="assets/js/lessons.js"></script>
   <script src="assets/js/metrics.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
