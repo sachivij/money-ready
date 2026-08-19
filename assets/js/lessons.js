@@ -337,6 +337,42 @@ const GAME_FORMATS = [
    The generator assembles these into a lesson plan of any length.
    =================================================================== */
 const LESSON_PACKS = {
+  "opportunity-costs": {
+    hook: "Hold up two treats and tell the class only one can be chosen. Let them feel the tension before naming what's happening.",
+    miniLesson: "When you choose one thing, you give up another. The thing you gave up is called the opportunity cost. It isn't the money — it's the option you didn't pick.",
+    guidedPractice: "Walk through three choices as a class. For each, students name what was chosen AND what was given up.",
+    checkUnderstanding: "Students name one choice from their own day and the opportunity cost of it.",
+    extension: "Students draw a fork in the road with their choice on one path and what they gave up on the other.",
+    unpluggedSwap: "Use Would-You-Rather and paper choice cards instead of the on-screen scenario.",
+    commonQuestions: [
+      { q: "Is the opportunity cost the money?", a: "No — the money is the price. The opportunity cost is the next-best thing you gave up. This is the key distinction for the whole lesson." },
+      { q: "What if I didn't want the other thing anyway?", a: "Then the opportunity cost is low, and that's a great sign it was an easy choice." },
+    ],
+  },
+  "investing-tomorrow": {
+    hook: "Ask who has ever planted a seed. Then ask what would happen if you dug it up the next morning to check on it.",
+    miniLesson: "Investing means putting money somewhere it can grow over time. Like a plant, it needs time and patience. Digging it up early stops the growing.",
+    guidedPractice: "Draw a simple growth chart on the board and add a little each 'year' so students can watch it climb.",
+    checkUnderstanding: "Students explain why waiting helps invested money grow.",
+    extension: "Students draw what their money seed could grow into over five years.",
+    unpluggedSwap: "Do the growth chart on paper or the whiteboard and use Four Corners for the vote.",
+    commonQuestions: [
+      { q: "Where does the extra money come from?", a: "Keep it simple at this age: money that's invested gets put to work, and a little of what it earns comes back to you." },
+      { q: "Can it ever shrink?", a: "Yes, sometimes — which is why we wait and don't panic. Honest but reassuring is the right tone here." },
+    ],
+  },
+  "money-tales": {
+    hook: "Show the cover and ask what students think the story will be about. Take a few guesses before opening it.",
+    miniLesson: "Stories let us watch someone else make a money choice and see what happens — so we can learn without having to make the mistake ourselves.",
+    guidedPractice: "Pause at the moment of the character's choice. Take a class vote on what they should do before reading on.",
+    checkUnderstanding: "Students retell the character's choice and say what they would have done.",
+    extension: "Students draw an alternate ending where the character chooses differently.",
+    unpluggedSwap: "This lesson is already unplugged — a read-aloud plus Four Corners for the prediction vote works perfectly.",
+    commonQuestions: [
+      { q: "Is this a real story?", a: "It's made up, but the money choices in it are very real. That's what makes stories useful." },
+      { q: "Why did the character do that?", a: "Wonderful question to turn back to the class — let them argue the character's reasoning." },
+    ],
+  },
   "needs-vs-wants": {
     hook: "Hold up two things from your bag — say a water bottle and headphones. Ask the room: if you could only keep one forever, which one, and why?",
     miniLesson: "Needs keep you alive, safe, and healthy: food, water, a place to live, clothes for the weather. Wants make life more fun. The tricky part is that the same object can be either one depending on who you are and what your life looks like.",

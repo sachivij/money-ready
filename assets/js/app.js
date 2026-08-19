@@ -341,12 +341,14 @@
       '<div class="mc-top"><span class="mc-emoji">' + m.emoji + "</span>" +
         '<span class="mc-num">' + (n < 10 ? "0" + n : n) + "</span></div>" +
       "<h3>" + esc(m.title) + "</h3>" +
+      (m.officialLesson ? '<div class="badge amber" style="margin-bottom:8px">⭐ Official Teen Teach-In lesson</div>' : "") +
       '<p class="mc-summary">' + esc(m.summary) + "</p>" +
       '<ul class="mc-meta">' +
         metaRow("Grade band", m.gradeBand) +
         metaRow("Length", m.minutes + " min") +
         metaRow("Key concept", m.keyConcept) +
         metaRow("Activity", m.activityType) +
+        (m.officialMaterials ? metaRow("Official kit", m.officialMaterials.join(", ")) : "") +
       "</ul>" +
       '<div class="mc-materials">' +
         m.materials.map(function (x) { return '<span class="chip">' + esc(x) + "</span>"; }).join("") +
@@ -1103,6 +1105,66 @@
   }
 
   // ================================================================
+  // OFFICIAL RESOURCES
+  // Everything here points back to the official Jump$tart Teen Teach-In
+  // resources page rather than copying their materials. Links go to that
+  // page so the source of truth stays theirs.
+  // ================================================================
+  var TTI_URL = "https://www.jumpstart.org/awareness/check-your-school/teen-teach-in/resources/";
+
+  function renderResources() {
+    var core = MODULES.filter(function (m) { return m.officialLesson; });
+    var partners = [
+      { name: "Greenlight", what: "Money app and learning materials for families." },
+      { name: "Take Charge Today", what: "Free classroom lesson plans and activities." },
+      { name: "Sheila Bair's \"Money Tales\"", what: "Illustrated story series about money decisions." },
+      { name: "EVERFI's \"Vault: Understanding Money\"", what: "Digital financial-literacy course for elementary students." },
+      { name: "Banzai", what: "Interactive, real-life financial-literacy scenarios." },
+    ];
+    app.innerHTML =
+      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Official resources</div>' +
+        '<div class="eyebrow">Official Teen Teach-In resources</div>' +
+        "<h1>What this toolkit is built around</h1>" +
+        '<p class="muted" style="max-width:66ch">The official Teen Teach-In sequence is written for <strong>elementary ' +
+          "students in Grades 1–4</strong>, taught by teen volunteers. The modules below line up with those lessons. " +
+          "This toolkit adds the interactive layer — it does not replace the official presentations, toolkits, and worksheets.</p>" +
+        '<a class="btn btn-primary mt-2" href="' + TTI_URL + '" target="_blank" rel="noopener">Open the official resources page ↗</a>' +
+      "</div>" +
+      '<section class="section tight"><div class="wrap">' +
+        '<h2>The Grades 1–4 sequence</h2>' +
+        '<p class="muted">Each official lesson comes with its own materials. Download those from the resources page above; ' +
+          "the module here gives you the live challenge, reveal, discussion, and take-home card to go with it.</p>" +
+        '<div class="grid module-grid mt-2">' +
+          core.map(function (m) { return moduleCard(m, 0); }).join("") +
+        "</div>" +
+        '<h2 class="mt-4">Partner resources</h2>' +
+        '<p class="muted">Additional programs listed on the official resources page.</p>' +
+        '<ul class="packet-list mt-2">' +
+          partners.map(function (p) {
+            return '<li class="packet-item"><div class="ico">🔗</div><div class="txt"><strong>' +
+              esc(p.name) + "</strong><span>" + esc(p.what) + "</span></div></li>";
+          }).join("") +
+        "</ul>" +
+        '<div class="callout mt-3"><div class="ico">📌</div><div><strong>Where this toolkit fits.</strong> ' +
+          "The official materials are the curriculum. This prototype is the delivery layer on top of them — turning each " +
+          "lesson into a live challenge students vote on, with a reveal, discussion prompt, and a take-home card. " +
+          "Nothing here replaces or reproduces the official presentations, toolkits, or worksheets, and all of it is " +
+          "pending review and approval.</div></div>" +
+        '<div class="grid grid-2 mt-3">' +
+          '<div class="card"><div class="eyebrow">Extended library</div>' +
+            "<p>Beyond the official Grades 1–4 sequence, this toolkit includes " + (MODULES.length - core.length) +
+            " more modules covering budgeting, credit, paychecks, scams, banking, college costs, and investing for older students.</p>" +
+            '<a class="btn btn-secondary" href="#/modules">See all ' + MODULES.length + " modules →</a></div>" +
+          '<div class="card"><div class="eyebrow">Run it without screens</div>' +
+            "<p>Ten of the twelve games in this toolkit need no devices at all — useful for elementary classrooms, " +
+            "libraries, and anywhere the wifi can't be trusted.</p>" +
+            '<a class="btn btn-secondary" href="#/games?devices=none">Unplugged games →</a></div>' +
+        "</div>" +
+      "</div></section>";
+    wireNav();
+  }
+
+  // ================================================================
   // GAMES LIBRARY
   // ================================================================
   function renderGames(query) {
@@ -1323,6 +1385,7 @@
     switch (seg[0]) {
       case "": return renderHome();
       case "modules": return renderModules();
+      case "resources": return renderResources();
       case "games": return renderGames(query);
       case "generator": return renderGenerator();
       case "module": return renderModule(seg[1]);

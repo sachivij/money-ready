@@ -19,10 +19,235 @@
 
 const MODULES = [
   {
+    id: "opportunity-costs",
+    title: "Making Financial Choices & Opportunity Costs",
+    emoji: "⚖️",
+    gradeBand: "Grade 2",
+    minutes: 30,
+    keyConcept: "Choices & opportunity cost",
+    activityType: "Choice scenario + vote",
+    color: "amber",
+    officialLesson: "Grade 2 — Making Financial Choices and Opportunity Costs",
+    officialMaterials: ["Presentation", "Toolkit", "Worksheet"],
+    materials: ["Slides", "Choice cards", "Reveal screen", "Take-home card"],
+    summary:
+      "Every choice means giving something up. Students meet opportunity cost — the thing you didn't pick.",
+    objective:
+      "Students can explain that choosing one thing means giving up another, and name the opportunity cost of a choice.",
+    interactive: [
+      "Scenario challenge",
+      "Group vote",
+      "Reveal screen",
+      "Discussion prompt",
+      "Take-home reflection",
+      "Exit ticket",
+    ],
+    challenge: {
+      scenario:
+        "You have $5 and only enough time to pick one thing: a book you've wanted, or ice cream with a friend. You choose the book. What is the opportunity cost?",
+      options: [
+        "The $5 you spent",
+        "The ice cream with your friend that you gave up",
+        "Nothing — you got what you wanted",
+        "The book you bought",
+      ],
+      best: 1,
+      timerSeconds: 30,
+      round: 1,
+    },
+    reveal: {
+      bestAnswer: "B. The ice cream with your friend that you gave up",
+      why:
+        "Opportunity cost is the next-best thing you gave up when you chose. You didn't lose the $5 — you traded it for the book. What you gave up was the ice cream.",
+      keyConcept: "Opportunity cost — what you give up when you choose",
+      commonTrap: "Thinking the cost is only the money spent",
+      discussionPrompt: "What did you give up the last time you picked one thing over another?",
+      applyIt: "Name a choice you made today and what you gave up to make it.",
+    },
+    takeHome: {
+      title: "What Did We Give Up?",
+      prompt: "Talk about one choice your family made this week.",
+      boxes: ["We chose", "We gave up", "Worth it?"],
+      familyQuestion: "What is something we'd choose again?",
+    },
+    prep: {
+      openingScript:
+        "Hi everyone! Quick question: have you ever wanted two things but could only pick one? That feeling has a name — it's called opportunity cost, and today we're going to become experts on it.",
+      vocab: [
+        { term: "Choice", def: "Picking one thing when you can't have everything." },
+        { term: "Opportunity cost", def: "The next-best thing you gave up when you chose." },
+        { term: "Trade-off", def: "Giving up a little of one thing to get more of another." },
+      ],
+      steps: [
+        "Welcome & the two-things question (4 min)",
+        "What is opportunity cost? (6 min)",
+        "Choice scenarios + class vote (12 min)",
+        "Reveal & discussion (4 min)",
+        "Exit ticket + take-home (4 min)",
+      ],
+      discussionPrompts: [
+        "Is the opportunity cost always about money?",
+        "Can two people give up different things making the same choice?",
+      ],
+      printables: ["Choice cards", "Take-home card", "Exit ticket"],
+    },
+  },
+
+  {
+    id: "investing-tomorrow",
+    title: "Investing in Tomorrow",
+    emoji: "🌱",
+    gradeBand: "Grade 4",
+    minutes: 35,
+    keyConcept: "Growing money over time",
+    activityType: "Grow-it scenario + vote",
+    color: "teal",
+    officialLesson: "Grade 4 — Investing in Tomorrow",
+    officialMaterials: ["Presentation", "Worksheet", "Vocab Check"],
+    materials: ["Slides", "Growth demo", "Vocab check", "Take-home card"],
+    summary:
+      "Money can grow if you give it time. A gentle first look at investing, planting seeds, and patience.",
+    objective:
+      "Students can explain that invested money can grow over time, and that growing takes patience.",
+    interactive: [
+      "Grow-it scenario",
+      "Group vote",
+      "Growth reveal",
+      "Vocabulary check",
+      "Take-home reflection",
+    ],
+    challenge: {
+      scenario:
+        "You plant a money seed today. A friend says 'dig it up tomorrow to see if it worked!' What should you do to help it grow the most?",
+      options: [
+        "Dig it up tomorrow to check",
+        "Leave it planted and wait, adding a little more over time",
+        "Move it somewhere new every day",
+        "Forget about it completely",
+      ],
+      best: 1,
+      timerSeconds: 30,
+      round: 1,
+    },
+    reveal: {
+      bestAnswer: "B. Leave it planted and wait, adding a little more over time",
+      why:
+        "Investing is like planting. Money needs time to grow, and digging it up early stops the growing. Adding a little more along the way helps it grow even bigger.",
+      keyConcept: "Growth over time — patience helps money grow",
+      commonTrap: "Wanting results right away and pulling money out too soon",
+      discussionPrompt: "What's something else that only works if you wait for it?",
+      applyIt: "Name one thing you're willing to wait a long time for.",
+    },
+    takeHome: {
+      title: "Planting for Later",
+      prompt: "Draw or name something your family is growing or saving toward.",
+      boxes: ["Plant now", "Wait", "Grows into"],
+      familyQuestion: "What is something worth waiting for?",
+    },
+    prep: {
+      openingScript:
+        "Today we're planting money seeds! Not real ones — but here's the amazing part: when you invest money and give it time, it can actually grow all by itself. Let's find out how.",
+      vocab: [
+        { term: "Invest", def: "Putting money somewhere so it can grow over time." },
+        { term: "Grow", def: "Getting bigger little by little, with time." },
+        { term: "Patience", def: "Waiting for something good instead of rushing." },
+      ],
+      steps: [
+        "Money seeds hook (5 min)",
+        "What does investing mean? (7 min)",
+        "Growth demo on the board (10 min)",
+        "Scenario + class vote (8 min)",
+        "Vocab check + take-home (5 min)",
+      ],
+      discussionPrompts: [
+        "Why does waiting help things grow?",
+        "What happens if you dig up the seed too early?",
+      ],
+      printables: ["Growth chart", "Vocab check sheet", "Take-home card"],
+    },
+  },
+
+  {
+    id: "money-tales",
+    title: "Money Tales: Planet Zeee & the Cosmo Phone",
+    emoji: "🚀",
+    gradeBand: "Grades 1–4",
+    minutes: 30,
+    keyConcept: "Money lessons through stories",
+    activityType: "Read-aloud + discussion",
+    color: "purple",
+    officialLesson: "Ally's \"Planet Zeee and the Money Tree\" and \"Emma and the Cosmo Phone\" (Grades 1–4)",
+    officialMaterials: ["Presentation", "Toolkit", "Website Link"],
+    materials: ["Storybook or read-aloud", "Discussion cards", "Take-home card"],
+    summary:
+      "Story-based lessons where characters face money choices — perfect for younger students and read-alouds.",
+    objective:
+      "Students can retell a character's money decision and explain what they would have done.",
+    interactive: [
+      "Read-aloud",
+      "Predict-what-happens vote",
+      "Character discussion",
+      "Reveal screen",
+      "Take-home reflection",
+    ],
+    challenge: {
+      scenario:
+        "In the story, a character finds a tree that grows money — but only if it's cared for patiently. They want to shake all the money off right now. What would you tell them?",
+      options: [
+        "Shake it — take everything today",
+        "Care for it and take a little at a time so it keeps growing",
+        "Chop it down and sell the wood",
+        "Ignore the tree completely",
+      ],
+      best: 1,
+      timerSeconds: 30,
+      round: 1,
+    },
+    reveal: {
+      bestAnswer: "B. Care for it and take a little at a time so it keeps growing",
+      why:
+        "Taking everything at once ends the story. Caring for something and taking a little at a time keeps it going — which is exactly how saving and growing money works in real life.",
+      keyConcept: "Patience and care make good things last",
+      commonTrap: "Grabbing everything at once and having nothing left",
+      discussionPrompt: "Which character made the choice you would have made?",
+      applyIt: "Tell someone at home what happened in the story and what you'd do differently.",
+    },
+    takeHome: {
+      title: "Our Story at Home",
+      prompt: "Tell a grown-up about the story and the choice the character made.",
+      boxes: ["What happened", "Their choice", "My choice"],
+      familyQuestion: "What would our family have done?",
+    },
+    prep: {
+      openingScript:
+        "Today we get to hear a story! Stories are sneaky — while you're having fun, you're also learning something real. Listen for the moment the character has to make a money choice.",
+      vocab: [
+        { term: "Choice", def: "Picking what to do when there's more than one option." },
+        { term: "Patience", def: "Waiting calmly for something good." },
+        { term: "Consequence", def: "What happens because of a choice you made." },
+      ],
+      steps: [
+        "Introduce the story (4 min)",
+        "Read aloud, pausing at the choice (12 min)",
+        "Predict what happens + vote (6 min)",
+        "Discuss the character's choice (5 min)",
+        "Take-home card (3 min)",
+      ],
+      discussionPrompts: [
+        "What would you have done in the character's place?",
+        "How did the character feel after their choice?",
+      ],
+      printables: ["Discussion cards", "Story map", "Take-home card"],
+    },
+  },
+
+  {
     id: "needs-vs-wants",
     title: "Needs vs. Wants",
     emoji: "🧺",
-    gradeBand: "Grades 2–5",
+    gradeBand: "Grade 1",
+    officialLesson: "Grade 1 — Needs and Wants",
+    officialMaterials: ["Presentation", "Toolkit"],
     minutes: 30,
     keyConcept: "Needs, wants & tradeoffs",
     activityType: "Scenario + group vote",
@@ -167,7 +392,9 @@ const MODULES = [
     id: "save-or-spend",
     title: "Save or Spend?",
     emoji: "🐷",
-    gradeBand: "Grades 3–6",
+    gradeBand: "Grade 3",
+    officialLesson: "Grade 3 — Saving and Spending",
+    officialMaterials: ["Presentation", "Toolkit", "Worksheet"],
     minutes: 30,
     keyConcept: "Saving & delayed gratification",
     activityType: "This-or-that vote",
@@ -788,49 +1015,55 @@ const FAQ_KNOWLEDGE = [
     q: "What is the difference between a need and a want?",
     a: "A need is something you must have to live and be safe, like food, water, or shelter. A want is something nice to have but not essential, like games or candy. The same item can be a need or a want depending on the situation.",
     tags: ["needs", "wants", "tradeoff", "basics"],
-    source: "Example resource · National Standards for Personal Financial Education — Spending & Saving",
+    source: "Jump$tart Teen Teach-In · Grade 1 Needs and Wants; Grade 3 Saving and Spending",
+  },
+  {
+    q: "What is opportunity cost?",
+    a: "Opportunity cost is the next-best thing you gave up when you made a choice. If you spend $5 on a book instead of ice cream, the opportunity cost is the ice cream — not the $5.",
+    tags: ["opportunity", "cost", "choice", "tradeoff", "give up"],
+    source: "Jump$tart Teen Teach-In · Grade 2 Making Financial Choices and Opportunity Costs",
   },
   {
     q: "Why should I save money?",
     a: "Saving lets you reach bigger goals later and be ready for surprises. A helpful habit is 'pay yourself first' — set aside a little the moment you get money, before you spend any.",
     tags: ["save", "saving", "goal", "pay yourself first"],
-    source: "Example resource · National Standards — Spending & Saving",
+    source: "Jump$tart Teen Teach-In · Grade 3 Saving and Spending",
   },
   {
     q: "What is a budget?",
     a: "A budget is a plan for money coming in and going out. A simple version splits money into three parts: save, spend, and share. There is no single right split — a budget helps you decide on purpose.",
     tags: ["budget", "plan", "save spend share"],
-    source: "Example resource · National Standards — Spending & Saving",
+    source: "Jump$tart Teen Teach-In · Grade 3 Saving and Spending",
   },
   {
     q: "What is credit and interest?",
     a: "Credit is borrowed money you agree to pay back later. Interest is the extra cost of borrowing, on top of what you owe. Paying credit back on time keeps costs from growing.",
     tags: ["credit", "interest", "borrow", "loan"],
-    source: "Example resource · National Standards — Credit & Debt",
+    source: "Jump$tart Clearinghouse · credit and debt resources",
   },
   {
     q: "What is the difference between gross pay and net pay?",
     a: "Gross pay is the total you earn before anything is taken out. Net pay (take-home pay) is what's left after taxes and other deductions. Budget using your net pay, not your gross pay.",
     tags: ["paycheck", "gross", "net", "taxes", "deduction"],
-    source: "Example resource · National Standards — Earning Income",
+    source: "Jump$tart Clearinghouse · earning income resources",
   },
   {
     q: "How can I spot a scam?",
     a: "Watch for three red flags: urgency ('act now!'), secrecy, and requests for private information. When a message rushes you or asks for personal or bank details, stop, don't click, and ask a trusted adult.",
     tags: ["fraud", "scam", "red flag", "phishing", "safety"],
-    source: "Example resource · National Standards — Managing Risk",
+    source: "Jump$tart Clearinghouse · fraud and risk resources",
   },
   {
     q: "What is the difference between a checking and a savings account?",
     a: "A checking account is for everyday spending. A savings account keeps money safer, out of easy-spend reach, and can earn a little interest toward your goals.",
     tags: ["banking", "checking", "savings", "account", "deposit"],
-    source: "Example resource · National Standards — Financial Services",
+    source: "Jump$tart Clearinghouse · banking resources",
   },
   {
     q: "How does compound growth work in investing?",
     a: "Investing puts money to work so it can grow. With compound growth, your earnings themselves earn more earnings over time. Because of this, starting early can matter more than investing larger amounts later.",
     tags: ["investing", "compound", "risk", "return", "growth"],
-    source: "Example resource · National Standards — Saving & Investing",
+    source: "Jump$tart Teen Teach-In · Grade 4 Investing in Tomorrow",
   },
   {
     q: "Is this app a good source of official financial advice?",
