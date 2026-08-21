@@ -112,11 +112,16 @@
   // No password, no personal data, nothing sent anywhere.
   // ================================================================
   var ROLE_KEY = "moneyReady.accountType.v1";
+  // In-memory fallback so the choice still sticks for the session when
+  // localStorage is unavailable — private browsing, or a browser set to
+  // block site data. Without this the picker reappears on every page.
+  var roleMemory = "";
 
   function getRole() {
-    try { return localStorage.getItem(ROLE_KEY) || ""; } catch (e) { return ""; }
+    try { return localStorage.getItem(ROLE_KEY) || roleMemory; } catch (e) { return roleMemory; }
   }
   function setRole(id) {
+    roleMemory = id;
     try { localStorage.setItem(ROLE_KEY, id); } catch (e) {}
     updateRoleChip();
   }
@@ -1009,7 +1014,10 @@
   // ================================================================
   // Build the metric cards this account type should see.
   function roleMetricCards(role, x) {
-    var ids = role ? role.metrics : Object.keys(IMPACT_METRICS);
+    // With no account type chosen yet, fall back to the volunteer view.
+    // Listing every metric would show both "Workshops delivered" and
+    // "Workshops received" — the same number under two contradictory labels.
+    var ids = (role && role.metrics) || ACCOUNT_TYPES[0].metrics;
     var programWide = (role && role.programWide) || [];
     return ids.map(function (id) {
       var def = IMPACT_METRICS[id];

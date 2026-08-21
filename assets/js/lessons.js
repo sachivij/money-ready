@@ -565,8 +565,33 @@ function buildLessonPlan(moduleId, opts) {
     "Hand out the take-home card: \"" + (mod.takeHome && mod.takeHome.title) + "\". Family question: " +
     (mod.takeHome && mod.takeHome.familyQuestion));
 
-  // Total the plan and note any difference from the requested length.
+  // Fit the plan to the time actually available. A volunteer with a hard
+  // 15-minute slot has 15 minutes, so scale the steps to match rather than
+  // handing them a plan that overruns. Every step keeps at least 2 minutes.
   var total = steps.reduce(function (sum, s) { return sum + s.minutes; }, 0);
+  if (total > minutes) {
+    var floorTotal = steps.length * 2;
+    if (minutes > floorTotal) {
+      // Shrink everything above the 2-minute floor proportionally.
+      var slack = total - floorTotal;
+      var keep = minutes - floorTotal;
+      steps.forEach(function (s) {
+        s.minutes = 2 + Math.round((s.minutes - 2) * (keep / slack));
+      });
+    } else {
+      // Asked for less time than the plan's minimum — give every step the floor.
+      steps.forEach(function (s) { s.minutes = 2; });
+    }
+    // Rounding can leave the total a minute or two off; settle it on the
+    // longest step so the numbers add up to what the plan claims.
+    total = steps.reduce(function (sum, s) { return sum + s.minutes; }, 0);
+    var drift = total - minutes;
+    if (drift !== 0) {
+      var longest = steps.slice().sort(function (a, b) { return b.minutes - a.minutes; })[0];
+      if (longest && longest.minutes - drift >= 2) longest.minutes -= drift;
+    }
+    total = steps.reduce(function (sum, s) { return sum + s.minutes; }, 0);
+  }
 
   return {
     module: mod,
