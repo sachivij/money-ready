@@ -236,12 +236,12 @@
         '<div class="grid grid-2 mt-3">' +
           '<a class="card feature green" href="#/games" style="text-decoration:none;color:inherit">' +
             '<div class="ico">🙌</div><h3>Games that need no devices</h3>' +
-            '<p class="muted mb-0">Nine of our twelve games run with zero screens — just movement, cards, and conversation. ' +
+            '<p class="muted mb-0">Ten of our twelve games run with zero screens — just movement, cards, and conversation. ' +
             "A workshop should never fail because the wifi did.</p></a>" +
-          '<a class="card feature amber" href="#/generator" style="text-decoration:none;color:inherit">' +
-            '<div class="ico">✨</div><h3>Lesson generator</h3>' +
-            '<p class="muted mb-0">Pick a topic, age, length, and what technology you actually have — get a timed plan ' +
-            "with matching games, ready to print.</p></a>" +
+          '<a class="card feature amber" href="#/builder" style="text-decoration:none;color:inherit">' +
+            '<div class="ico">🛠️</div><h3>Workshop builder</h3>' +
+            '<p class="muted mb-0">Pick a topic, age, length, and what technology you have — get a timed plan and the ' +
+            "whole packet. Choose K–2 and it turns picture-based.</p></a>" +
         "</div>" +
       "</div></section>" +
 
@@ -255,6 +255,36 @@
           howStep(3, "Reveal & discuss", "Show the best answer, the key concept, and the common trap, then talk it through.") +
           howStep(4, "Take it home", "Students leave with a fridge-friendly card that keeps the money talk going with family.") +
         "</div>" +
+      "</div></section>" +
+
+      // Where do I go? — a plain-language map of the tabs
+      '<section class="section" style="background:var(--cream-2)"><div class="wrap">' +
+        '<div class="center" style="margin-bottom:30px"><div class="eyebrow">Where do I start?</div>' +
+          "<h2>Find the page you need</h2>" +
+          '<p class="muted" style="max-width:56ch;margin:0 auto">Not sure which tab to click? Find what you\'re trying to do.</p></div>' +
+        '<div class="grid grid-2">' +
+          navGuide("📚", "Modules", "#/modules",
+            "I want to see what topics are available",
+            "Browse every ready-made workshop. Each shows the grade band, how long it takes, and what's included.") +
+          navGuide("🛠️", "Workshop Builder", "#/builder",
+            "I'm teaching a workshop and need to prepare",
+            "Start here. Answer four questions and get a timed lesson plan plus the whole packet — parent letter, checklist, deck outline, everything.") +
+          navGuide("🎲", "Games", "#/games",
+            "I need an activity, and there may be no screens",
+            "Twelve games you can drop into any topic. Ten of them need no technology at all.") +
+          navGuide("🎤", "Facilitator", "#/facilitator",
+            "The workshop is happening right now",
+            "Your live dashboard during the session — current step, class results, discussion prompts, and the exit-ticket summary.") +
+          navGuide("💪", "Volunteer Prep", "#/prep",
+            "I'm nervous and want to practice first",
+            "Opening scripts to say out loud, key vocabulary, timed steps, and a practice mode to rehearse before the real thing.") +
+          navGuide("📊", "Impact", "#/impact",
+            "I need numbers to share with someone",
+            "Privacy-safe metrics you can report. What you see depends on whether you're a volunteer, a school, or an organization.") +
+        "</div>" +
+        '<p class="center muted mt-3" style="font-size:.88rem">Also here: ' +
+          '<a href="#/portal">Request / Partner</a> to ask for a volunteer or offer support, and ' +
+          '<a href="#/helper">Standards Helper</a> for quick answers to financial-literacy questions.</p>' +
       "</div></section>" +
 
       // Sample modules
@@ -332,7 +362,7 @@
         "</div>" +
         '<div class="hero-cta" style="justify-content:center;margin-top:28px">' +
           '<a class="btn btn-primary btn-lg" href="#/modules">Explore the modules</a>' +
-          '<a class="btn btn-secondary btn-lg" href="#/builder">Build a workshop packet</a>' +
+          '<a class="btn btn-secondary btn-lg" href="#/builder">Build a workshop</a>' +
         "</div>" +
       "</div></section>";
     wireNav();
@@ -350,6 +380,14 @@
       '</h3><p class="muted mb-0">' + esc(body) + "</p></div>";
   }
   function liOk(t) { return '<li><span class="ok">✓</span><span>' + esc(t) + "</span></li>"; }
+  // A card on the landing page that answers "which tab do I click?"
+  function navGuide(ico, tab, href, want, does) {
+    return '<a class="card" href="' + href + '" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:flex-start">' +
+      '<span style="font-size:1.8rem;flex:none">' + ico + "</span>" +
+      "<span><strong style=\"display:block;font-size:1.05rem\">" + esc(want) + "</strong>" +
+      '<span class="badge" style="margin:6px 0 8px">Go to ' + esc(tab) + " →</span>" +
+      '<span class="muted" style="display:block;font-size:.9rem">' + esc(does) + "</span></span></a>";
+  }
   function tl(phase, t, body) {
     return '<div class="tl-item"><div class="tl-phase">' + esc(phase) + '</div>' +
       '<div class="card"><h3 style="margin-bottom:4px">' + esc(t) + '</h3>' +
@@ -813,90 +851,6 @@
   // ================================================================
   // TOOLKIT BUILDER (guided packet workflow)
   // ================================================================
-  function renderBuilder() {
-    var GRADES = ["Grades K–2", "Grades 3–5", "Grades 6–8", "Grades 9–12"];
-    app.innerHTML =
-      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Toolkit builder</div>' +
-        '<div class="eyebrow">Toolkit builder · guided workflow</div>' +
-        "<h1>Build a full workshop packet in one place</h1>" +
-        '<p class="muted" style="max-width:64ch">Choose a topic and grade, and the toolkit assembles a ready-to-run ' +
-          "packet — everything a teen volunteer needs from prep to reflection. <span class=\"pill-note\">Prototype: templates generate on your device</span></p>" +
-      "</div>" +
-      '<section class="section tight"><div class="wrap">' +
-        '<div class="card"><div class="grid grid-2" style="grid-template-columns:1fr 1fr">' +
-          '<div class="field"><label for="bTopic">Topic</label><select id="bTopic">' +
-            MODULES.map(function (m) { return '<option value="' + m.id + '">' + m.emoji + " " + esc(m.title) + "</option>"; }).join("") +
-          "</select></div>" +
-          '<div class="field"><label for="bGrade">Grade band</label><select id="bGrade">' +
-            GRADES.map(function (g) { return "<option>" + g + "</option>"; }).join("") +
-          "</select></div>" +
-        "</div>" +
-        '<button class="btn btn-primary" id="genBtn">✨ Assemble packet</button></div>' +
-        '<div id="packetOut" class="mt-3"></div>' +
-      "</div></section>";
-
-    function packetItems(m, grade) {
-      return [
-        { ico: "🖼", t: "Lesson deck outline", s: "Slides for " + m.title + " (" + grade + ")",
-          body: "Slide 1 — Title: " + m.title + "\nSlide 2 — Big question / hook\nSlide 3 — Key vocabulary: " +
-            m.prep.vocab.map(function (v) { return v.term; }).join(", ") + "\nSlide 4 — Scenario challenge\nSlide 5 — Group vote\nSlide 6 — Reveal: " +
-            m.reveal.keyConcept + "\nSlide 7 — Discussion: " + m.reveal.discussionPrompt + "\nSlide 8 — Take-home + thank you" },
-        { ico: "📝", t: "Practice notes", s: "Opening script + timed steps",
-          body: "OPENING SCRIPT:\n" + m.prep.openingScript + "\n\nSTEPS:\n- " + m.prep.steps.join("\n- ") },
-        { ico: "✉️", t: "Parent letter", s: "Friendly heads-up for families",
-          body: "Dear Families,\n\nThis week your student took part in a short, fun financial-literacy workshop on \"" +
-            m.title + "\" led by trained teen volunteers with Virginia Jump$tart. The goal: " + m.objective.toLowerCase() +
-            "\n\nAsk them about it! A take-home card came with a simple family question. Everything is educational only and privacy-safe — no personal data is collected.\n\nWith appreciation,\nThe Money Ready volunteer team" },
-        { ico: "🏫", t: "Administrator packet", s: "One-page overview for school leaders",
-          body: "MONEY READY — WORKSHOP OVERVIEW (proposed pilot, pending Jump$tart approval)\nTopic: " + m.title +
-            "\nGrade band: " + grade + "\nLength: " + m.minutes + " min\nObjective: " + m.objective +
-            "\nFormat: teen-led, interactive (challenge → vote → reveal → discuss → take-home)\nPrivacy: educational only; no student data collected." },
-        { ico: "✅", t: "Event checklist", s: "Day-of run of show",
-          body: "BEFORE:\n[ ] Confirm room + screen/projector\n[ ] Load module: " + m.title + "\n[ ] Print take-home cards\n[ ] Rehearse opening script\nDURING:\n[ ] Welcome + big question\n[ ] Run challenge + vote\n[ ] Reveal + discussion\n[ ] Hand out take-home cards\nAFTER:\n[ ] Thank the class + teacher\n[ ] Note what went well (reflection page)" },
-        { ico: "🗒", t: "Sign-up form", s: "Volunteer roles (no personal data required to view)",
-          body: "TEEN TEACH-IN SIGN-UP — " + m.title + "\nRole 1: Lead facilitator\nRole 2: Co-facilitator / vote counter\nRole 3: Materials + take-home cards\nRole 4: Timekeeper\n(Names collected offline by the coordinator, not stored in this app.)" },
-        { ico: "🔄", t: "Post-event reflection", s: "Quick, privacy-safe wrap-up",
-          body: "REFLECTION (aggregate only — no names):\n- Students reached (count): ____\n- What worked well: ____\n- What to change next time: ____\n- Confidence check average (1–5): ____\n- One story worth sharing: ____" },
-      ];
-    }
-
-    document.getElementById("genBtn").addEventListener("click", function () {
-      var m = moduleById(document.getElementById("bTopic").value);
-      var grade = document.getElementById("bGrade").value;
-      var items = packetItems(m, grade);
-      document.getElementById("packetOut").innerHTML =
-        '<div class="card"><div class="flex items-center wrap-flex" style="justify-content:space-between">' +
-          "<div><div class=\"eyebrow\">Assembled packet</div><h3 style=\"margin-bottom:0\">" + m.emoji + " " + esc(m.title) + " — " + esc(grade) + "</h3></div>" +
-          '<button class="btn btn-secondary no-print" id="printPacket">🖨 Print / save all</button>' +
-        "</div>" +
-        '<ul class="packet-list mt-2">' +
-          items.map(function (it, i) {
-            return '<li class="packet-item"><div class="ico">' + it.ico + '</div><div class="txt"><strong>' +
-              esc(it.t) + "</strong><span>" + esc(it.s) + '</span></div>' +
-              '<button class="btn btn-ghost no-print" data-i="' + i + '">View</button></li>' +
-              '<li id="body-' + i + '" class="hidden"><pre style="white-space:pre-wrap;background:var(--cream-2);padding:16px;border-radius:12px;font-family:inherit;margin:0 0 6px">' +
-              esc(it.body) + "</pre></li>";
-          }).join("") +
-        "</ul></div>";
-      document.querySelectorAll("#packetOut .packet-item .btn-ghost").forEach(function (b) {
-        b.addEventListener("click", function () {
-          var body = document.getElementById("body-" + b.getAttribute("data-i"));
-          body.classList.toggle("hidden");
-          b.textContent = body.classList.contains("hidden") ? "View" : "Hide";
-        });
-      });
-      document.getElementById("printPacket").addEventListener("click", function () {
-        document.querySelectorAll("#packetOut [id^='body-']").forEach(function (x) { x.classList.remove("hidden"); });
-        window.print();
-      });
-      document.getElementById("packetOut").scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-    wireNav();
-  }
-
-  // ================================================================
-  // REQUEST / PARTNER PORTAL
-  // ================================================================
   function renderPortal() {
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Request &amp; partner portal</div>' +
@@ -1323,37 +1277,46 @@
   // ================================================================
   // LESSON GENERATOR
   // ================================================================
-  function renderGenerator() {
+  // ================================================================
+  // WORKSHOP BUILDER
+  // One page that produces both the timed lesson plan AND the full
+  // packet (deck outline, parent letter, checklist, and the rest).
+  // Replaces the separate lesson generator and toolkit builder.
+  // ================================================================
+  function renderBuilderCombined() {
     app.innerHTML =
-      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Lesson generator</div>' +
-        '<div class="eyebrow">Lesson generator</div>' +
-        "<h1>Build a lesson that fits your room</h1>" +
-        '<p class="muted" style="max-width:64ch">Tell it your topic, age group, how long you have, and what technology is ' +
-          "actually available — it writes a timed plan with matching games. Choose <em>no devices</em> and every activity " +
-          "works with nothing but paper and people.</p>" +
+      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Workshop builder</div>' +
+        '<div class="eyebrow">Workshop builder</div>' +
+        "<h1>Build your whole workshop in one place</h1>" +
+        '<p class="muted" style="max-width:66ch">Answer four questions and you get a timed lesson plan <em>and</em> ' +
+          "the full packet — deck outline, practice notes, parent letter, administrator overview, event checklist, " +
+          "sign-up sheet, and reflection page. The plan changes based on what you pick: pick " +
+          "<strong>Grades K–2</strong> and it becomes picture-based with almost no reading; pick " +
+          "<strong>no devices</strong> and every activity works with paper and people.</p>" +
       "</div>" +
       '<section class="section tight"><div class="wrap">' +
         '<div class="card"><div class="grid grid-2">' +
-          '<div class="field"><label for="gTopic">Topic</label><select id="gTopic">' +
+          '<div class="field"><label for="gTopic">1. Topic</label><select id="gTopic">' +
             MODULES.map(function (m) { return '<option value="' + m.id + '">' + m.emoji + " " + esc(m.title) + "</option>"; }).join("") +
           "</select></div>" +
-          '<div class="field"><label for="gGrade">Age group</label><select id="gGrade">' +
-            ["Grades K–2", "Grades 3–5", "Grades 6–8", "Grades 9–12"].map(function (g) { return "<option>" + g + "</option>"; }).join("") +
-          "</select></div>" +
-          '<div class="field"><label for="gMin">How long do you have?</label><select id="gMin">' +
+          '<div class="field"><label for="gGrade">2. Age group</label><select id="gGrade">' +
+            ["Grades K–2", "Grades 3–5", "Grades 6–8", "Grades 9–12"].map(function (g, i) {
+              return "<option" + (i === 1 ? " selected" : "") + ">" + g + "</option>"; }).join("") +
+          '</select><span class="muted" style="font-size:.8rem">K–2 switches the whole plan to pictures and movement.</span></div>' +
+          '<div class="field"><label for="gMin">3. How long do you have?</label><select id="gMin">' +
             ["15", "20", "30", "40", "45", "60"].map(function (n) {
               return '<option value="' + n + '"' + (n === "30" ? " selected" : "") + ">" + n + " minutes</option>"; }).join("") +
           "</select></div>" +
-          '<div class="field"><label for="gGroup">Group size</label><select id="gGroup">' +
+          '<div class="field"><label for="gGroup">4. Group size</label><select id="gGroup">' +
             ["Whole class", "Small groups", "Pairs", "One-on-one"].map(function (g) { return "<option>" + g + "</option>"; }).join("") +
           "</select></div>" +
         "</div>" +
-        '<div class="field"><label>What technology is available?</label><div class="chips-select" id="gDev">' +
+        '<div class="field"><label>What technology is actually in the room?</label><div class="chips-select" id="gDev">' +
           '<button class="chip-toggle on" data-dev="none">🙌 No devices at all</button>' +
           '<button class="chip-toggle" data-dev="shared">📺 One shared screen</button>' +
           '<button class="chip-toggle" data-dev="personal">📱 Students have devices</button>' +
         "</div></div>" +
-        '<button class="btn btn-primary" id="genLesson">✨ Generate lesson plan</button></div>' +
+        '<button class="btn btn-primary btn-lg" id="genLesson">✨ Build my workshop</button></div>' +
         '<div id="planOut" class="mt-3"></div>' +
       "</div></section>";
 
@@ -1381,30 +1344,76 @@
     if (!plan) return;
     var m = plan.module;
     var out = document.getElementById("planOut");
-    var devLabel = plan.devices === "none" ? "🙌 No devices needed"
-      : plan.devices === "shared" ? "📺 One shared screen" : "📱 Students have devices";
+    var packet = buildPacket(plan);
+
     out.innerHTML =
       '<div class="card">' +
+        // Header
         '<div class="flex items-center wrap-flex" style="justify-content:space-between;gap:12px">' +
-          "<div><div class=\"eyebrow\">Your lesson plan</div>" +
+          "<div><div class=\"eyebrow\">Your workshop</div>" +
             '<h2 style="margin-bottom:6px">' + m.emoji + " " + esc(m.title) + "</h2>" +
             '<div class="badge-row">' +
               '<span class="badge">' + esc(plan.grade) + "</span>" +
-              '<span class="badge gray">⏱ ' + plan.totalMinutes + " min total</span>" +
-              '<span class="badge ' + (plan.devices === "none" ? "no-device-badge" : "blue") + '">' + devLabel + "</span>" +
+              '<span class="badge gray">⏱ ' + plan.totalMinutes + " min</span>" +
+              '<span class="badge ' + (plan.devices === "none" ? "no-device-badge" : "blue") + '">' +
+                plan.deviceGuide.icon + " " + esc(plan.deviceGuide.label) + "</span>" +
               '<span class="badge gray">' + esc(plan.groupSize) + "</span>" +
+              (plan.pictureBased ? '<span class="badge amber">🎨 Picture-based — very little reading</span>' : "") +
             "</div></div>" +
-          '<button class="btn btn-secondary no-print" onclick="window.print()">🖨 Print plan</button>' +
+          '<button class="btn btn-secondary no-print" onclick="window.print()">🖨 Print everything</button>' +
         "</div>" +
+
         '<div class="card mt-3" style="border-left:5px solid var(--green);box-shadow:none">' +
           "<strong>Learning objective:</strong> " + esc(m.objective) + "</div>" +
-        '<div class="eyebrow mt-3">Run of show</div>' +
+
+        // K–2 picture banner
+        (plan.pictureBased
+          ? '<div class="callout mt-3"><div class="ico">🎨</div><div><strong>This plan is built for pre-readers.</strong> ' +
+            "Assume students cannot read your slides. Everything below uses pictures, pointing, drawing, and movement instead of text. " +
+            esc(plan.profile.watchFor) + "</div></div>"
+          : "") +
+
+        // Teaching this age group
+        '<div class="grid grid-2 mt-3">' +
+          '<div class="card" style="box-shadow:none"><div class="eyebrow">Teaching ' + esc(plan.grade) + "</div>" +
+            '<p class="muted" style="font-size:.9rem;margin-bottom:8px"><strong>Attention span:</strong> ' + esc(plan.profile.attention) +
+            "<br><strong>Reading:</strong> " + esc(plan.profile.readingLevel) + "</p>" +
+            '<ul class="privacy-list">' + plan.profile.delivery.map(function (d) {
+              return '<li><span class="ok">→</span><span>' + esc(d) + "</span></li>"; }).join("") + "</ul>" +
+            '<div class="eyebrow mt-3">Words to use</div><ul class="privacy-list">' +
+            plan.profile.language.map(function (l) { return '<li><span class="ok">💬</span><span>' + esc(l) + "</span></li>"; }).join("") +
+            "</ul></div>" +
+          '<div class="card" style="box-shadow:none"><div class="eyebrow">' + plan.deviceGuide.icon + " " + esc(plan.deviceGuide.label) + "</div>" +
+            "<p style=\"font-size:.92rem\"><strong>Set up before you start:</strong></p>" +
+            '<ul class="privacy-list">' + plan.deviceGuide.setup.map(function (s) {
+              return '<li><span class="ok">□</span><span>' + esc(s) + "</span></li>"; }).join("") + "</ul>" +
+            '<p class="muted mt-2" style="font-size:.9rem"><strong>How students answer:</strong> ' + esc(plan.deviceGuide.voting) +
+            "<br><strong>Showing results:</strong> " + esc(plan.deviceGuide.results) +
+            "<br><strong>If it fails:</strong> " + esc(plan.deviceGuide.backup) + "</p>" +
+            (plan.groupTip ? '<div class="eyebrow mt-3">' + esc(plan.groupSize) + '</div><p class="muted" style="font-size:.9rem;margin:0">' + esc(plan.groupTip) + "</p>" : "") +
+          "</div>" +
+        "</div>" +
+
+        // Run of show
+        '<div class="eyebrow mt-4">Run of show — what to do, minute by minute</div>' +
         plan.steps.map(function (s) {
           return '<div class="plan-step"><div class="plan-time">' + s.minutes + " min</div>" +
             "<div><h4>" + esc(s.name) + "</h4><p>" + esc(s.what) + "</p>" +
-            (s.script ? '<div class="script-box mt-1" style="font-size:.9rem">' + esc(s.script) + "</div>" : "") +
+            (s.script ? '<div class="script-box mt-1" style="font-size:.9rem"><strong>Say this:</strong> ' + esc(s.script) + "</div>" : "") +
+            (s.how ? '<div class="apply-box mt-1" style="font-size:.9rem"><strong>How to run it:</strong> ' + esc(s.how) + "</div>" : "") +
             "</div></div>";
         }).join("") +
+
+        // Picture activity bank for K–2
+        (plan.pictureActivities.length
+          ? '<div class="card mt-3" style="box-shadow:none;background:var(--amber-soft)">' +
+            '<div class="eyebrow">Picture-based activities you can swap in anytime</div>' +
+            plan.pictureActivities.map(function (a) {
+              return '<div class="vocab-item"><strong>' + esc(a.name) + "</strong><br><span class=\"muted\" style=\"font-size:.9rem\">" +
+                esc(a.how) + "</span></div>"; }).join("") + "</div>"
+          : "") +
+
+        // Materials + questions
         '<div class="grid grid-2 mt-3">' +
           '<div class="card" style="box-shadow:none"><div class="eyebrow">Materials to bring</div><ul class="privacy-list">' +
             plan.materials.map(function (mm) { return '<li><span class="ok">□</span><span>' + esc(mm) + "</span></li>"; }).join("") +
@@ -1415,15 +1424,36 @@
             }).join("") || '<p class="muted mb-0">—</p>') +
           "</div>" +
         "</div>" +
+
+        // The packet
+        '<div class="eyebrow mt-4">Your workshop packet <span class="pill-note">generated for these choices</span></div>' +
+        '<p class="muted" style="font-size:.92rem">Everything around the lesson itself. Tap any item to read it, or print the whole page.</p>' +
+        '<ul class="packet-list mt-2">' +
+          packet.map(function (it, i) {
+            return '<li class="packet-item"><div class="ico">' + it.ico + '</div><div class="txt"><strong>' +
+              esc(it.title) + "</strong><span>" + esc(it.sub) + '</span></div>' +
+              '<button class="btn btn-ghost no-print" data-i="' + i + '">View</button></li>' +
+              '<li id="pk-' + i + '" class="hidden"><pre style="white-space:pre-wrap;background:var(--cream-2);padding:16px;border-radius:12px;font-family:inherit;margin:0 0 6px;font-size:.88rem">' +
+              esc(it.body) + "</pre></li>";
+          }).join("") +
+        "</ul>" +
+
         '<div class="flex gap wrap-flex mt-3 no-print">' +
           '<a class="btn btn-primary" href="#/take-home/' + m.id + '">Take-home card</a>' +
           '<a class="btn btn-secondary" href="#/games?devices=' + (plan.devices === "none" ? "none" : "all") + '">Browse games</a>' +
           '<a class="btn btn-ghost" href="#/prep?topic=' + m.id + '">Full volunteer prep</a>' +
         "</div>" +
       "</div>";
+
+    out.querySelectorAll(".packet-item .btn-ghost").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var body = document.getElementById("pk-" + b.getAttribute("data-i"));
+        body.classList.toggle("hidden");
+        b.textContent = body.classList.contains("hidden") ? "View" : "Hide";
+      });
+    });
     out.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
-
   function renderNotFound() {
     app.innerHTML = '<section class="section"><div class="wrap center">' +
       "<h1>Page not found</h1><p class=\"muted\">That link doesn't match a screen.</p>" +
@@ -1485,12 +1515,13 @@
       // Only present when modules are tagged with official lessons.
       case "resources": return officialModules().length ? renderResources() : renderNotFound();
       case "games": return renderGames(query);
-      case "generator": return renderGenerator();
       case "module": return renderModule(seg[1]);
       case "challenge": return renderChallenge(seg[1], query.practice === "1");
       case "facilitator": return renderFacilitator();
       case "prep": return renderPrep(query);
-      case "builder": return renderBuilder();
+      // Toolkit builder and lesson generator are now one page.
+      case "builder":
+      case "generator": return renderBuilderCombined();
       case "portal": return renderPortal();
       case "helper": return renderHelper();
       case "impact": return renderImpact();

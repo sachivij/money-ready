@@ -82,7 +82,7 @@ const ACCOUNT_TYPES = [
 /* Metric definitions. `value` reads from IMPACT_EXAMPLE in data.js. */
 const IMPACT_METRICS = {
   workshopsDelivered: { label: "Workshops delivered", key: "workshopsDelivered" },
-  workshopsReceived: { label: "Workshops received", key: "workshopsDelivered" },
+  workshopsReceived: { label: "Lessons completed", key: "workshopsDelivered" },
   studentsReached: { label: "Students reached", key: "studentsReached" },
   participationRate: { label: "Student participation rate", key: "participationRate", suffix: "%" },
   confidenceImprovement: { label: "Avg. confidence improvement", key: "confidenceImprovement", prefix: "+", suffix: " pts" },
@@ -496,6 +496,172 @@ const LESSON_PACKS = {
 };
 
 /* ===================================================================
+   GRADE PROFILES
+   How delivery actually changes by age. The youngest band is
+   picture-first: little reading, lots of showing, drawing, and moving.
+   =================================================================== */
+const GRADE_PROFILES = {
+  "Grades K–2": {
+    id: "k2",
+    pictureBased: true,
+    chunk: 5,
+    vocabCount: 2,
+    readingLevel: "Pre-reading to early reading — assume students cannot read your slides.",
+    attention: "About 5 minutes per activity before they need to move.",
+    delivery: [
+      "Show pictures instead of words. If a slide has a sentence, read it out loud for them.",
+      "Use your whole body — point, act it out, make faces. They copy what they see.",
+      "Ask for answers with hands, thumbs, or by moving, not by writing.",
+      "Repeat the key idea at least three times in three different ways.",
+      "Name one idea for the whole session. Two is too many at this age.",
+    ],
+    language: [
+      "Say 'things we must have' instead of 'necessities'.",
+      "Say 'money you keep' instead of 'savings'.",
+      "Use one short sentence at a time, then pause.",
+    ],
+    watchFor: "If they start wiggling, you have about 30 seconds before you lose the room — switch to a moving activity.",
+  },
+  "Grades 3–5": {
+    id: "35",
+    pictureBased: false,
+    chunk: 8,
+    vocabCount: 3,
+    readingLevel: "Reading independently — short written prompts are fine.",
+    attention: "About 8–10 minutes per activity.",
+    delivery: [
+      "They can read short prompts, but still read important text aloud.",
+      "They love being right — build in a chance for everyone to succeed.",
+      "Small groups work well now; give each person a job.",
+      "Ask 'why do you think that?' after answers, not just 'is it right?'",
+    ],
+    language: [
+      "You can use real terms — 'savings', 'budget', 'goal' — if you define them once.",
+      "Use money amounts they recognize: allowance, birthday money, snack prices.",
+    ],
+    watchFor: "Watch for the confident kid answering everything. Call on quieter students by name.",
+  },
+  "Grades 6–8": {
+    id: "68",
+    pictureBased: false,
+    chunk: 12,
+    vocabCount: 3,
+    readingLevel: "Full reading — written scenarios and worksheets work well.",
+    attention: "About 12–15 minutes per activity.",
+    delivery: [
+      "They care what their friends think — let them discuss in pairs before sharing.",
+      "Real numbers and real trade-offs land better than made-up ones.",
+      "Do not talk down to them. Treat the content as genuinely useful.",
+      "Debate works: give them a side to argue.",
+    ],
+    language: [
+      "Use the real vocabulary throughout — interest, trade-off, net pay.",
+      "Connect to things they actually spend on: games, food, clothes, phones.",
+    ],
+    watchFor: "Never ask what anyone's family earns or spends. Keep every example hypothetical.",
+  },
+  "Grades 9–12": {
+    id: "912",
+    pictureBased: false,
+    chunk: 15,
+    vocabCount: 4,
+    readingLevel: "Full reading — realistic documents and figures are appropriate.",
+    attention: "About 15–20 minutes per activity.",
+    delivery: [
+      "Lead with why it matters to them right now — jobs, cars, college, phones.",
+      "Let them challenge you. Being questioned is a good sign.",
+      "Use real-world documents: a pay stub layout, a loan offer, a price tag.",
+      "Give them the actual math, not a simplified version.",
+    ],
+    language: [
+      "Use the vocabulary an adult would use, and define it once.",
+      "Be honest about the hard parts — debt, taxes, scams that work.",
+    ],
+    watchFor: "Some students already work or help with family bills. Never assume, never single anyone out.",
+  },
+};
+
+/* ===================================================================
+   DEVICE GUIDES
+   What to actually do differently based on what's in the room.
+   =================================================================== */
+const DEVICE_GUIDES = {
+  none: {
+    label: "No devices at all",
+    icon: "🙌",
+    setup: [
+      "Print the take-home cards and any item or scenario cards before you arrive.",
+      "Clear enough floor space for students to move between four spots.",
+      "Bring tape and a marker for labeling corners or areas.",
+      "Write the key idea on the board where everyone can see it all session.",
+    ],
+    voting: "Students vote by moving — walking to a labeled corner, standing on one side of the room, or raising a hand on the count of three.",
+    showing: "Read every scenario out loud, twice. Hold up printed cards so everyone can see.",
+    results: "Count the students in each group out loud and write the numbers on the board. That is your class results chart.",
+    backup: "This setup has no backup needed — nothing can fail on you.",
+  },
+  shared: {
+    label: "One shared screen",
+    icon: "📺",
+    setup: [
+      "Open the module on the shared screen before students arrive and test that it displays.",
+      "Stand where you can see both the screen and the students' faces.",
+      "Still print the take-home cards — those go home with students.",
+      "Have a marker ready in case the screen fails.",
+    ],
+    voting: "Read the scenario off the screen, take a show of hands for each option, then tap the answer so the reveal does the teaching.",
+    showing: "The screen shows the scenario and the reveal. Read it aloud anyway — do not assume everyone can see or read it.",
+    results: "The class results bar chart appears on screen. Ask a student from each option to explain their thinking.",
+    backup: "If the screen fails, switch to Four Corners — you have the scenario in your notes and it works with nothing.",
+  },
+  personal: {
+    label: "Students have devices",
+    icon: "📱",
+    setup: [
+      "Confirm the room's wifi actually works before the session starts.",
+      "Write the link and room code on the board where everyone can see it.",
+      "Have a plan for students without a working device — pair them up.",
+      "Print the take-home cards regardless.",
+    ],
+    voting: "Students open the link and vote on their own device. Give a 30-second warning before the timer ends.",
+    showing: "Everyone sees the scenario on their own screen, but read it aloud too so nobody falls behind.",
+    results: "Results update live. Point out that nobody can see who voted for what — it is anonymous.",
+    backup: "Devices fail more often than anything else. Know which unplugged game you would switch to.",
+  },
+};
+
+/* ===================================================================
+   PICTURE-BASED ACTIVITIES (K–2)
+   Swaps that need no reading at all.
+   =================================================================== */
+const PICTURE_ACTIVITIES = [
+  {
+    name: "Point to the picture",
+    how: "Hold up two pictures. Ask the question out loud. Students point at their answer instead of saying or writing it.",
+  },
+  {
+    name: "Thumbs up / thumbs down",
+    how: "Say a statement out loud. Thumbs up means yes or need, thumbs down means no or want. Everyone answers at once, so nobody copies.",
+  },
+  {
+    name: "Draw your answer",
+    how: "Give each student paper. Instead of writing, they draw the thing they would choose. Then a few share their drawing.",
+  },
+  {
+    name: "Act it out",
+    how: "Two volunteers act out the choice while the class watches, then the class votes on what the characters should do.",
+  },
+  {
+    name: "Sorting mat with pictures",
+    how: "Two hoops or paper mats on the floor with a picture label on each. Students place picture cards into the right one.",
+  },
+  {
+    name: "Move to the picture",
+    how: "Tape a large picture in each corner. Students walk to the picture that matches their answer.",
+  },
+];
+
+/* ===================================================================
    LESSON GENERATOR
    Assembles a complete, timed lesson plan from a module's core data,
    its lesson pack, and games that fit the room's device situation.
@@ -514,6 +680,11 @@ function buildLessonPlan(moduleId, opts) {
   if (!mod) return null;
   var pack = LESSON_PACKS[moduleId] || {};
 
+  // How this age group learns, and what the room's technology changes.
+  var profile = GRADE_PROFILES[grade] || GRADE_PROFILES["Grades 3–5"];
+  var deviceGuide = DEVICE_GUIDES[devices] || DEVICE_GUIDES.none;
+  var picture = !!profile.pictureBased;
+
   // Which games are usable in this room?
   var allowed = devices === "none" ? ["none"]
     : devices === "shared" ? ["none", "shared"]
@@ -530,40 +701,78 @@ function buildLessonPlan(moduleId, opts) {
   })[0];
 
   // Build the timed sequence, scaled to the requested length.
+  // `how` is the concrete do-this-now instruction, tailored to the grade
+  // and to what technology is actually in the room.
   var steps = [];
-  function add(name, mins, what, script) {
-    steps.push({ name: name, minutes: mins, what: what, script: script || "" });
+  function add(name, mins, what, script, how) {
+    steps.push({ name: name, minutes: mins, what: what, script: script || "", how: how || "" });
   }
 
   var short = minutes <= 20;
   var long = minutes >= 45;
+  var vocabList = ((mod.prep && mod.prep.vocab) || []).slice(0, profile.vocabCount);
 
-  add("Welcome & hook", short ? 3 : 5, pack.hook || "Open with a question that connects the topic to the students' own lives.", mod.prep && mod.prep.openingScript);
-  add("Mini-lesson", short ? 4 : 7, pack.miniLesson || mod.summary);
+  add("Welcome & hook", short ? 3 : 5,
+    pack.hook || "Open with a question that connects the topic to the students' own lives.",
+    mod.prep && mod.prep.openingScript,
+    picture
+      ? "Hold up an object or a picture rather than explaining. Ask the question out loud and let them answer by pointing or with thumbs up and down. Do not put any text on screen."
+      : "Ask the question and wait a full five seconds before taking answers. The silence is uncomfortable but it gets more hands up.");
+
+  add("Mini-lesson", short ? 4 : 7,
+    pack.miniLesson || mod.summary,
+    "",
+    picture
+      ? "Say the one big idea in a single short sentence, then say it again two more ways. Draw it on the board as a simple picture. No slides full of words — they cannot read them yet."
+      : deviceGuide.showing);
 
   if (!short) {
-    add("Key vocabulary", 4, "Teach the words students need: " +
-      ((mod.prep && mod.prep.vocab) || []).map(function (v) { return v.term; }).join(", ") + ".");
+    add("Key vocabulary", 4,
+      "Teach the words students need: " + vocabList.map(function (v) { return v.term; }).join(", ") + ".",
+      "",
+      picture
+        ? "Teach only " + profile.vocabCount + " words. For each one: say it, draw it, have the class say it back and make a hand motion for it. The motion is what they will remember."
+        : "Say each word, give the plain-English meaning, then ask for an example from their own life before moving on.");
   }
 
   if (mainGame) {
     add("Main activity — " + mainGame.name, mainGame.minutes,
-      mainGame.summary + (devices === "none" && pack.unpluggedSwap ? " " + pack.unpluggedSwap : ""));
+      mainGame.summary + (devices === "none" && pack.unpluggedSwap ? " " + pack.unpluggedSwap : ""),
+      "",
+      (picture ? "Picture version: " + PICTURE_ACTIVITIES[0].how + " " : "") + deviceGuide.voting);
   }
 
-  add("Guided practice", short ? 4 : 6, pack.guidedPractice || "Work through an example together as a class.");
+  add("Guided practice", short ? 4 : 6,
+    pack.guidedPractice || "Work through an example together as a class.",
+    "",
+    picture
+      ? "Do it together on the board with drawings, not words. Ask the class to tell you where each picture goes — you hold the marker, they make the decisions."
+      : "Do the first one together, the second one in pairs, the third one on their own. Release it gradually.");
 
   if (long && extraGame) {
-    add("Second activity — " + extraGame.name, extraGame.minutes, extraGame.summary);
+    add("Second activity — " + extraGame.name, extraGame.minutes, extraGame.summary, "",
+      picture ? "Keep this one physical — moving, sorting, or acting. By now they need to be out of their seats." : deviceGuide.voting);
   }
   if (long) {
-    add("Extension", 6, pack.extension || "Give students a challenge that stretches the idea further.");
+    add("Extension", 6,
+      pack.extension || "Give students a challenge that stretches the idea further.", "",
+      picture ? "Give them paper and let them draw it. Drawing is how this age shows you what they understood." : "For students who finish early, ask them to explain it to someone who was not paying attention.");
   }
 
-  add("Check for understanding", short ? 3 : 5, pack.checkUnderstanding || "Confirm every student can state the key idea.");
+  add("Check for understanding", short ? 3 : 5,
+    pack.checkUnderstanding || "Confirm every student can state the key idea.",
+    "",
+    picture
+      ? "Ask the one big idea as a thumbs up or thumbs down question, or have them point to the right picture. Do not ask them to write anything."
+      : "Ask every student to answer, not just volunteers — a quick go-round, a written exit ticket, or the anonymous confidence tap.");
+
   add("Wrap-up & take-home", short ? 3 : 5,
     "Hand out the take-home card: \"" + (mod.takeHome && mod.takeHome.title) + "\". Family question: " +
-    (mod.takeHome && mod.takeHome.familyQuestion));
+    (mod.takeHome && mod.takeHome.familyQuestion),
+    "",
+    picture
+      ? "Show the card and point to each box so they know what goes where. Tell them the drawing part is the homework — a grown-up can do the writing."
+      : "Read the family question aloud and tell them who to ask at home. Say the one big idea one last time as they leave.");
 
   // Fit the plan to the time actually available. A volunteer with a hard
   // 15-minute slot has 15 minutes, so scale the steps to match rather than
@@ -593,12 +802,25 @@ function buildLessonPlan(moduleId, opts) {
     total = steps.reduce(function (sum, s) { return sum + s.minutes; }, 0);
   }
 
+  // Group-size guidance.
+  var groupTips = {
+    "Whole class": "Keep every activity as one group. Use call-and-response and whole-room movement so nobody hides at the back.",
+    "Small groups": "Groups of three or four. Give each person a job — reader, recorder, reporter, timekeeper — or one student does everything.",
+    "Pairs": "Pairs mean nobody sits out. Have partners agree on an answer before sharing, so the quiet one has already spoken once.",
+    "One-on-one": "Go at their pace and let them lead. Ask more questions than you answer.",
+  };
+
   return {
     module: mod,
     pack: pack,
     grade: grade,
     groupSize: groupSize,
+    groupTip: groupTips[groupSize] || "",
     devices: devices,
+    deviceGuide: deviceGuide,
+    profile: profile,
+    pictureBased: picture,
+    pictureActivities: picture ? PICTURE_ACTIVITIES : [],
     requestedMinutes: minutes,
     totalMinutes: total,
     steps: steps,
@@ -606,6 +828,64 @@ function buildLessonPlan(moduleId, opts) {
     mainGame: mainGame,
     materials: (mainGame ? mainGame.materials : []).concat(
       devices === "none" ? ["Printed take-home cards"] : ["Screen or projector", "Printed take-home cards"]
-    ),
+    ).concat(picture ? ["Picture cards or printed images", "Paper and crayons for drawing"] : []),
   };
+}
+
+/* Build the full workshop packet — the pieces a volunteer needs around the
+   lesson itself. Combined into the same builder as the lesson plan. */
+function buildPacket(plan) {
+  var m = plan.module;
+  var grade = plan.grade;
+  var picture = plan.pictureBased;
+  return [
+    {
+      ico: "🖼", title: "Lesson deck outline", sub: "Slides for " + m.title + " (" + grade + ")",
+      body: "Slide 1 — Title: " + m.title +
+        "\nSlide 2 — " + (picture ? "Big picture, no words. Ask the hook question out loud." : "Big question / hook") +
+        "\nSlide 3 — Key vocabulary: " + ((m.prep && m.prep.vocab) || []).slice(0, plan.profile.vocabCount).map(function (v) { return v.term; }).join(", ") +
+        (picture ? " (one picture per word, no definitions on screen)" : "") +
+        "\nSlide 4 — Scenario challenge" + (picture ? " as a picture with the question read aloud" : "") +
+        "\nSlide 5 — " + (plan.devices === "none" ? "Vote by moving to a corner (no slide needed)" : "Group vote") +
+        "\nSlide 6 — Reveal: " + m.reveal.keyConcept +
+        "\nSlide 7 — Discussion: " + m.reveal.discussionPrompt +
+        "\nSlide 8 — Take-home + thank you",
+    },
+    {
+      ico: "📝", title: "Practice notes", sub: "Opening script, timing, and delivery tips",
+      body: "OPENING SCRIPT:\n" + (m.prep && m.prep.openingScript) +
+        "\n\nRUN OF SHOW:\n" + plan.steps.map(function (s) { return "  " + s.minutes + " min — " + s.name; }).join("\n") +
+        "\n\nDELIVERY FOR " + grade.toUpperCase() + ":\n" + plan.profile.delivery.map(function (d) { return "  • " + d; }).join("\n") +
+        "\n\nWATCH FOR:\n  " + plan.profile.watchFor,
+    },
+    {
+      ico: "✉️", title: "Parent letter", sub: "Friendly heads-up for families",
+      body: "Dear Families,\n\nThis week your student took part in a short, fun financial-literacy workshop on \"" +
+        m.title + "\" led by trained teen volunteers. The goal: " + m.objective.toLowerCase() +
+        "\n\nAsk them about it! A take-home card came home with a simple family question. Everything is educational only and privacy-safe — no personal data is collected.\n\nWith appreciation,\nThe Money Ready volunteer team",
+    },
+    {
+      ico: "🏫", title: "Administrator packet", sub: "One-page overview for school leaders",
+      body: "MONEY READY — WORKSHOP OVERVIEW (proposed pilot, pending approval)\nTopic: " + m.title +
+        "\nGrade band: " + grade + "\nLength: " + plan.totalMinutes + " min\nObjective: " + m.objective +
+        "\nFormat: teen-led, interactive (challenge → vote → reveal → discuss → take-home)" +
+        "\nTechnology required: " + plan.deviceGuide.label +
+        "\nPrivacy: educational only; no student data collected.",
+    },
+    {
+      ico: "✅", title: "Event checklist", sub: "Day-of run of show",
+      body: "BEFORE:\n" + plan.deviceGuide.setup.map(function (x) { return "[ ] " + x; }).join("\n") +
+        "\n[ ] Rehearse the opening script out loud\n[ ] Load module: " + m.title +
+        "\nDURING:\n" + plan.steps.map(function (s) { return "[ ] " + s.name + " (" + s.minutes + " min)"; }).join("\n") +
+        "\nAFTER:\n[ ] Thank the class and the teacher\n[ ] Note what went well on the reflection page",
+    },
+    {
+      ico: "🗒", title: "Sign-up form", sub: "Volunteer roles (no personal data stored here)",
+      body: "WORKSHOP SIGN-UP — " + m.title + " (" + grade + ")\nRole 1: Lead facilitator\nRole 2: Co-facilitator / vote counter\nRole 3: Materials + take-home cards\nRole 4: Timekeeper\n(Names collected offline by the coordinator, not stored in this app.)",
+    },
+    {
+      ico: "🔄", title: "Post-event reflection", sub: "Quick, privacy-safe wrap-up",
+      body: "REFLECTION (aggregate only — no names):\n- Students reached (count): ____\n- What worked well: ____\n- What to change next time: ____\n- Confidence check average (1–5): ____\n- One story worth sharing: ____",
+    },
+  ];
 }
