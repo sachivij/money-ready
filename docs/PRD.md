@@ -31,7 +31,7 @@ Money Ready is a free, static web app that turns existing financial literacy top
 - **Module library:** the official Grades 1–4 Teen Teach-In sequence plus extended modules for Grades 5–12 (Needs vs. Wants, Budget Battle, Save or Spend?, Credit Climb, Paycheck Puzzle, Smart Shopping, Fraud & Red Flags, Banking Basics, College Cost Choices, Investing Mythbusters).
 - **Live challenge and reveal:** timer, room code, A–D answers, team score, best answer with discussion prompt.
 - **Games library:** 12 formats (Four Corners, Human Bar Graph, Red Flag / Green Flag, Speed Round, etc.), many needing no devices, plus picture-based options for young kids.
-- **Workshop builder / generator:** assembles a lesson plan and packet (deck outline, parent letter, checklist, sign-up form) from a module, time, and device setup.
+- **Workshop Builder:** assembles a lesson plan and packet (deck outline, parent letter, checklist, sign-up form) from a module, time, and device setup.
 - **Facilitator dashboard and volunteer prep:** script, vocabulary, timed steps, practice mode.
 - **Role picker:** volunteer, school, or organization, each seeing different impact metrics.
 - **Request / partner portal, standards helper, impact snapshot, take-home cards.**
@@ -42,7 +42,6 @@ Money Ready is a free, static web app that turns existing financial literacy top
 - **Landing page flow chart:** a simple "if you're looking for this, go here" guide on the first page so each user finds their path fast.
 - **School computer check:** test the site on typical school computers and browsers (Chromebooks, filtered networks) and fix anything blocked.
 - **4-H edition branding:** remove the clover from the 4-H version.
-- **Rename "Toolkit builder" to "Generator"** everywhere so the name matches what it does.
 
 **Later**
 - **K–2 mode:** more pictures, less text, larger buttons, read-aloud friendly wording.

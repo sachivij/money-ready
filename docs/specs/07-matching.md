@@ -1,9 +1,16 @@
 # Spec 07: Volunteer and school matching
 
-**Status:** Not started
+**Status:** Needs decisions
 
 ## What to build
-"Like a dating profile"
+Matching "like a dating profile": volunteers and schools each fill out a short card (grades, topics, days available, area) and see suggested matches.
+
+Phase 1 can be fully offline: each side copies a profile card and the program coordinator matches them by hand. Real matching needs a backend and sign-in, which goes against the PRD's no-personal-data rule.
+
+## Decide before building
+- Who sees profiles?
+- What information is allowed on a profile?
+- Does a coordinator approve every match?
 
 ## Done when
- volunteers and schools each fill out a short card (grades, topics, days available, area) and see suggested matches. Phase 1 can be fully offline: each side copies a profile card and the program coordinator matches them by hand. Real matching needs a backend and sign-in, which goes against the PRD's no-personal-data rule.:Decide before building: who sees profiles, what information is allowed, and whether a coordinator approves every match.
+A volunteer and a school can each make a profile card and the coordinator can match them, with no personal data stored in the app.

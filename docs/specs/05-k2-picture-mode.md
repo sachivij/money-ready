@@ -3,7 +3,13 @@
 **Status:** Not started
 
 ## What to build
-A "simple mode" for Grades K–2 across the whole site, not just the generator
+A "simple mode" for Grades K–2 across the whole site, not just the Workshop Builder:
+- Bigger buttons
+- Pictures or emoji for every answer
+- One short sentence per screen
+- Read-aloud friendly wording
+
+Start with the Grade 1–2 modules and take-home cards.
 
 ## Done when
- bigger buttons, pictures or emoji for every answer, one short sentence per screen, and read-aloud friendly wording. Starts with the Grade 1–2 modules and take-home cards.:A K–2 student can answer a challenge without reading. Every K–2 screen passes a 5-second glance test.
+A K–2 student can answer a challenge without reading, and every K–2 screen passes a 5-second glance test.

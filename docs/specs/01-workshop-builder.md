@@ -1,7 +1,7 @@
 # Spec 01: Workshop builder, smarter and shareable
 
-**PRD items:** "make the website actually generate lessons based on criteria", "toolkit builder to generator".
-**Screen:** `#/builder` (also reachable as `#/generator`). Code: `renderBuilderCombined()` and `renderPlan()` in `assets/js/app.js`, `buildLessonPlan()` and `buildPacket()` in `assets/js/lessons.js`.
+**PRD item:** "make the website actually generate lessons based on criteria". The page keeps the name **Workshop Builder**.
+**Screen:** `#/builder` (old `#/generator` links also open it). Code: `renderBuilderCombined()` and `renderPlan()` in `assets/js/app.js`, `buildLessonPlan()` and `buildPacket()` in `assets/js/lessons.js`.
 
 ## Problem today
 
@@ -47,7 +47,6 @@ Building a plan updates the address to `#/builder?topic=…&grade=…&min=…&gr
 A "Download plan" button saves one `.txt` file with the run of show, materials and every packet item.
 
 ## Phase 2 (next)
-- Rename "Workshop builder" to "Generator" in the nav, headings and links (keep `#/builder` working as an alias). Waiting on a final name.
 - Add "number of students" and "setting" (classroom, 4-H club, library) as inputs.
 - Let the volunteer reorder or remove steps and see the timing update.
 
