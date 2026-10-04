@@ -1283,7 +1283,9 @@
   // packet (deck outline, parent letter, checklist, and the rest).
   // Replaces the separate lesson generator and toolkit builder.
   // ================================================================
-  function renderBuilderCombined() {
+  function renderBuilderCombined(query) {
+    query = query || {};
+    var dev = DEVICE_GUIDES[query.dev] ? query.dev : "none";
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Workshop builder</div>' +
         '<div class="eyebrow">Workshop builder</div>' +
@@ -1297,30 +1299,31 @@
       '<section class="section tight"><div class="wrap">' +
         '<div class="card"><div class="grid grid-2">' +
           '<div class="field"><label for="gTopic">1. Topic</label><select id="gTopic">' +
-            MODULES.map(function (m) { return '<option value="' + m.id + '">' + m.emoji + " " + esc(m.title) + "</option>"; }).join("") +
+            MODULES.map(function (m) {
+              return '<option value="' + m.id + '"' + (m.id === query.topic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>"; }).join("") +
           "</select></div>" +
           '<div class="field"><label for="gGrade">2. Age group</label><select id="gGrade">' +
             ["Grades K–2", "Grades 3–5", "Grades 6–8", "Grades 9–12"].map(function (g, i) {
-              return "<option" + (i === 1 ? " selected" : "") + ">" + g + "</option>"; }).join("") +
+              var on = query.grade ? g === query.grade : i === 1;
+              return "<option" + (on ? " selected" : "") + ">" + g + "</option>"; }).join("") +
           '</select><span class="muted" style="font-size:.8rem">K–2 switches the whole plan to pictures and movement.</span></div>' +
           '<div class="field"><label for="gMin">3. How long do you have?</label><select id="gMin">' +
             ["15", "20", "30", "40", "45", "60"].map(function (n) {
-              return '<option value="' + n + '"' + (n === "30" ? " selected" : "") + ">" + n + " minutes</option>"; }).join("") +
+              return '<option value="' + n + '"' + (n === (query.min || "30") ? " selected" : "") + ">" + n + " minutes</option>"; }).join("") +
           "</select></div>" +
           '<div class="field"><label for="gGroup">4. Group size</label><select id="gGroup">' +
-            ["Whole class", "Small groups", "Pairs", "One-on-one"].map(function (g) { return "<option>" + g + "</option>"; }).join("") +
+            ["Whole class", "Small groups", "Pairs", "One-on-one"].map(function (g) {
+              return "<option" + (g === query.group ? " selected" : "") + ">" + g + "</option>"; }).join("") +
           "</select></div>" +
         "</div>" +
         '<div class="field"><label>What technology is actually in the room?</label><div class="chips-select" id="gDev">' +
-          '<button class="chip-toggle on" data-dev="none">🙌 No devices at all</button>' +
-          '<button class="chip-toggle" data-dev="shared">📺 One shared screen</button>' +
-          '<button class="chip-toggle" data-dev="personal">📱 Students have devices</button>' +
+          [["none", "🙌 No devices at all"], ["shared", "📺 One shared screen"], ["personal", "📱 Students have devices"]].map(function (d) {
+            return '<button class="chip-toggle' + (d[0] === dev ? " on" : "") + '" data-dev="' + d[0] + '">' + d[1] + "</button>"; }).join("") +
         "</div></div>" +
         '<button class="btn btn-primary btn-lg" id="genLesson">✨ Build my workshop</button></div>' +
         '<div id="planOut" class="mt-3"></div>' +
       "</div></section>";
 
-    var dev = "none";
     document.getElementById("gDev").querySelectorAll(".chip-toggle").forEach(function (b) {
       b.addEventListener("click", function () {
         document.querySelectorAll("#gDev .chip-toggle").forEach(function (x) { x.classList.remove("on"); });
@@ -1328,19 +1331,37 @@
         dev = b.getAttribute("data-dev");
       });
     });
-    document.getElementById("genLesson").addEventListener("click", function () {
-      var plan = buildLessonPlan(document.getElementById("gTopic").value, {
-        minutes: Number(document.getElementById("gMin").value),
+    // Build from the form. `game` is set when the volunteer swaps the main
+    // activity. The choices go into the address so the link reopens this plan.
+    function build(game) {
+      var choices = {
+        topic: document.getElementById("gTopic").value,
         grade: document.getElementById("gGrade").value,
-        groupSize: document.getElementById("gGroup").value,
-        devices: dev,
+        min: document.getElementById("gMin").value,
+        group: document.getElementById("gGroup").value,
+        dev: dev,
+      };
+      if (game) choices.game = game;
+      var plan = buildLessonPlan(choices.topic, {
+        minutes: Number(choices.min),
+        grade: choices.grade,
+        groupSize: choices.group,
+        devices: choices.dev,
+        game: choices.game,
       });
-      renderPlan(plan);
-    });
+      var hash = "#/builder?" + Object.keys(choices).map(function (k) {
+        return k + "=" + encodeURIComponent(choices[k]);
+      }).join("&");
+      // replaceState changes the address without re-running the router.
+      if (history.replaceState) history.replaceState(null, "", hash);
+      renderPlan(plan, build);
+    }
+    document.getElementById("genLesson").addEventListener("click", function () { build(); });
     wireNav();
+    if (query.topic && moduleById(query.topic)) build(query.game);
   }
 
-  function renderPlan(plan) {
+  function renderPlan(plan, rebuild) {
     if (!plan) return;
     var m = plan.module;
     var out = document.getElementById("planOut");
@@ -1360,7 +1381,11 @@
               '<span class="badge gray">' + esc(plan.groupSize) + "</span>" +
               (plan.pictureBased ? '<span class="badge amber">🎨 Picture-based — very little reading</span>' : "") +
             "</div></div>" +
-          '<button class="btn btn-secondary no-print" onclick="window.print()">🖨 Print everything</button>' +
+          '<div class="flex gap wrap-flex no-print">' +
+            '<button class="btn btn-secondary" id="planCopy">🔗 Copy link</button>' +
+            '<button class="btn btn-secondary" id="planDownload">⬇ Download plan</button>' +
+            '<button class="btn btn-secondary" onclick="window.print()">🖨 Print everything</button>' +
+          "</div>" +
         "</div>" +
 
         '<div class="card mt-3" style="border-left:5px solid var(--green);box-shadow:none">' +
@@ -1403,6 +1428,15 @@
             (s.how ? '<div class="apply-box mt-1" style="font-size:.9rem"><strong>How to run it:</strong> ' + esc(s.how) + "</div>" : "") +
             "</div></div>";
         }).join("") +
+
+        // Swap the main activity for the next-best fits
+        (plan.alternatives && plan.alternatives.length && rebuild
+          ? '<div class="card mt-2 no-print" style="box-shadow:none"><div class="eyebrow">Try a different main activity</div>' +
+            '<div class="flex gap wrap-flex">' + plan.alternatives.map(function (g) {
+              return '<button class="btn btn-ghost" data-swap="' + g.id + '">' + g.emoji + " " + esc(g.name) +
+                ' <span class="muted" style="font-size:.85rem">· ' + g.minutes + " min</span></button>"; }).join("") +
+            "</div></div>"
+          : "") +
 
         // Picture activity bank for K–2
         (plan.pictureActivities.length
@@ -1451,6 +1485,18 @@
         body.classList.toggle("hidden");
         b.textContent = body.classList.contains("hidden") ? "View" : "Hide";
       });
+    });
+    out.querySelectorAll("[data-swap]").forEach(function (b) {
+      b.addEventListener("click", function () { rebuild(b.getAttribute("data-swap")); });
+    });
+    var copyBtn = document.getElementById("planCopy");
+    copyBtn.addEventListener("click", function () {
+      copyText(location.href, function (ok) {
+        copyBtn.textContent = ok ? "✓ Link copied" : "Copy failed — use the address bar";
+      });
+    });
+    document.getElementById("planDownload").addEventListener("click", function () {
+      download("money-ready-" + m.id + "-" + plan.totalMinutes + "min.txt", planToText(plan, packet));
     });
     out.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
@@ -1521,7 +1567,7 @@
       case "prep": return renderPrep(query);
       // Toolkit builder and lesson generator are now one page.
       case "builder":
-      case "generator": return renderBuilderCombined();
+      case "generator": return renderBuilderCombined(query);
       case "portal": return renderPortal();
       case "helper": return renderHelper();
       case "impact": return renderImpact();
