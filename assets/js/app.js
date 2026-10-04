@@ -208,12 +208,7 @@
           '<p class="muted" style="font-size:.85rem">Educational only · Privacy-safe by design · ' +
             "Pending review and approval by Virginia Jump$tart</p>" +
         "</div>" +
-        '<div class="hero-art">' +
-          miniCard("🎮", "Live scenario challenge", "Students vote on their own device or a shared screen") +
-          miniCard("📊", "Instant class results", "See how the room answered, then discuss") +
-          miniCard("🧑‍🏫", "Confident teen volunteers", "Opening scripts, vocab, and practice mode") +
-          miniCard("🔒", "Privacy-safe metrics", "Aggregate only — no names, no logins") +
-        "</div>" +
+        '<div class="hero-art">' + pathChart() + "</div>" +
       "</div></section>" +
       badgeStrip() +
 
@@ -259,7 +254,7 @@
 
       // Where do I go? — a plain-language map of the tabs
       '<section class="section" style="background:var(--cream-2)"><div class="wrap">' +
-        '<div class="center" style="margin-bottom:30px"><div class="eyebrow">Where do I start?</div>' +
+        '<div class="center" style="margin-bottom:30px"><div class="eyebrow">Every page, explained</div>' +
           "<h2>Find the page you need</h2>" +
           '<p class="muted" style="max-width:56ch;margin:0 auto">Not sure which tab to click? Find what you\'re trying to do.</p></div>' +
         '<div class="grid grid-2">' +
@@ -365,11 +360,43 @@
           '<a class="btn btn-secondary btn-lg" href="#/builder">Build a workshop</a>' +
         "</div>" +
       "</div></section>";
+    // Picking a path in the "Where do I go?" chart also sets the role, so the
+    // Impact page already matches. The link itself does the navigating.
+    app.querySelectorAll(".path-chart [data-role]").forEach(function (a) {
+      a.addEventListener("click", function () { setRole(a.getAttribute("data-role")); });
+    });
     wireNav();
   }
-  function miniCard(e, t, s) {
-    return '<div class="mini-card"><div class="emoji-badge">' + e + "</div><div><strong>" +
-      esc(t) + "</strong><span>" + esc(s) + "</span></div></div>";
+
+  // "Where do I go?" — one row per role in the role picker, each ending at
+  // a page. Top-down chart on desktop, stacked cards on phones.
+  var PATHS = [
+    { role: "volunteer", want: "I'm a teen volunteer and need a lesson",
+      links: [["📚", "Modules", "#/modules"], ["🛠️", "Workshop Builder", "#/builder"]] },
+    { role: "school", want: "I'm a teacher and want a workshop",
+      links: [["🤝", "Request / Partner", "#/portal"]] },
+    { role: "organization", want: "I run the program",
+      links: [["📊", "Impact", "#/impact"]] },
+  ];
+  function pathChart() {
+    var current = getRole();
+    return '<nav class="path-chart" aria-label="Where do I go?">' +
+      '<div class="path-start"><strong>Where do I go?</strong>' +
+        "<span>Pick the one that sounds like you.</span></div>" +
+      '<ol class="path-list">' +
+        PATHS.map(function (p) {
+          var r = roleDef(p.role);
+          return '<li class="path-row' + (p.role === current ? " on" : "") + '">' +
+            '<div class="path-who"><span class="emoji-badge" aria-hidden="true">' + (r ? r.emoji : "👤") + "</span>" +
+              "<strong>" + esc(p.want) + "</strong></div>" +
+            '<div class="path-go">' +
+              p.links.map(function (l) {
+                return '<a class="path-link" href="' + l[2] + '" data-role="' + p.role + '">' +
+                  '<span aria-hidden="true">' + l[0] + "</span> " + esc(l[1]) + " →</a>";
+              }).join("") +
+            "</div></li>";
+        }).join("") +
+      "</ol></nav>";
   }
   function feature(color, ico, t, body) {
     return '<div class="card feature ' + color + '"><div class="ico">' + ico + "</div>" +

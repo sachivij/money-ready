@@ -47,7 +47,7 @@ mostly through the GitHub web UI and the live site.
 | # | Spec | State |
 | --- | --- | --- |
 | 01 | Workshop Builder | Phase 1 done (see below). Phase 2 next: "number of students" and "setting" inputs, remove/reorder steps. Owner: Sumeet. |
-| 02 | Landing page "where do I go?" flow chart | Not started. The home page already has some `navGuide()` cards; check them before building. |
+| 02 | Landing page "where do I go?" flow chart | Done. Chart sits in the home page hero (`pathChart()` in `app.js`); picking a path also sets the role. Owner: Ridhi Poranki. |
 | 03 | Works on school computers | Not started. Needs a real Chromebook test. |
 | 04 | 4-H edition, no clover | Already done earlier (💵 mark, see Decisions). Confirm on the 4-H site, then mark Done. |
 | 05 | K–2 picture mode across the whole site | Not started. The builder already has a K–2 picture mode; this extends it to modules and take-home cards. |
