@@ -463,3 +463,9 @@ a { color: var(--green-dark); }
   .section { padding: 0; }
   .card { box-shadow: none; break-inside: avoid; }
 }
+
+/* Workshop Builder: move / remove controls on each run-of-show step */
+.step-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.step-tools { display: flex; gap: 2px; flex-shrink: 0; }
+.step-tools .btn { padding: 2px 9px; min-height: 0; font-size: .9rem; }
+.step-tools .btn[disabled] { opacity: .3; cursor: default; }

@@ -46,9 +46,9 @@ Building a plan updates the address to `#/builder?topic=…&grade=…&min=…&gr
 ### 5. Download
 A "Download plan" button saves one `.txt` file with the run of show, materials and every packet item.
 
-## Phase 2 (next)
-- Add "number of students" and "setting" (classroom, 4-H club, library) as inputs.
-- Let the volunteer reorder or remove steps and see the timing update.
+## Phase 2 (built)
+- "How many students?" (up to 10, 11–20, 21–30, 31+) and "Where is it?" (school classroom, club or after-school program, library or community room). Class size sets take-home card counts, group and pair counts, and favors whole-class games in big rooms. Setting adds setup tips and materials, and quiet rooms lose points for loud games.
+- ↑ ↓ ✕ on each run-of-show step. Minutes from a removed step go to the main activity so the plan still fills the slot. Edits are saved in the link (`&order=…`), and "Undo my step changes" resets them.
 
 ## Acceptance checks
 - For every topic × age group × length × technology × group size, the plan total equals the requested minutes.

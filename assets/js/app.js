@@ -1315,6 +1315,15 @@
             ["Whole class", "Small groups", "Pairs", "One-on-one"].map(function (g) {
               return "<option" + (g === query.group ? " selected" : "") + ">" + g + "</option>"; }).join("") +
           "</select></div>" +
+          '<div class="field"><label for="gStudents">5. How many students?</label><select id="gStudents">' +
+            CLASS_SIZES.map(function (c) {
+              var on = query.students ? String(c.value) === query.students : c.value === 20;
+              return '<option value="' + c.value + '"' + (on ? " selected" : "") + ">" + c.label + "</option>"; }).join("") +
+          "</select></div>" +
+          '<div class="field"><label for="gSetting">6. Where is it?</label><select id="gSetting">' +
+            Object.keys(SETTINGS).map(function (k) {
+              return '<option value="' + k + '"' + (k === query.setting ? " selected" : "") + ">" + SETTINGS[k].icon + " " + esc(SETTINGS[k].label) + "</option>"; }).join("") +
+          "</select></div>" +
         "</div>" +
         '<div class="field"><label>What technology is actually in the room?</label><div class="chips-select" id="gDev">' +
           [["none", "🙌 No devices at all"], ["shared", "📺 One shared screen"], ["personal", "📱 Students have devices"]].map(function (d) {
@@ -1332,22 +1341,29 @@
       });
     });
     // Build from the form. `game` is set when the volunteer swaps the main
-    // activity. The choices go into the address so the link reopens this plan.
-    function build(game) {
+    // activity, `order` when they remove or move steps (a list of step ids).
+    // The choices go into the address so the link reopens this exact plan.
+    function build(game, order) {
       var choices = {
         topic: document.getElementById("gTopic").value,
         grade: document.getElementById("gGrade").value,
         min: document.getElementById("gMin").value,
         group: document.getElementById("gGroup").value,
+        students: document.getElementById("gStudents").value,
+        setting: document.getElementById("gSetting").value,
         dev: dev,
       };
       if (game) choices.game = game;
+      if (order && order.length) choices.order = order.join(".");
       var plan = buildLessonPlan(choices.topic, {
         minutes: Number(choices.min),
         grade: choices.grade,
         groupSize: choices.group,
+        students: Number(choices.students),
+        setting: choices.setting,
         devices: choices.dev,
         game: choices.game,
+        order: order,
       });
       var hash = "#/builder?" + Object.keys(choices).map(function (k) {
         return k + "=" + encodeURIComponent(choices[k]);
@@ -1358,7 +1374,9 @@
     }
     document.getElementById("genLesson").addEventListener("click", function () { build(); });
     wireNav();
-    if (query.topic && moduleById(query.topic)) build(query.game);
+    if (query.topic && moduleById(query.topic)) {
+      build(query.game, query.order ? query.order.split(".").map(Number) : null);
+    }
   }
 
   function renderPlan(plan, rebuild) {
@@ -1379,6 +1397,8 @@
               '<span class="badge ' + (plan.devices === "none" ? "no-device-badge" : "blue") + '">' +
                 plan.deviceGuide.icon + " " + esc(plan.deviceGuide.label) + "</span>" +
               '<span class="badge gray">' + esc(plan.groupSize) + "</span>" +
+              '<span class="badge gray">👥 About ' + plan.students + "</span>" +
+              '<span class="badge gray">' + plan.setting.icon + " " + esc(plan.setting.label) + "</span>" +
               (plan.pictureBased ? '<span class="badge amber">🎨 Picture-based — very little reading</span>' : "") +
             "</div></div>" +
           '<div class="flex gap wrap-flex no-print">' +
@@ -1416,14 +1436,28 @@
             "<br><strong>Showing results:</strong> " + esc(plan.deviceGuide.results) +
             "<br><strong>If it fails:</strong> " + esc(plan.deviceGuide.backup) + "</p>" +
             (plan.groupTip ? '<div class="eyebrow mt-3">' + esc(plan.groupSize) + '</div><p class="muted" style="font-size:.9rem;margin:0">' + esc(plan.groupTip) + "</p>" : "") +
+            '<div class="eyebrow mt-3">' + plan.setting.icon + " " + esc(plan.setting.label) + '</div><ul class="privacy-list">' +
+              plan.setting.tips.map(function (t) { return '<li><span class="ok">→</span><span>' + esc(t) + "</span></li>"; }).join("") + "</ul>" +
           "</div>" +
         "</div>" +
 
         // Run of show
-        '<div class="eyebrow mt-4">Run of show — what to do, minute by minute</div>' +
-        plan.steps.map(function (s) {
+        '<div class="flex items-center wrap-flex mt-4" style="justify-content:space-between;gap:8px">' +
+          '<div class="eyebrow" style="margin:0">Run of show — what to do, minute by minute</div>' +
+          (plan.edited && rebuild ? '<button class="btn btn-ghost no-print" id="stepReset">↺ Undo my step changes</button>' : "") +
+        "</div>" +
+        (rebuild ? '<p class="muted no-print" style="font-size:.85rem;margin:4px 0 0">Use ↑ ↓ to move a step and ✕ to drop it. ' +
+          "Minutes from a dropped step go to the main activity, so the plan still fills " + plan.totalMinutes + " minutes.</p>" : "") +
+        plan.steps.map(function (s, n) {
+          var tools = rebuild
+            ? '<span class="step-tools no-print">' +
+                '<button class="btn btn-ghost" data-step="up" data-n="' + n + '" aria-label="Move ' + esc(s.name) + ' up"' + (n === 0 ? " disabled" : "") + ">↑</button>" +
+                '<button class="btn btn-ghost" data-step="down" data-n="' + n + '" aria-label="Move ' + esc(s.name) + ' down"' + (n === plan.steps.length - 1 ? " disabled" : "") + ">↓</button>" +
+                '<button class="btn btn-ghost" data-step="drop" data-n="' + n + '" aria-label="Remove ' + esc(s.name) + '"' + (plan.steps.length === 1 ? " disabled" : "") + ">✕</button>" +
+              "</span>"
+            : "";
           return '<div class="plan-step"><div class="plan-time">' + s.minutes + " min</div>" +
-            "<div><h4>" + esc(s.name) + "</h4><p>" + esc(s.what) + "</p>" +
+            '<div><div class="step-head"><h4>' + esc(s.name) + "</h4>" + tools + "</div><p>" + esc(s.what) + "</p>" +
             (s.script ? '<div class="script-box mt-1" style="font-size:.9rem"><strong>Say this:</strong> ' + esc(s.script) + "</div>" : "") +
             (s.how ? '<div class="apply-box mt-1" style="font-size:.9rem"><strong>How to run it:</strong> ' + esc(s.how) + "</div>" : "") +
             "</div></div>";
@@ -1489,6 +1523,22 @@
     out.querySelectorAll("[data-swap]").forEach(function (b) {
       b.addEventListener("click", function () { rebuild(b.getAttribute("data-swap")); });
     });
+    // Step edits rebuild the plan with a new order of step ids.
+    out.querySelectorAll("[data-step]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var order = plan.steps.map(function (s) { return s.id; });
+        var n = Number(b.getAttribute("data-n"));
+        var act = b.getAttribute("data-step");
+        if (act === "drop") order.splice(n, 1);
+        else {
+          var to = act === "up" ? n - 1 : n + 1;
+          var t = order[to]; order[to] = order[n]; order[n] = t;
+        }
+        rebuild(plan.mainGame && plan.mainGame.id, order);
+      });
+    });
+    var resetBtn = document.getElementById("stepReset");
+    if (resetBtn) resetBtn.addEventListener("click", function () { rebuild(plan.mainGame && plan.mainGame.id); });
     var copyBtn = document.getElementById("planCopy");
     copyBtn.addEventListener("click", function () {
       copyText(location.href, function (ok) {
