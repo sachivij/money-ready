@@ -4,7 +4,7 @@ To claim a spec, put your name in Owner and push to `main` before you start. Eac
 
 | # | Spec | Status | Owner |
 | --- | --- | --- | --- |
-| 01 | [Workshop builder: smarter, shareable plans](01-workshop-builder.md) | Phase 1 built | |
+| 01 | [Workshop builder: smarter, shareable plans](01-workshop-builder.md) | Phase 1 done, phase 2 next | Sumeet |
 | 02 | [Landing page "where do I go?" flow chart](02-landing-flow-chart.md) | Not started | |
 | 03 | [Works on school computers](03-school-computers.md) | Not started | |
 | 04 | [4-H edition: remove the clover](04-4h-branding.md) | Not started | |
