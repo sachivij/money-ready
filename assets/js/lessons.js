@@ -857,43 +857,74 @@ function buildLessonPlan(moduleId, opts) {
       ? "Show the card and point to each box so they know what goes where. Tell them the drawing part is the homework — a grown-up can do the writing."
       : "Read the family question aloud and tell them who to ask at home. Say the one big idea one last time as they leave.");
 
+  // Official Teen Teach-In lesson: follow the real deck's order instead.
+  // Only for modules tagged officialLesson, so untagged editions never see it.
+  var official = (typeof OFFICIAL_LESSONS !== "undefined" && mod.officialLesson && OFFICIAL_LESSONS[moduleId]) || null;
+  var useOfficial = !!official && opts.official !== false;
+  var officialActivity = null;
+  if (useOfficial) {
+    steps = official.steps.map(function (st, i) {
+      var copy = { id: i, name: st.name, minutes: st.minutes, what: st.what, script: st.script || "", how: st.how || "", slides: st.slides || "" };
+      if (st.activity) {
+        officialActivity = copy;
+        // A game picked with "Try a different main activity" replaces the deck's activity.
+        if (opts.game && mainGame && mainGame.id === opts.game) {
+          copy.name = "Main activity — " + mainGame.name;
+          copy.what = mainGame.summary + " Use this lesson's ideas: " + official.bigIdea;
+          copy.how = (picture ? "Picture version: " + PICTURE_ACTIVITIES[0].how + " " : "") + deviceGuide.voting;
+          copy.slides = "";
+        } else {
+          copy.name = "Main activity — " + st.name;
+        }
+      }
+      if (picture && i === 0) copy.how += " Grades K–2: say everything out loud and point to the pictures. Assume they can't read the slides.";
+      return copy;
+    });
+    if (!(opts.game && mainGame && mainGame.id === opts.game)) mainGame = null;
+    alternatives = ranked.slice(0, 2);
+    vocabList = official.vocab;
+  }
+
   // Fit the plan to the time actually available. A volunteer with a hard
   // 15-minute slot has 15 minutes, so scale the steps to match rather than
-  // handing them a plan that overruns. Every step keeps at least 2 minutes.
+  // handing them a plan that overruns. Every step keeps at least 2 minutes,
+  // or 1 when the slot is too short for that.
   var total = steps.reduce(function (sum, s) { return sum + s.minutes; }, 0);
+  var floor = minutes >= steps.length * 2 ? 2 : 1;
   if (total > minutes) {
-    var floorTotal = steps.length * 2;
+    var floorTotal = steps.length * floor;
     if (minutes > floorTotal) {
-      // Shrink everything above the 2-minute floor proportionally.
+      // Shrink everything above the floor proportionally.
       var slack = total - floorTotal;
       var keep = minutes - floorTotal;
       steps.forEach(function (s) {
-        s.minutes = 2 + Math.round((s.minutes - 2) * (keep / slack));
+        s.minutes = floor + Math.round((s.minutes - floor) * (keep / slack));
       });
     } else {
       // Asked for less time than the plan's minimum — give every step the floor.
-      steps.forEach(function (s) { s.minutes = 2; });
+      steps.forEach(function (s) { s.minutes = floor; });
     }
-    // Rounding can leave the total a minute or two off; settle it on the
-    // longest step so the numbers add up to what the plan claims.
-    total = steps.reduce(function (sum, s) { return sum + s.minutes; }, 0);
-    var drift = total - minutes;
-    if (drift !== 0) {
-      var longest = steps.slice().sort(function (a, b) { return b.minutes - a.minutes; })[0];
-      if (longest && longest.minutes - drift >= 2) longest.minutes -= drift;
-    }
-    total = steps.reduce(function (sum, s) { return sum + s.minutes; }, 0);
+  } else if (total < minutes && useOfficial) {
+    // The official decks are paced as a whole, so a longer slot stretches
+    // every step a little rather than only the activity.
+    steps.forEach(function (s) { s.minutes = Math.round(s.minutes * minutes / total); });
   }
-  // A plan that comes in short gives the spare minutes to the main
-  // activity (more rounds, more discussion), so it fills the slot exactly.
-  if (total < minutes) {
+  // Rounding can leave the total a minute or two off; settle it on the main
+  // activity (or the longest step) so the numbers add up to what the plan claims.
+  total = steps.reduce(function (sum, s) { return sum + s.minutes; }, 0);
+  var drift = total - minutes;
+  if (drift > 0) {
+    var longest = steps.slice().sort(function (a, b) { return b.minutes - a.minutes; })[0];
+    if (longest && longest.minutes - drift >= floor) longest.minutes -= drift;
+  } else if (drift < 0) {
+    // A plan that comes in short gives the spare minutes to the main
+    // activity (more rounds, more discussion), so it fills the slot exactly.
     var roomy = steps.filter(function (s) { return s.name.indexOf("Main activity") === 0; })[0] ||
-      steps.filter(function (s) { return s.name === "Guided practice"; })[0];
-    if (roomy) {
-      roomy.minutes += minutes - total;
-      total = minutes;
-    }
+      steps.filter(function (s) { return s.name === "Guided practice"; })[0] ||
+      steps.slice().sort(function (a, b) { return b.minutes - a.minutes; })[0];
+    if (roomy) roomy.minutes -= drift;
   }
+  total = steps.reduce(function (sum, s) { return sum + s.minutes; }, 0);
 
   // The volunteer's own edits: `order` lists which built steps to keep,
   // in the order they want them. Minutes from removed steps go to the main
@@ -934,6 +965,9 @@ function buildLessonPlan(moduleId, opts) {
     setting: setting,
     settingId: settingId,
     edited: edited,
+    official: useOfficial ? official : null,
+    hasOfficial: !!official,
+    vocab: vocabList,
     devices: devices,
     deviceGuide: deviceGuide,
     profile: profile,
@@ -945,7 +979,7 @@ function buildLessonPlan(moduleId, opts) {
     games: usableGames,
     mainGame: mainGame,
     alternatives: alternatives,
-    materials: (mainGame ? mainGame.materials : []).concat(
+    materials: (useOfficial ? official.materials : []).concat(mainGame ? mainGame.materials : []).concat(
       devices === "none" ? [] : ["Screen or projector"]
     ).concat(["Printed take-home cards (" + (students + Math.ceil(students / 10)) + ", a few spares included)"])
      .concat(picture ? ["Picture cards or printed images", "Paper and crayons for drawing (" + students + " sets)"] : [])
@@ -1020,11 +1054,15 @@ function planToText(plan, packet) {
     "About " + plan.students + " students | " + plan.setting.label,
     "",
     "LEARNING OBJECTIVE: " + m.objective,
+  ].concat(plan.official ? [
+    "OFFICIAL LESSON: " + plan.official.deck + (plan.official.book ? " | Book: " + plan.official.book.title : ""),
+    "BIG IDEA: " + plan.official.bigIdea,
+  ] : []).concat([
     "",
     "RUN OF SHOW",
-  ];
+  ]);
   plan.steps.forEach(function (s) {
-    lines.push("", s.minutes + " min  " + s.name, "  " + s.what);
+    lines.push("", s.minutes + " min  " + s.name + (s.slides ? "  [" + s.slides + "]" : ""), "  " + s.what);
     if (s.script) lines.push("  Say this: " + s.script);
     if (s.how) lines.push("  How to run it: " + s.how);
   });
@@ -1045,8 +1083,22 @@ function buildPacket(plan) {
   var m = plan.module;
   var grade = plan.grade;
   var picture = plan.pictureBased;
+  var off = plan.official;
+  var deckItem = off
+    ? {
+      ico: "🖼", title: "Official slide deck guide", sub: "Which slides go with each step of " + off.deck,
+      body: "USE THE OFFICIAL DECK: " + off.deck + "\n(Teen Teach-In resources on jumpstart.org)\n" +
+        (off.book ? "\nBOOK: " + off.book.title + (off.book.author ? " by " + off.book.author : "") + "\n" : "") +
+        "\nBEFORE YOU PRESENT:\n  • Fill in the presenter slides with your names, grades, and a photo.\n  • Practice the speaker notes on each slide out loud.\n" +
+        "\nSTEP BY STEP:\n" + plan.steps.map(function (s) {
+          return "  " + s.minutes + " min — " + s.name + (s.slides ? " (" + s.slides + ")" : " (no slide; run it from this plan)");
+        }).join("\n") +
+        "\n\nVOCABULARY:\n" + off.vocab.map(function (v) { return "  " + v.term + ": " + v.def; }).join("\n") +
+        "\n\nBIG IDEA:\n  " + off.bigIdea,
+    }
+    : null;
   return [
-    {
+    deckItem || {
       ico: "🖼", title: "Lesson deck outline", sub: "Slides for " + m.title + " (" + grade + ")",
       body: "Slide 1 — Title: " + m.title +
         "\nSlide 2 — " + (picture ? "Big picture, no words. Ask the hook question out loud." : "Big question / hook") +
@@ -1060,7 +1112,7 @@ function buildPacket(plan) {
     },
     {
       ico: "📝", title: "Practice notes", sub: "Opening script, timing, and delivery tips",
-      body: "OPENING SCRIPT:\n" + (m.prep && m.prep.openingScript) +
+      body: "OPENING SCRIPT:\n" + (off ? off.steps[0].script : (m.prep && m.prep.openingScript)) +
         "\n\nRUN OF SHOW:\n" + plan.steps.map(function (s) { return "  " + s.minutes + " min — " + s.name; }).join("\n") +
         "\n\nDELIVERY FOR " + grade.toUpperCase() + ":\n" + plan.profile.delivery.map(function (d) { return "  • " + d; }).join("\n") +
         "\n\nWATCH FOR:\n  " + plan.profile.watchFor,

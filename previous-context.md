@@ -64,18 +64,19 @@ mostly through the GitHub web UI and the live site.
 - `#/builder?topic=…&grade=…&min=…&group=…&dev=…&game=…` reopens a plan;
   "Copy link" and "Download plan" (`planToText()`) are on the plan.
 
-**In progress: real Teen Teach-In lessons.** The owner wants the builder to
-generate lessons from the official Jump$tart Teen Teach-In materials:
-https://www.jumpstart.org/awareness/check-your-school/teen-teach-in/resources/
-That page has, per grade: Grade 1 Needs and Wants (slides, parent toolkit),
-Grade 2 Making Financial Choices and Opportunity Costs (slides, toolkit,
-worksheet), Grade 3 Saving and Spending (slides, toolkit, worksheet), Grade 4
-Investing in Tomorrow (slides, worksheet, vocabulary check), plus Ally's
-Planet Zeee partner lesson. The files are .pptx/.docx and jumpstart.org is
-blocked from the cloud sandbox, so the owner was asked to attach them. If
-your environment can download them, start there: align the five modules
-tagged `officialLesson` in `data.js` and their `LESSON_PACKS` to the real
-slides and worksheets.
+**Real Teen Teach-In lessons (`assets/js/official-lessons.js`).** The five
+official lessons (Grade 1 Needs and Wants, Grade 2 Choices and Opportunity
+Costs, Grade 3 Saving/Spending/Borrowing/Lending, Grade 4 Investing in
+Tomorrow, and Ally's Planet Zeee) are written up step by step from
+Jump$tart's October slide decks, which the owner supplied
+(https://www.jumpstart.org/awareness/check-your-school/teen-teach-in/resources/).
+Each step names the deck slides it uses. In the builder, these topics show
+"Follow the official Teen Teach-In slides" (on by default): the run of show
+follows the deck, the packet's first item becomes a slide-by-slide guide,
+and "Try a different main activity" swaps only the deck's hands-on step.
+Only used for modules carrying an `officialLesson` tag, so the 4-H edition
+never shows them. The module cards, challenges and reveals in `data.js`
+were not rewritten from the decks; that is still open.
 
 **Naming decision:** the page stays **Workshop Builder**. Do not rename it
 to "Generator" (the old `#/generator` route still works as an alias).
@@ -167,7 +168,7 @@ The 4-H repo is **derived from this one**, not developed separately.
 
 ```bash
 # 1. copy the shared files into a working copy
-cp assets/js/app.js assets/js/data.js assets/js/lessons.js  <copy>/assets/js/
+cp assets/js/app.js assets/js/data.js assets/js/lessons.js assets/js/official-lessons.js  <copy>/assets/js/
 cp index.html <copy>/
 
 # 2. remove the Jump$tart-only content
