@@ -336,8 +336,12 @@ const GAME_FORMATS = [
    Extra teaching content for each module, beyond the core workshop.
    The generator assembles these into a lesson plan of any length.
    =================================================================== */
+/* Each pack's `bestGames` lists the GAME_FORMATS ids that suit the topic
+   best, strongest first. The generator gives these a big bonus when it
+   picks the main activity. */
 const LESSON_PACKS = {
   "opportunity-costs": {
+    bestGames: ["would-you-rather", "tradeoff-auction"],
     hook: "Hold up two treats and tell the class only one can be chosen. Let them feel the tension before naming what's happening.",
     miniLesson: "When you choose one thing, you give up another. The thing you gave up is called the opportunity cost. It isn't the money — it's the option you didn't pick.",
     guidedPractice: "Walk through three choices as a class. For each, students name what was chosen AND what was given up.",
@@ -350,6 +354,7 @@ const LESSON_PACKS = {
     ],
   },
   "investing-tomorrow": {
+    bestGames: ["silent-lineup", "two-truths-myth"],
     hook: "Ask who has ever planted a seed. Then ask what would happen if you dug it up the next morning to check on it.",
     miniLesson: "Investing means putting money somewhere it can grow over time. Like a plant, it needs time and patience. Digging it up early stops the growing.",
     guidedPractice: "Draw a simple growth chart on the board and add a little each 'year' so students can watch it climb.",
@@ -362,6 +367,7 @@ const LESSON_PACKS = {
     ],
   },
   "money-tales": {
+    bestGames: ["story-circle", "would-you-rather"],
     hook: "Show the cover and ask what students think the story will be about. Take a few guesses before opening it.",
     miniLesson: "Stories let us watch someone else make a money choice and see what happens — so we can learn without having to make the mistake ourselves.",
     guidedPractice: "Pause at the moment of the character's choice. Take a class vote on what they should do before reading on.",
@@ -374,6 +380,7 @@ const LESSON_PACKS = {
     ],
   },
   "needs-vs-wants": {
+    bestGames: ["card-sort", "four-corners"],
     hook: "Hold up two things from your bag — say a water bottle and headphones. Ask the room: if you could only keep one forever, which one, and why?",
     miniLesson: "Needs keep you alive, safe, and healthy: food, water, a place to live, clothes for the weather. Wants make life more fun. The tricky part is that the same object can be either one depending on who you are and what your life looks like.",
     guidedPractice: "As a class, sort ten everyday items into needs and wants. Every time someone disagrees, stop and ask what situation would make it a need.",
@@ -386,6 +393,7 @@ const LESSON_PACKS = {
     ],
   },
   "budget-battle": {
+    bestGames: ["tradeoff-auction", "budget-relay"],
     hook: "Announce that the class has exactly $40 to get through a whole week, and start listing costs on the board until it obviously doesn't fit.",
     miniLesson: "A budget is a plan you make on purpose, before the money is gone. Money comes in, money goes out. When the list is longer than the money, you rank what matters most instead of hoping it works out.",
     guidedPractice: "In teams, build a weekly plan on paper. Halfway through, announce a surprise cost everyone must cover, and let them revise.",
@@ -398,6 +406,7 @@ const LESSON_PACKS = {
     ],
   },
   "save-or-spend": {
+    bestGames: ["would-you-rather", "four-corners"],
     hook: "Offer the class a deal: one small treat now, or double the treat if everyone waits until the end of the workshop. Take a vote and revisit at the end.",
     miniLesson: "Saving means keeping some money now so a bigger goal is possible later. 'Pay yourself first' means you set money aside the moment it arrives, before you spend any of it — because 'whatever is left over' is usually nothing.",
     guidedPractice: "Pick a class goal and a weekly amount, then work out together how many weeks it takes. Change the weekly amount and watch the number of weeks move.",
@@ -410,6 +419,7 @@ const LESSON_PACKS = {
     ],
   },
   "credit-climb": {
+    bestGames: ["human-bar-graph", "speed-round"],
     hook: "Ask who would like to borrow $10 from you right now. Then ask how they'd feel if you said they must pay back $12 next week.",
     miniLesson: "Credit is borrowed money you promise to pay back. Interest is the extra you pay for borrowing. Used carefully it's a tool — a car, a house, an education. Used carelessly, the extra piles up faster than people expect.",
     guidedPractice: "Walk through a 'buy now, pay later' offer as a class and work out the true total cost, not just the monthly amount.",
@@ -422,6 +432,7 @@ const LESSON_PACKS = {
     ],
   },
   "paycheck-puzzle": {
+    bestGames: ["budget-relay", "live-vote"],
     hook: "Write $200 on the board and ask what students would do with a first paycheck that size. Then cross it out and write $170.",
     miniLesson: "Gross pay is what you earn. Net pay — your take-home — is what's left after taxes and deductions. Budget from your net pay, because that's the money that actually arrives.",
     guidedPractice: "Build a paycheck together on the board, removing one deduction at a time and naming what each one funds.",
@@ -434,6 +445,7 @@ const LESSON_PACKS = {
     ],
   },
   "smart-shopping": {
+    bestGames: ["silent-lineup", "tradeoff-auction"],
     hook: "Hold up two sizes of the same snack and ask which is the better deal — then ask how they'd actually prove it.",
     miniLesson: "Price is what it costs. Value is what you get for that cost. Unit price — the cost per item, ounce, or serving — cuts straight through packaging and marketing.",
     guidedPractice: "Compare three pairs of products as a class, computing unit price for each pair before voting.",
@@ -446,6 +458,7 @@ const LESSON_PACKS = {
     ],
   },
   "fraud-red-flags": {
+    bestGames: ["red-flag-green-flag", "two-truths-myth"],
     hook: "Read a real-sounding scam text out loud with total confidence and see how many students believe it before you reveal it's fake.",
     miniLesson: "Scams almost always use the same three moves: they rush you, they ask for private information, and they want it kept secret. Spotting any one of those is your signal to stop.",
     guidedPractice: "Read scenarios aloud; students identify which of the three red flags appears in each one.",
@@ -458,6 +471,7 @@ const LESSON_PACKS = {
     ],
   },
   "banking-basics": {
+    bestGames: ["speed-round", "card-sort"],
     hook: "Ask where money goes when it's 'in the bank' — take the wildest answers seriously before explaining.",
     miniLesson: "A bank keeps your money safe and tracks it for you. Checking is for everyday spending. Savings is for money you're growing toward a goal, kept a little out of reach on purpose.",
     guidedPractice: "Sort a list of transactions into 'checking' or 'savings' as a class and discuss the close calls.",
@@ -470,6 +484,7 @@ const LESSON_PACKS = {
     ],
   },
   "college-cost-choices": {
+    bestGames: ["tradeoff-auction", "live-vote"],
     hook: "Put two schools on the board with wildly different price tags and the same career at the end, and ask which they'd choose before knowing anything else.",
     miniLesson: "The same goal can cost very different amounts. Scholarships, grants, community college, and in-state options all change the math. Loans are real money you repay later with interest, and they shape choices for years.",
     guidedPractice: "Compare two realistic paths side by side, adding up four years of cost and what would be owed at the end.",
@@ -482,6 +497,7 @@ const LESSON_PACKS = {
     ],
   },
   "investing-mythbusters": {
+    bestGames: ["two-truths-myth", "speed-round"],
     hook: "Ask who thinks investing is basically gambling. Take the temperature of the room honestly before correcting anything.",
     miniLesson: "Investing puts money to work over time. Risk and return travel together. Compound growth means your earnings start earning too — which is why starting early often beats investing more later.",
     guidedPractice: "Compare two savers on the board: one who starts early and stops, one who starts later and continues. Work out who ends up ahead.",
@@ -693,11 +709,25 @@ function buildLessonPlan(moduleId, opts) {
     return allowed.indexOf(g.devices) >= 0;
   });
 
-  // Pick a main activity, preferring one that fits the time available.
-  var mainGame = usableGames.filter(function (g) { return g.minutes <= Math.max(minutes - 12, 8); })[0] || usableGames[0];
-  // A second, calmer option if there's room in the schedule.
-  var extraGame = usableGames.filter(function (g) {
-    return g.id !== (mainGame && mainGame.id) && g.minutes <= 10;
+  // Rank every usable game by how well it fits this topic, age group,
+  // group size, room and time, then take the best. A volunteer can swap
+  // to another game (opts.game), and the plan rebuilds around it.
+  var ranked = rankGames(usableGames, {
+    bestGames: pack.bestGames || [],
+    gradeId: profile.id,
+    groupSize: groupSize,
+    devices: devices,
+    gameBudget: Math.max(minutes - 12, 8),
+  });
+  var mainGame = null;
+  for (var gi = 0; gi < ranked.length; gi++) {
+    if (ranked[gi].id === opts.game) { mainGame = ranked[gi]; break; }
+  }
+  mainGame = mainGame || ranked[0];
+  var alternatives = ranked.filter(function (g) { return g !== mainGame; }).slice(0, 2);
+  // A second, shorter option if there's room in the schedule.
+  var extraGame = ranked.filter(function (g) {
+    return g !== mainGame && g.minutes <= 10;
   })[0];
 
   // Build the timed sequence, scaled to the requested length.
@@ -801,6 +831,16 @@ function buildLessonPlan(moduleId, opts) {
     }
     total = steps.reduce(function (sum, s) { return sum + s.minutes; }, 0);
   }
+  // A plan that comes in short gives the spare minutes to the main
+  // activity (more rounds, more discussion), so it fills the slot exactly.
+  if (total < minutes) {
+    var roomy = steps.filter(function (s) { return s.name.indexOf("Main activity") === 0; })[0] ||
+      steps.filter(function (s) { return s.name === "Guided practice"; })[0];
+    if (roomy) {
+      roomy.minutes += minutes - total;
+      total = minutes;
+    }
+  }
 
   // Group-size guidance.
   var groupTips = {
@@ -826,10 +866,71 @@ function buildLessonPlan(moduleId, opts) {
     steps: steps,
     games: usableGames,
     mainGame: mainGame,
+    alternatives: alternatives,
     materials: (mainGame ? mainGame.materials : []).concat(
       devices === "none" ? ["Printed take-home cards"] : ["Screen or projector", "Printed take-home cards"]
     ).concat(picture ? ["Picture cards or printed images", "Paper and crayons for drawing"] : []),
   };
+}
+
+/* Score games for a plan, best first. Ties keep the GAME_FORMATS order.
+   ctx: { bestGames, gradeId, groupSize, devices, gameBudget } */
+function rankGames(games, ctx) {
+  // Discussion-heavy games ask too much of pre-readers; teens like them.
+  var talky = ["story-circle", "two-truths-myth", "would-you-rather"];
+  function score(g) {
+    var s = 0;
+    s += g.minutes <= ctx.gameBudget ? 3 : -5;
+    var best = ctx.bestGames.indexOf(g.id);
+    if (best >= 0) s += 6 - best;
+    // If the room has a screen, use it.
+    if (ctx.devices !== "none" && g.devices !== "none") s += 2;
+    if (ctx.gradeId === "k2") {
+      if (g.energy === "High") s += 2;
+      else if (g.energy === "Medium") s += 1;
+      if (g.id === "story-circle" || g.id === "two-truths-myth") s -= 4;
+    } else if (ctx.gradeId === "912") {
+      if (talky.indexOf(g.id) >= 0) s += 1;
+    }
+    var grp = g.group || "";
+    if (ctx.groupSize === "Whole class" && /whole class/i.test(grp)) s += 2;
+    if (ctx.groupSize === "Small groups" && /groups|teams/i.test(grp)) s += 2;
+    if (ctx.groupSize === "Pairs" && /pairs/i.test(grp)) s += 2;
+    if (ctx.groupSize === "One-on-one") {
+      if (/pairs/i.test(grp)) s += 1;
+      if (/teams|groups of|circle/i.test(grp)) s -= 2;
+    }
+    return s;
+  }
+  return games
+    .map(function (g, i) { return { g: g, s: score(g), i: i }; })
+    .sort(function (a, b) { return b.s - a.s || a.i - b.i; })
+    .map(function (x) { return x.g; });
+}
+
+/* Plain-text version of a whole plan and packet, for downloading. */
+function planToText(plan, packet) {
+  var m = plan.module;
+  var lines = [
+    "MONEY READY WORKSHOP PLAN",
+    m.title + " | " + plan.grade + " | " + plan.totalMinutes + " min | " + plan.deviceGuide.label + " | " + plan.groupSize,
+    "",
+    "LEARNING OBJECTIVE: " + m.objective,
+    "",
+    "RUN OF SHOW",
+  ];
+  plan.steps.forEach(function (s) {
+    lines.push("", s.minutes + " min  " + s.name, "  " + s.what);
+    if (s.script) lines.push("  Say this: " + s.script);
+    if (s.how) lines.push("  How to run it: " + s.how);
+  });
+  lines.push("", "MATERIALS");
+  plan.materials.forEach(function (x) { lines.push("[ ] " + x); });
+  packet.forEach(function (it) {
+    lines.push("", "=".repeat(48), it.title.toUpperCase(), "=".repeat(48), it.body);
+  });
+  lines.push("", "Educational only. Not financial advice. No personal data collected.");
+  return lines.join("\n");
 }
 
 /* Build the full workshop packet — the pieces a volunteer needs around the

@@ -19,7 +19,7 @@ The builder asks the right questions (topic, age group, length, group size, tech
 3. A volunteer can send a link that reopens the same plan.
 4. A volunteer can download the whole plan and packet as a file.
 
-## Phase 1 (this change)
+## Phase 1 (built)
 
 ### 1. Pick the activity by fit, not list order
 Score every usable game and pick the highest:

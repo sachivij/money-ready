@@ -4,7 +4,7 @@ Each spec turns one roadmap item from the [PRD](../PRD.md) into buildable work. 
 
 | # | Spec | Status |
 | --- | --- | --- |
-| 01 | [Workshop builder: smarter, shareable plans](01-workshop-builder.md) | In progress |
+| 01 | [Workshop builder: smarter, shareable plans](01-workshop-builder.md) | Phase 1 built |
 | 02 | [Landing page "where do I go?" flow chart](02-landing-flow-chart.md) | Not started |
 | 03 | [Works on school computers](03-school-computers.md) | Not started |
 | 04 | [4-H edition: remove the clover](04-4h-branding.md) | Not started |
