@@ -4,7 +4,11 @@ Written at the end of a long build session, for whoever (or whatever) picks
 this up next. It covers what this project is, how it is put together, the
 decisions that are easy to accidentally undo, and what is still open.
 
-Last updated against `main` @ `c6fb254`.
+Last updated 2026-10-04, after the PRD, specs and Workshop Builder phase 1
+landed on `main`.
+
+**Two people now build this app at the same time**, each with their own
+Claude. Read the "Current state" and "Working together" sections first.
 
 ---
 
@@ -27,6 +31,68 @@ step — Vercel serves the files as they are.
 **The owner is a 16-year-old student.** Explain things plainly, avoid
 unexplained jargon, and do not assume command-line fluency. They work
 mostly through the GitHub web UI and the live site.
+
+---
+
+## Current state (2026-10-04)
+
+**Live site:** https://money-ready.vercel.app (deploys from `main`).
+`scripts/audit.js` passes on `main` (`PROBLEMS: 0`, 13 modules).
+
+**Planning docs**
+- `docs/PRD.md`: problem, users, goals, roadmap, open questions.
+- `docs/specs/`: one spec per roadmap item. `docs/specs/README.md` lists
+  them with a Status and an **Owner**. Claim a spec there before building.
+
+| # | Spec | State |
+| --- | --- | --- |
+| 01 | Workshop Builder | Phase 1 done (see below). Phase 2 next: "number of students" and "setting" inputs, remove/reorder steps. Owner: Sumeet. |
+| 02 | Landing page "where do I go?" flow chart | Not started. The home page already has some `navGuide()` cards; check them before building. |
+| 03 | Works on school computers | Not started. Needs a real Chromebook test. |
+| 04 | 4-H edition, no clover | Already done earlier (💵 mark, see Decisions). Confirm on the 4-H site, then mark Done. |
+| 05 | K–2 picture mode across the whole site | Not started. The builder already has a K–2 picture mode; this extends it to modules and take-home cards. |
+| 06 | More games | Not started. |
+| 07 | Volunteer/school matching ("like a dating profile") | Blocked on owner decisions: who sees profiles, what is allowed, coordinator approval. Must stay no-personal-data. |
+
+**Workshop Builder phase 1 (PR #4, merged)**
+- `rankGames()` in `lessons.js` scores games by topic (`bestGames` in each
+  `LESSON_PACKS` entry), age group, group size, devices and time.
+- `buildLessonPlan(moduleId, { minutes, grade, groupSize, devices, game })`:
+  `game` overrides the main activity; the plan returns `alternatives`.
+- Plans always total exactly the requested minutes (spare minutes go to the
+  main activity). Verified for all 3,744 input combinations.
+- `#/builder?topic=…&grade=…&min=…&group=…&dev=…&game=…` reopens a plan;
+  "Copy link" and "Download plan" (`planToText()`) are on the plan.
+
+**In progress: real Teen Teach-In lessons.** The owner wants the builder to
+generate lessons from the official Jump$tart Teen Teach-In materials:
+https://www.jumpstart.org/awareness/check-your-school/teen-teach-in/resources/
+That page has, per grade: Grade 1 Needs and Wants (slides, parent toolkit),
+Grade 2 Making Financial Choices and Opportunity Costs (slides, toolkit,
+worksheet), Grade 3 Saving and Spending (slides, toolkit, worksheet), Grade 4
+Investing in Tomorrow (slides, worksheet, vocabulary check), plus Ally's
+Planet Zeee partner lesson. The files are .pptx/.docx and jumpstart.org is
+blocked from the cloud sandbox, so the owner was asked to attach them. If
+your environment can download them, start there: align the five modules
+tagged `officialLesson` in `data.js` and their `LESSON_PACKS` to the real
+slides and worksheets.
+
+**Naming decision:** the page stays **Workshop Builder**. Do not rename it
+to "Generator" (the old `#/generator` route still works as an alias).
+
+---
+
+## Working together
+
+- Pull `main` before starting anything. Claim your spec in
+  `docs/specs/README.md` (Owner + Status) and push that first.
+- One branch per change, named `<name>/<spec-number>-<topic>`.
+- The owner previously had changes pushed straight to `main`. With two
+  builders, prefer a pull request per change and merge small and often;
+  docs-only tweaks can still go straight to `main`.
+- `assets/js/app.js` and `assets/js/lessons.js` are the shared hot spots.
+  Merge `main` into your branch right before merging.
+- Run `scripts/audit.js` before merging (see Testing).
 
 ---
 
@@ -211,27 +277,21 @@ answers to children — the no-match fallback is the safety property.
 
 ## Open items
 
-- `docs/specs/` on the `claude/workshop-builder-specs` branch contains a
-  PRD and seven specs written by the owner. Items 01–05 appear to be built;
-  **`06-more-games.md` and `07-matching.md` were not reviewed** and may be
-  outstanding. Read them before starting new feature work.
 - The 4-H Vercel project may not exist yet. The repo is correct, but nobody
   has confirmed a deployment is connected to it.
 - The `claude/jumpstart-teen-teaching-app-tutqka` branch tracks `main` and
-  carries no unique work; it can be deleted whenever convenient.
-- Module content is grounded in the standard financial-literacy topic areas
-  and the Teen Teach-In structure. If the owner supplies the actual
-  Jump$tart materials, the modules and the helper's source labels should be
-  aligned to them.
+  carries no unique work; it can be deleted whenever convenient. Its
+  Vercel preview is not the main site.
+- Spec status lives in `docs/specs/README.md`; keep it current.
 
 ---
 
 ## Working with the owner
 
-- They asked for changes to be pushed **straight to `main`** on the
-  Jump$tart repo — no pull request. Vercel then deploys in about 30
-  seconds and they check the live site.
-- Push to the feature branch as well, to keep it from drifting.
+- They used to have changes pushed **straight to `main`**; with a second
+  builder, use a pull request per change (see "Working together") and
+  merge when they say so. Vercel deploys `main` in about 30 seconds and
+  they check https://money-ready.vercel.app.
 - They review by looking at the live site, so say what to click and remind
   them to hard-refresh (Cmd+Shift+R) — browsers cache this app hard.
 - **Ask before carrying a change from one edition to the other.** Assuming
