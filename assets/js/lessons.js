@@ -1415,12 +1415,10 @@ function buildLessonPlan(moduleId, opts) {
   var grade = opts.grade || "Grades 3–5";
   var groupSize = opts.groupSize || "Whole class";
 
-  var mod = null;
-  for (var i = 0; i < MODULES.length; i++) {
-    if (MODULES[i].id === moduleId) { mod = MODULES[i]; break; }
-  }
+  // A module, or one of the extra topics written from trusted sources.
+  var mod = findTopic(moduleId);
   if (!mod) return null;
-  var pack = LESSON_PACKS[moduleId] || {};
+  var pack = LESSON_PACKS[moduleId] || mod.pack || {};
 
   // How this age group learns, and what the room's technology changes.
   var profile = GRADE_PROFILES[grade] || GRADE_PROFILES["Grades 3–5"];
@@ -1492,6 +1490,9 @@ function buildLessonPlan(moduleId, opts) {
         : "Say each word, give the plain-English meaning, then ask for an example from their own life before moving on.");
   }
 
+  // The ready-to-play game for this topic and age group (game-bank.js).
+  var topicGame = buildTopicGame(moduleId, profile.id);
+
   if (mainGame) {
     // The game's own version for this age group, when it has one.
     var fit = mainGame.levels && mainGame.levels[profile.id];
@@ -1499,8 +1500,12 @@ function buildLessonPlan(moduleId, opts) {
     // Multi-round games bring their own rounds and cards, so the module's
     // unplugged swap and the room's voting method would contradict them.
     var swap = !mainGame.multiRound && devices === "none" && pack.unpluggedSwap;
+    // Single-question formats get their questions from the topic game.
+    var useRounds = !mainGame.multiRound && topicGame && topicGame.rounds.length;
     add("Main activity — " + mainGame.name, mainGame.minutes,
-      mainGame.summary + (swap ? " " + pack.unpluggedSwap : ""),
+      mainGame.summary + (swap ? " " + pack.unpluggedSwap : "") +
+        (useRounds ? " Questions: use the " + topicGame.rounds.length + " rounds of \"" + topicGame.title.replace(/^\S+ /, "") +
+          "\" below" + (devices === "none" ? " (print the game cards)." : " (play them on screen).") : ""),
       "",
       mainGame.multiRound
         ? forGrade + "Full rules and printable cards: Games → " + mainGame.name + "."
@@ -1602,6 +1607,7 @@ function buildLessonPlan(moduleId, opts) {
     games: usableGames,
     mainGame: mainGame,
     alternatives: alternatives,
+    topicGame: topicGame,
     materials: (mainGame ? mainGame.materials : []).concat(
       devices === "none" ? ["Printed take-home cards"] : ["Screen or projector", "Printed take-home cards"]
     ).concat(picture ? ["Picture cards or printed images", "Paper and crayons for drawing"] : []),
@@ -1689,6 +1695,23 @@ function gameToText(g) {
   return lines.join("\n");
 }
 
+/* Plain-text game cards for a topic game: one card per round, with the
+   answer and source on the back, for rooms with no screen. */
+function topicGameToText(game) {
+  var lines = [
+    "GAME CARDS: " + game.title.toUpperCase(),
+    game.rounds.length + " rounds. Read the question aloud, students vote, then read the answer.",
+  ];
+  game.rounds.forEach(function (r, i) {
+    var src = roundSource(r, game.topic);
+    lines.push("", "- - - - - - - - - - - - - - - - - - - - - - - -", "ROUND " + (i + 1) + ": " + r.q);
+    r.opts.forEach(function (o, k) { lines.push("  " + String.fromCharCode(65 + k) + ". " + o[0] + " " + o[1]); });
+    lines.push("  ANSWER: " + (r.best < 0 ? "Any answer is OK." : String.fromCharCode(65 + r.best) + ". " + r.opts[r.best][1]) + " " + r.why);
+    if (src) lines.push("  Source: " + src.name + (src.url ? " (" + src.url + ")" : ""));
+  });
+  return lines.join("\n");
+}
+
 /* Plain-text version of a whole plan and packet, for downloading. */
 function planToText(plan, packet) {
   var m = plan.module;
@@ -1707,6 +1730,7 @@ function planToText(plan, packet) {
   });
   lines.push("", "MATERIALS");
   plan.materials.forEach(function (x) { lines.push("[ ] " + x); });
+  if (plan.topicGame) lines.push("", "=".repeat(48), topicGameToText(plan.topicGame));
   packet.forEach(function (it) {
     lines.push("", "=".repeat(48), it.title.toUpperCase(), "=".repeat(48), it.body);
   });
@@ -1752,12 +1776,13 @@ function buildPacket(plan) {
         "\nGrade band: " + grade + "\nLength: " + plan.totalMinutes + " min\nObjective: " + m.objective +
         "\nFormat: teen-led, interactive (challenge → vote → reveal → discuss → take-home)" +
         "\nTechnology required: " + plan.deviceGuide.label +
+        (m.extraTopic && plan.topicGame ? "\nContent sources: " + plan.topicGame.sources.map(function (x) { return x.name; }).join("; ") : "") +
         "\nPrivacy: educational only; no student data collected.",
     },
     {
       ico: "✅", title: "Event checklist", sub: "Day-of run of show",
       body: "BEFORE:\n" + plan.deviceGuide.setup.map(function (x) { return "[ ] " + x; }).join("\n") +
-        "\n[ ] Rehearse the opening script out loud\n[ ] Load module: " + m.title +
+        "\n[ ] Rehearse the opening script out loud\n[ ] " + (m.extraTopic ? "Open the topic game: " : "Load module: ") + m.title +
         "\nDURING:\n" + plan.steps.map(function (s) { return "[ ] " + s.name + " (" + s.minutes + " min)"; }).join("\n") +
         "\nAFTER:\n[ ] Thank the class and the teacher\n[ ] Note what went well on the reflection page",
     },

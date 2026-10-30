@@ -273,5 +273,132 @@ var PLAY_ENGINES = (function () {
     pickLevel();
   }
 
-  return { "savings-quest": savingsQuest, inbox: inbox };
+  // ================================================================
+  // TOPIC QUIZ — the game the Workshop Builder makes for a topic.
+  // `game` comes from buildTopicGame() (game-bank.js). The class votes
+  // any way the room allows; the volunteer taps the answer the class
+  // picked and the screen reveals the right one. K–2 games show two big
+  // pictures and read every question aloud with the browser's own voice.
+  // ================================================================
+  function speak(text) {
+    try {
+      if (!window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no voice on this device; the volunteer reads aloud */ }
+  }
+  var canSpeak = typeof window !== "undefined" && !!window.speechSynthesis;
+
+  function quiz(root, game) {
+    var pic = game.picture;
+    var order, i, stars;
+
+    function src(r) {
+      var s = roundSource(r, game.topic);
+      return s ? '<div class="helper-source qz-src">' + (s.url ? "🏛️" : "📚") + " <span>Source: " + esc(s.name) +
+        (s.url ? " · " + esc(s.url) : "") + "</span></div>" : "";
+    }
+    function hear(text) {
+      return canSpeak ? '<button class="btn btn-secondary qz-hear" data-say="' + esc(text) + '" aria-label="Hear it">🔊 Hear it</button>' : "";
+    }
+    function wireHear() {
+      root.querySelectorAll("[data-say]").forEach(function (b) {
+        b.addEventListener("click", function () { speak(b.getAttribute("data-say")); });
+      });
+    }
+
+    function intro() {
+      root.innerHTML =
+        '<div class="play-panel center' + (pic ? " qz-pic" : "") + '"><div class="qz-hero" aria-hidden="true">' + esc(game.topic.emoji) + "</div>" +
+        "<h2>" + esc(game.title) + "</h2>" +
+        '<p class="muted">' + game.rounds.length + " rounds · " +
+          (pic ? "two big pictures each time, read aloud" : "the class votes, then you tap what they picked") + "</p>" +
+        '<ol class="numbered qz-how">' +
+          "<li>" + (pic ? "Tap 🔊 or read the question out loud." : "Read the question out loud.") + "</li>" +
+          "<li>" + (pic ? "Students point at a picture, or walk to it." : "Students vote: hands, corners, or thumbs.") + "</li>" +
+          "<li>Tap the answer most of the class picked.</li>" +
+          "<li>See the right answer and why. Earn a ⭐ for each one right.</li>" +
+        "</ol>" +
+        '<button class="btn btn-primary btn-lg mt-2" id="qzGo">▶ Start</button></div>';
+      document.getElementById("qzGo").addEventListener("click", function () {
+        order = shuffle(game.rounds);
+        i = 0; stars = 0;
+        ask();
+      });
+    }
+
+    function ask() {
+      var r = order[i];
+      var opts = shuffle(r.opts.map(function (o, k) { return { e: o[0], t: o[1], k: k }; }));
+      root.innerHTML =
+        '<div class="play-panel' + (pic ? " qz-pic" : "") + '">' +
+        '<div class="eyebrow">Round ' + (i + 1) + " of " + order.length + ' · <span aria-label="' + stars + ' stars">⭐ ' + stars + "</span></div>" +
+        '<div class="qz-q"><h2>' + esc(r.q) + "</h2>" + hear(r.q) + "</div>" +
+        '<div class="qz-opts' + (opts.length === 2 ? " two" : "") + '">' +
+          opts.map(function (o) {
+            return '<button class="qz-opt" data-k="' + o.k + '" aria-label="' + esc(o.t) + '"><span class="qz-emoji" aria-hidden="true">' + o.e +
+              '</span><span class="qz-label">' + esc(o.t) + "</span></button>";
+          }).join("") +
+        "</div></div>";
+      root.querySelectorAll(".qz-opt").forEach(function (b) {
+        b.addEventListener("click", function () { answer(Number(b.getAttribute("data-k"))); });
+      });
+      wireHear();
+      if (pic) speak(r.q);
+      root.querySelector(".qz-opt").focus();
+    }
+
+    function answer(k) {
+      var r = order[i];
+      var any = r.best < 0;
+      var right = any || k === r.best;
+      if (right) stars++;
+      var last = i >= order.length - 1;
+      var picked = r.opts[k];
+      var best = any ? picked : r.opts[r.best];
+      var head = any ? "Any answer is OK!" : right ? "Yes! That's right." : "Not quite. The answer is:";
+      root.innerHTML =
+        '<div class="play-panel' + (pic ? " qz-pic" : "") + '">' +
+        '<div class="eyebrow">Round ' + (i + 1) + " of " + order.length + " · ⭐ " + stars + "</div>" +
+        '<div class="ib-result ' + (right ? "ok" : "no") + ' qz-result" role="status">' +
+          '<div class="qz-big" aria-hidden="true">' + (right ? "🎉" : "🤔") + "</div>" +
+          "<strong>" + esc(head) + "</strong>" +
+          '<div class="qz-answer"><span class="qz-emoji" aria-hidden="true">' + best[0] + "</span> " + esc(best[1]) + "</div>" +
+          "<p>" + esc(r.why) + "</p>" + hear(r.why) +
+        "</div>" + src(r) +
+        '<div class="center mt-3"><button class="btn btn-primary btn-lg" id="qzNext">' + (last ? "See our stars →" : "Next round →") + "</button></div></div>";
+      wireHear();
+      if (pic) speak((right ? "Yes! " : "") + r.why);
+      document.getElementById("qzNext").addEventListener("click", function () {
+        if (last) return finish();
+        i++;
+        ask();
+      });
+      document.getElementById("qzNext").focus();
+    }
+
+    function finish() {
+      var srcs = game.sources || [];
+      root.innerHTML =
+        '<div class="play-panel center' + (pic ? " qz-pic" : "") + '"><div class="qz-hero" aria-hidden="true">' +
+          new Array(stars + 1).join("⭐") + (stars ? "" : "🌱") + "</div>" +
+        "<h2>We got " + stars + " of " + order.length + " stars!</h2>" +
+        '<p class="muted">What we learned:</p>' +
+        '<ul class="play-list" style="text-align:left;max-width:560px;margin:0 auto">' +
+          order.map(function (r) { return "<li>" + esc(r.why) + "</li>"; }).join("") + "</ul>" +
+        (srcs.length ? '<p class="muted mt-2" style="font-size:.88rem">Sources: ' +
+          srcs.map(function (s) { return esc(s.name) + (s.url ? " (" + esc(s.url) + ")" : ""); }).join("; ") + "</p>" : "") +
+        '<div class="flex gap wrap-flex mt-3" style="justify-content:center">' +
+          '<button class="btn btn-primary" id="qzAgain">Play again</button></div></div>';
+      if (pic) speak("We got " + stars + " stars!");
+      document.getElementById("qzAgain").addEventListener("click", intro);
+      document.getElementById("qzAgain").focus();
+    }
+
+    intro();
+  }
+
+  return { "savings-quest": savingsQuest, inbox: inbox, quiz: quiz };
 })();

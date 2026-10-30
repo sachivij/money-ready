@@ -459,12 +459,44 @@ a { color: var(--green-dark); }
 .ib-clues { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; justify-content: center; }
 .ib-clue { padding: 6px 12px; border-radius: 999px; border: 1px dashed var(--line); color: var(--ink-soft); font-size: .9rem; font-weight: 600; }
 .ib-clue.on { border: 2px solid #b5760f; background: var(--amber-soft); color: #7a4f08; }
+/* Topic quiz (games the Workshop Builder makes). .qz-pic = K–2 picture mode */
+.qz-hero { font-size: 3.4rem; line-height: 1.2; margin-bottom: 6px; word-break: break-word; }
+.qz-how { text-align: left; max-width: 460px; margin: 12px auto 0; }
+.qz-q { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+.qz-q h2 { flex: 1; min-width: 220px; }
+.qz-hear { flex-shrink: 0; }
+.qz-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 16px; }
+.qz-opt { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 18px 14px; min-height: 120px;
+  border-radius: var(--radius); border: 2px solid var(--line); background: var(--cream-2); font: inherit; cursor: pointer; text-align: center; }
+.qz-opt:hover, .qz-opt:focus-visible { border-color: var(--green); background: var(--green-soft); }
+.qz-emoji { font-size: 2.6rem; line-height: 1.1; }
+.qz-label { font-weight: 700; }
+.qz-result { text-align: center; }
+.qz-big { font-size: 2.6rem; line-height: 1.1; }
+.qz-answer { font-size: 1.25rem; font-weight: 800; margin-top: 8px; }
+.qz-answer .qz-emoji { font-size: 2rem; vertical-align: middle; }
+.qz-src { margin-top: 12px; }
+.qz-pic h2 { font-size: 2rem; }
+.qz-pic .qz-opts.two { grid-template-columns: 1fr 1fr; }
+.qz-pic .qz-opt { min-height: 220px; }
+.qz-pic .qz-emoji { font-size: 5.5rem; }
+.qz-pic .qz-label { font-size: 1.35rem; }
+.qz-pic .qz-answer .qz-emoji { font-size: 4rem; }
+.qz-pic .qz-big { font-size: 4rem; }
+.qz-pic .qz-result p { font-size: 1.3rem; }
+.topic-search { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+.topic-search input { flex: 1; min-width: 200px; }
+.game-round { border-left: 3px solid var(--green); padding: 4px 0 4px 14px; margin-bottom: 12px; font-size: .92rem; }
+.game-round .opt-ok { font-weight: 800; color: var(--green-dark); }
 @media (max-width: 620px) {
   .game-topic-filter { margin-left: 0; width: 100%; }
   .game-topic-filter select { flex: 1; min-width: 0; }
   .play-panel { padding: 18px; }
   .pq-split-out { gap: 14px; }
   .pq-big { font-size: 2.4rem; }
+  .qz-pic .qz-opt { min-height: 160px; }
+  .qz-pic .qz-emoji { font-size: 4rem; }
+  .qz-pic h2 { font-size: 1.6rem; }
 }
 
 /* ---------- Lesson plan output ---------- */

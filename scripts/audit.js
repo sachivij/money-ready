@@ -91,7 +91,35 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
     if (n !== 7) probs.push('builder ' + id + ': ' + n + ' packet items (want 7)');
     const st = await p.$$eval('#planOut .plan-step', e => e.length);
     if (st < 5) probs.push('builder ' + id + ': only ' + st + ' plan steps');
+    if (!(await p.$('#planOut a[href^="#/game?"]'))) probs.push('builder ' + id + ': no playable game in the plan');
   }
+
+  // --- builder games: every topic (modules + extra topics) × age group ----
+  const topicIds = await p.$$eval('#gTopic option', e => e.map(x => x.value));
+  if (topicIds.length <= ids.length) probs.push('builder: no extra topics in the topic list');
+  for (const id of topicIds) {
+    for (const grade of ['k2', '35', '68', '912']) {
+      await go('#/game?topic=' + id + '&grade=' + grade);
+      if (!(await p.$('#qzGo'))) { probs.push('game ' + id + ' ' + grade + ': no start button'); continue; }
+      await jsClick('#qzGo');
+      if (grade === 'k2' && (await p.$$eval('.qz-opt', e => e.length)) !== 2) probs.push('game ' + id + ' k2: not two pictures');
+      for (let i = 0; i < 30 && !(await p.$('#qzAgain')); i++) {
+        await p.evaluate(() => { const b = document.querySelector('#qzNext') || document.querySelector('.qz-opt'); if (b) b.click(); });
+      }
+      if (!(await p.$('#qzAgain'))) probs.push('game ' + id + ' ' + grade + ': never reached the end screen');
+      const extra = await p.evaluate(x => !!findTopic(x).extraTopic, id);
+      if (extra && (await p.$eval('#playRoot', e => e.textContent)).indexOf('Sources:') < 0) probs.push('game ' + id + ': extra topic shows no sources');
+    }
+  }
+  await go('#/builder');
+  await p.fill('#gFind', 'how do taxes work');
+  await jsClick('#gFindBtn');
+  if (!(await p.$('#gFindOut [data-pick="taxes-community"]'))) probs.push('builder: topic search missed taxes');
+  await p.fill('#gFind', 'zzz qqq');
+  await jsClick('#gFindBtn');
+  if ((await p.$eval('#gFindOut', e => e.textContent)).indexOf('No checked content') < 0) probs.push('builder: topic search must not invent topics');
+  await go('#/game?topic=no-such-topic');
+  if ((await p.$eval('#app', e => e.textContent)).indexOf('not found') < 0) probs.push('game: unknown topic not handled');
 
   // --- standards helper: a hit, and the no-match fallback -----------------
   await go('#/helper');

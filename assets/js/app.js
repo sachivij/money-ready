@@ -505,6 +505,11 @@
         "</div>" +
         '<div class="card mt-3" style="border-left:5px solid var(--green)">' +
           "<strong>Learning objective:</strong> " + esc(m.objective) + "</div>" +
+        (m.extraTopic && plan.topicGame
+          ? '<div class="callout mt-3"><div class="ico">🏛️</div><div><strong>Not a Jump$tart module.</strong> ' +
+            "Every fact in this workshop's game comes from a trusted U.S. government consumer-education source: " +
+            esc(plan.topicGame.sources.map(function (x) { return x.name + " (" + x.url + ")"; }).join("; ")) + ".</div></div>"
+          : "") +
       "</div>" +
       '<section class="section tight"><div class="wrap">' +
         "<h2 class=\"center\" style=\"margin-bottom:8px\">From static lesson to live learning moment</h2>" +
@@ -1368,9 +1373,12 @@
       '<section class="section tight"><div class="wrap">' +
         '<div class="card"><div class="grid grid-2">' +
           '<div class="field"><label for="gTopic">1. Topic</label><select id="gTopic">' +
-            MODULES.map(function (m) {
-              return '<option value="' + m.id + '"' + (m.id === query.topic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>"; }).join("") +
-          "</select></div>" +
+            '<optgroup label="Modules">' + MODULES.map(topicOption).join("") + "</optgroup>" +
+            '<optgroup label="More topics (from trusted sources)">' + EXTRA_TOPICS.map(topicOption).join("") + "</optgroup>" +
+          "</select>" +
+          '<div class="topic-search"><input id="gFind" type="text" placeholder="Other topic? Try taxes, coins, insurance…" aria-label="Find a topic" />' +
+            '<button class="btn btn-secondary" id="gFindBtn" type="button">Find</button></div>' +
+          '<div id="gFindOut" class="muted" style="font-size:.85rem;margin-top:6px"></div></div>' +
           '<div class="field"><label for="gGrade">2. Age group</label><select id="gGrade">' +
             ["Grades K–2", "Grades 3–5", "Grades 6–8", "Grades 9–12"].map(function (g, i) {
               var on = query.grade ? g === query.grade : i === 1;
@@ -1392,6 +1400,35 @@
         '<button class="btn btn-primary btn-lg" id="genLesson">✨ Build my workshop</button></div>' +
         '<div id="planOut" class="mt-3"></div>' +
       "</div></section>";
+
+    function topicOption(m) {
+      return '<option value="' + m.id + '"' + (m.id === query.topic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>";
+    }
+    // Find a topic by typing. Only topics with checked content can match;
+    // with no match it says so instead of making something up.
+    function findTopicByText() {
+      var text = document.getElementById("gFind").value;
+      var out = document.getElementById("gFindOut");
+      var hits = searchTopics(text);
+      if (!text.trim()) { out.innerHTML = ""; return; }
+      if (!hits.length) {
+        out.innerHTML = "No checked content for \"" + esc(text) + "\" yet, so the builder won't invent a game for it. " +
+          "Pick one of the topics in the list, or ask the team to add it (each new topic needs a named trusted source).";
+        return;
+      }
+      out.innerHTML = "Found: " + hits.slice(0, 5).map(function (t) {
+        return '<button class="chip-toggle" type="button" data-pick="' + t.id + '">' + t.emoji + " " + esc(t.title) + "</button>";
+      }).join(" ");
+      out.querySelectorAll("[data-pick]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          document.getElementById("gTopic").value = b.getAttribute("data-pick");
+          out.innerHTML = "";
+          build();
+        });
+      });
+    }
+    document.getElementById("gFindBtn").addEventListener("click", findTopicByText);
+    document.getElementById("gFind").addEventListener("keydown", function (e) { if (e.key === "Enter") findTopicByText(); });
 
     document.getElementById("gDev").querySelectorAll(".chip-toggle").forEach(function (b) {
       b.addEventListener("click", function () {
@@ -1427,7 +1464,7 @@
     }
     document.getElementById("genLesson").addEventListener("click", function () { build(); });
     wireNav();
-    if (query.topic && moduleById(query.topic)) build(query.game);
+    if (query.topic && findTopic(query.topic)) build(query.game);
   }
 
   function renderPlan(plan, rebuild) {
@@ -1507,6 +1544,8 @@
             "</div></div>"
           : "") +
 
+        topicGameCard(plan) +
+
         // Picture activity bank for K–2
         (plan.pictureActivities.length
           ? '<div class="card mt-3" style="box-shadow:none;background:var(--amber-soft)">' +
@@ -1542,9 +1581,9 @@
         "</ul>" +
 
         '<div class="flex gap wrap-flex mt-3 no-print">' +
-          '<a class="btn btn-primary" href="#/take-home/' + m.id + '">Take-home card</a>' +
+          (m.extraTopic ? "" : '<a class="btn btn-primary" href="#/take-home/' + m.id + '">Take-home card</a>') +
           '<a class="btn btn-secondary" href="#/games?devices=' + (plan.devices === "none" ? "none" : "all") + '">Browse games</a>' +
-          '<a class="btn btn-ghost" href="#/prep?topic=' + m.id + '">Full volunteer prep</a>' +
+          (m.extraTopic ? "" : '<a class="btn btn-ghost" href="#/prep?topic=' + m.id + '">Full volunteer prep</a>') +
         "</div>" +
       "</div>";
 
@@ -1564,11 +1603,69 @@
         copyBtn.textContent = ok ? "✓ Link copied" : "Copy failed — use the address bar";
       });
     });
+    var cardsBtn = document.getElementById("gameCards");
+    if (cardsBtn) cardsBtn.addEventListener("click", function () {
+      download("money-ready-game-" + m.id + "-" + plan.profile.id + ".txt", topicGameToText(plan.topicGame) +
+        "\n\nEducational only. Not financial advice. No personal data collected.");
+    });
     document.getElementById("planDownload").addEventListener("click", function () {
       download("money-ready-" + m.id + "-" + plan.totalMinutes + "min.txt", planToText(plan, packet));
     });
     out.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
+  // The ready-to-play game in a plan: play it on screen, or print cards.
+  function topicGameCard(plan) {
+    var g = plan.topicGame;
+    if (!g || !g.rounds.length) return "";
+    var href = "#/game?topic=" + plan.module.id + "&grade=" + plan.profile.id;
+    return '<div class="card mt-3" style="box-shadow:none;border:2px solid var(--green)">' +
+      '<div class="eyebrow">🎮 Your game · ready to play</div>' +
+      "<h3 style=\"margin:4px 0\">" + esc(g.title) + "</h3>" +
+      '<p class="muted" style="font-size:.92rem">' + g.rounds.length + " rounds made for " + esc(plan.grade) + ". " +
+        (g.picture
+          ? "Two big pictures per round and almost no words. The screen can read each question out loud."
+          : "Each round has picture answers, the right answer, and why.") +
+        (plan.devices === "none" ? " No screen in the room? Download the game cards and read them out; students vote by moving or with hands." : "") +
+      "</p>" +
+      '<div class="flex gap wrap-flex no-print">' +
+        '<a class="btn btn-primary" href="' + href + '">▶ Play on screen</a>' +
+        '<button class="btn btn-secondary" id="gameCards">⬇ Download game cards</button>' +
+      "</div>" +
+      '<details class="mt-2"><summary style="cursor:pointer;font-weight:700">See all ' + g.rounds.length + " rounds and answers</summary>" +
+        '<div class="mt-2">' + g.rounds.map(function (r, i) {
+          var s = roundSource(r, g.topic);
+          return '<div class="game-round"><strong>' + (i + 1) + ". " + esc(r.q) + "</strong><br>" +
+            r.opts.map(function (o, k) {
+              return '<span class="' + (k === r.best ? "opt-ok" : "") + '">' + o[0] + " " + esc(o[1]) + (k === r.best ? " ✓" : "") + "</span>";
+            }).join(" &nbsp;·&nbsp; ") +
+            '<br><span class="muted">' + esc(r.why) + "</span>" +
+            (s ? '<br><span class="muted" style="font-size:.82rem">Source: ' + esc(s.name) + (s.url ? " · " + esc(s.url) : "") + "</span>" : "") +
+            "</div>";
+        }).join("") + "</div></details>" +
+    "</div>";
+  }
+
+  // #/game?topic=<module or extra topic>&grade=<k2|35|68|912>
+  function renderTopicGame(query) {
+    var grade = /^(k2|35|68|912)$/.test(query.grade || "") ? query.grade : "35";
+    var g = buildTopicGame(query.topic, grade);
+    if (!g || !g.rounds.length) return renderNotFound();
+    var gradeName = Object.keys(GRADE_PROFILES).filter(function (k) { return GRADE_PROFILES[k].id === grade; })[0];
+    app.innerHTML =
+      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · ' +
+        '<a href="#/builder?topic=' + encodeURIComponent(query.topic) + "&grade=" + encodeURIComponent(gradeName) + '">Workshop builder</a> · Game</div>' +
+        '<div class="eyebrow">' + g.topic.emoji + " Play on screen · " + esc(gradeName) + "</div>" +
+        "<h1>" + esc(g.title.replace(/^\S+ /, "")) + "</h1>" +
+        (g.topic.extraTopic ? '<p class="muted" style="max-width:66ch">Every round shows where its facts come from.</p>' : "") +
+      "</div>" +
+      '<section class="section tight"><div class="wrap">' +
+        '<div id="playRoot" class="play-root"></div>' +
+        '<p class="muted center mt-3" style="font-size:.88rem">🔒 Nothing is saved or sent anywhere. The game runs only on this screen.</p>' +
+      "</div></section>";
+    PLAY_ENGINES.quiz(document.getElementById("playRoot"), g);
+    wireNav();
+  }
+
   function renderNotFound() {
     app.innerHTML = '<section class="section"><div class="wrap center">' +
       "<h1>Page not found</h1><p class=\"muted\">That link doesn't match a screen.</p>" +
@@ -1593,6 +1690,7 @@
     // active nav link
     var route = (location.hash || "#/").split("?")[0].replace("#/", "").split("/")[0];
     if (route === "play") route = "games";
+    if (route === "game") route = "builder";
     document.querySelectorAll(".nav-links a").forEach(function (a) {
       a.classList.toggle("active", a.getAttribute("data-route") === route);
     });
@@ -1618,6 +1716,8 @@
   }
   function route() {
     clearTimers();
+    // Stop a game reading aloud when the page changes.
+    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) { /* no voice */ }
     window.scrollTo(0, 0);
     var raw = (location.hash || "#/").slice(1); // remove '#'
     var parts = raw.split("?");
@@ -1632,6 +1732,7 @@
       case "resources": return officialModules().length ? renderResources() : renderNotFound();
       case "games": return renderGames(query);
       case "play": return renderPlay(seg[1]);
+      case "game": return renderTopicGame(query);
       case "module": return renderModule(seg[1]);
       case "challenge": return renderChallenge(seg[1], query.practice === "1");
       case "facilitator": return renderFacilitator();
