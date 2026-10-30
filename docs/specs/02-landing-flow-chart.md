@@ -1,6 +1,6 @@
 # Spec 02: Landing page "where do I go?" flow chart
 
-**Status:** In progress (Owner: Ridhi Poranki)
+**Status:** Done (Owner: Ridhi Poranki)
 
 ## What to build
 A short decision guide on the home page, built as clickable cards in a simple top-down chart that uses the role picker's three roles:
