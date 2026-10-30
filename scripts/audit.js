@@ -31,6 +31,15 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   p.on('console', m => { if (m.type() === 'error') probs.push('CONSOLE: ' + m.text()); });
 
   const go = async h => { await p.goto(B + h, { waitUntil: 'networkidle' }); await p.waitForTimeout(110); };
+  // Volunteers and teachers are asked how many students before they build a
+  // plan, run the Facilitator, or play an on-screen game (spec 09).
+  const answerStudents = async () => {
+    if (await p.$('#studentsInput')) {
+      await p.fill('#studentsInput', '25');
+      await p.click('#studentsGo');
+      await p.waitForTimeout(40);
+    }
+  };
   const jsClick = async s => p.evaluate(x => {
     const e = document.querySelector(x); if (e) { e.click(); return 1; } return 0;
   }, s);
@@ -63,6 +72,8 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
 
   // --- facilitator dashboard -------------------------------------------
   await go('#/facilitator');
+  if (!(await p.$('#studentsInput'))) probs.push('facilitator: no students question');
+  await answerStudents();
   await p.waitForTimeout(500);
   await p.selectOption('#modSelect', ids[Math.min(4, ids.length - 1)]);
   await jsClick('#nextBtn');
@@ -86,6 +97,7 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   for (const id of ids) {
     await p.selectOption('#gTopic', id);
     await jsClick('#genLesson');
+    await answerStudents();
     await p.waitForTimeout(60);
     const n = await p.$$eval('#planOut .packet-item', e => e.length);
     if (n !== 7) probs.push('builder ' + id + ': ' + n + ' packet items (want 7)');
@@ -115,6 +127,7 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   const playIds = await p.$$eval('.game-actions a[href^="#/play/"]', e => e.map(x => x.getAttribute('href').split('/').pop()));
   for (const id of playIds) {
     await go('#/play/' + id);
+    await answerStudents();
     if (!(await p.$('#playRoot button'))) { probs.push('play ' + id + ': nothing to press'); continue; }
     // Press the main button on each screen (or the first choice) until
     // the game reaches its end screen.
@@ -137,6 +150,32 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   if ((await p.$eval('#app', e => e.textContent)).indexOf('not found') < 0) {
     probs.push('router: unknown route not handled');
   }
+
+  // --- students question: required, validated, not asked of organizations --
+  await p.evaluate(() => sessionStorage.clear());
+  await go('#/builder');
+  await jsClick('#genLesson');
+  if (!(await p.$('#studentsInput'))) probs.push('students: not asked before building a plan');
+  for (const bad of ['', '0', '-3', '2.5', 'abc', '501']) {
+    // Set the value directly: a number box won't let you type letters.
+    await p.evaluate(v => {
+      const i = document.getElementById('studentsInput');
+      i.value = v; i.dispatchEvent(new Event('input'));
+    }, bad);
+    if (!(await p.$eval('#studentsGo', b => b.disabled))) probs.push('students: accepted "' + bad + '"');
+  }
+  await p.fill('#studentsInput', '30');
+  await p.click('#studentsGo');
+  await p.waitForTimeout(60);
+  if (await p.$('#studentsInput')) probs.push('students: question did not close after a valid answer');
+  if (!(await p.$('#planOut .plan-step'))) probs.push('students: plan not built after answering');
+  await jsClick('#genLesson');
+  await p.waitForTimeout(40);
+  if (await p.$('#studentsInput')) probs.push('students: asked twice for the same plan in one tab');
+  await p.evaluate(() => { sessionStorage.clear(); localStorage.setItem('moneyReady.accountType.v1', 'organization'); });
+  await go('#/facilitator');
+  if (await p.$('#studentsInput')) probs.push('students: organizations should not be asked');
+  await p.evaluate(() => localStorage.setItem('moneyReady.accountType.v1', 'volunteer'));
 
   console.log('modules tested:', ids.length);
   console.log('PROBLEMS:', probs.length);

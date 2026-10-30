@@ -1,6 +1,6 @@
 # Spec 09: Count students reached and workshops used
 
-**Status:** In progress (Owner: Ridhi Poranki)
+**Status:** Done (Owner: Ridhi Poranki)
 
 **Owner decision (2026-10-30):** Sachika agreed to relax the "no external
 requests" constraint for this one purpose: sending anonymous counts to a
