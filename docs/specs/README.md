@@ -13,5 +13,6 @@ To claim a spec, put your name in Owner and push to `main` before you start. Eac
 | 07 | [Volunteer and school matching](07-matching.md) | Needs decisions | |
 | 08 | [Builder makes playable games, incl. other topics](08-generated-games.md) | In progress | Sumeet |
 | 09 | [Count students reached and workshops used](09-impact-tracking.md) | In progress | Ridhi Poranki |
+| 10 | [Students join the game live on their own devices](10-live-join.md) | Needs decisions | Sumeet |
 
 Ground rules for every spec: plain HTML/CSS/JS, no backend, no personal data, works offline, content stays editable in `assets/js/data.js` and `assets/js/lessons.js`.
