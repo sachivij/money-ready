@@ -239,12 +239,13 @@ limitation. Elementary classrooms often have no student devices and
 unreliable wifi, so a workshop must never depend on a screen. Keep that
 ratio in mind when adding games.
 
-**Multi-round games (spec 06).** Nine games carry extra optional fields:
-`topics`, `reinforces`, `levels` (one version per age group, keyed by the
-`GRADE_PROFILES` id), `debrief`, `access`, `cards` and, for the two
-on-screen games, `play`. The builder gives a game a bonus for its
-`topics` (just below a pack's second `bestGames` pick) and uses its
-`levels` text in the main activity step. Topics that point at modules a
+**Game details (spec 06).** Every game has `reinforces`, `levels` (one
+version per age group, keyed by the `GRADE_PROFILES` id), `debrief`,
+`access` and usually `cards`; the games page shows them as dropdowns and
+a downloadable game sheet. The nine newer games are also `multiRound`
+and list their own `topics`; the two on-screen ones add `play`. The
+builder gives a game a bonus for its `topics` (just below a pack's second
+`bestGames` pick) and uses its `levels` text in the main activity step. Topics that point at modules a
 build doesn't have (the 4-H edition drops some) are ignored.
 
 **Grades K–2 switches the generated plan to picture mode**: no reading,

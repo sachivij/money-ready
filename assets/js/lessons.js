@@ -119,6 +119,28 @@ const GAME_FORMATS = [
       "Reveal the strongest answer and talk about the common trap.",
     ],
     teenTip: "Movement wakes a sleepy room up fast. Let students change corners after hearing an argument — that's a great sign they're thinking.",
+    reinforces: "Every answer is a choice with reasons, and hearing classmates defend other options shows there is more than one way to think about money.",
+    levels: {
+      k2: "Use two corners, not four, with a big picture in each. Read the question twice and act it out. Students can point to a corner from their seat if moving is too much.",
+      "35": "Four corners, each with a letter and a picture. Ask one student per corner to finish the sentence 'I picked this because…'.",
+      "68": "After the first move, give each corner 60 seconds to convince another corner to switch. Count who moved.",
+      "912": "Use scenarios with no single right answer (buy or lease, a gap year or college). Each corner must name the downside of its own choice, not just the benefits.",
+    },
+    debrief: [
+      "Which corner was hardest to choose? Why?",
+      "Did anyone change corners? What changed your mind?",
+      "What would you need to know to be sure?",
+    ],
+    access: "Students who can't move hold up an A–D card at their seat, and their vote counts in that corner. Put a picture as well as a letter in each corner, and read every option aloud.",
+    cards: {
+      title: "Sample scenarios — pick ones that match your module",
+      items: [
+        "You get $10 for your birthday. A: buy a toy today. B: save it all. C: save half, spend half. D: give some to a class fundraiser.",
+        "Your favorite shoes have a hole. A: buy new ones now. B: get them fixed. C: wait for a sale. D: borrow a pair for now.",
+        "A game asks you to pay $5 for extra lives. A: pay it. B: keep playing for free. C: ask a grown-up first. D: play something else.",
+        "You have $20 to get a friend a gift. A: spend all $20. B: spend $10 and make a card. C: make the gift yourself. D: chip in on a group gift.",
+      ],
+    },
   },
   {
     id: "human-bar-graph",
@@ -138,6 +160,28 @@ const GAME_FORMATS = [
       "Ask: 'Why do you think this line is longest?'",
     ],
     teenTip: "This is the no-device version of the live class results screen. Kids love seeing the graph made of themselves.",
+    reinforces: "Reading what a group chose, and noticing that the most popular answer isn't always the best one.",
+    levels: {
+      k2: "Two lines only, each marked with a picture on the floor. Count each line out loud together, clapping once per person.",
+      "35": "Students predict which line will be longest before they move, then compare with the real graph.",
+      "68": "Draw the graph on the board afterwards and turn the counts into percentages. Ask: does the most popular answer have to be the best one?",
+      "912": "Run it twice, before and after the mini-lesson, and compare the two graphs. What changed, and why?",
+    },
+    debrief: [
+      "Which line was longest? Were you surprised?",
+      "Is the most popular answer always the right one?",
+      "If we did this again after today's lesson, would the graph change?",
+    ],
+    access: "Students who can't stand in line place a marker or sticky note on their line instead. Count out loud so nobody has to see the whole room to follow along.",
+    cards: {
+      title: "Sample questions that make good graphs",
+      items: [
+        "What would you do with $5: save it, spend it, or share it?",
+        "Which is a need: water, a video game, or a new hat?",
+        "How long would you wait for something you really want: a day, a week, or a month?",
+        "Where is the safest place to keep money: a jar, a bank, or your pocket?",
+      ],
+    },
   },
   {
     id: "card-sort",
@@ -157,6 +201,36 @@ const GAME_FORMATS = [
       "Point out that the disagreements are where the real learning is.",
     ],
     teenTip: "Don't rush to say which answer is right. The argument about the tricky pile IS the lesson.",
+    reinforces: "Sorting things into categories (needs and wants, save and spend, safe and risky), and noticing that some items depend on the situation.",
+    levels: {
+      k2: "Picture cards only and two mats: a house for 'must have' and a balloon for 'nice to have'. Sort as a whole class while you hold up each card.",
+      "35": "Three categories with words and pictures. Each group explains one card from its tricky pile.",
+      "68": "Add 'it depends' cards like a phone or a car. Groups must write what would move the card to the other pile.",
+      "912": "Sort a monthly budget into fixed, variable and optional costs, then decide what to cut first if income dropped by 20%.",
+    },
+    debrief: [
+      "Which card did your group argue about most?",
+      "Can a want ever become a need? When?",
+      "What rule did your group use to decide?",
+    ],
+    access: "Every card has a picture and a word, and big cards are easier to handle. One student can read while another sorts, so readers and non-readers both have a job.",
+    cards: {
+      title: "Sample cards for needs and wants",
+      items: [
+        "Water",
+        "Winter coat",
+        "Video game",
+        "Lunch",
+        "Toothbrush",
+        "Candy",
+        "Phone",
+        "Bus pass",
+        "Birthday party",
+        "School shoes",
+        "Movie ticket",
+        "Glasses",
+      ],
+    },
   },
   {
     id: "tradeoff-auction",
@@ -176,6 +250,31 @@ const GAME_FORMATS = [
       "At the end, each team explains what they gave up and whether they'd do it differently.",
     ],
     teenTip: "The surprise expense is the whole point — it teaches why you don't spend everything early.",
+    reinforces: "A budget forces trade-offs, spending early limits later choices, and it pays to plan for surprise costs.",
+    levels: {
+      k2: "Use 5 tokens and four picture items. Hold up each item; students raise a hand to buy it for 1–3 tokens, first hand wins, no bidding wars. The surprise: 'everyone pays 1 for lunch'.",
+      "35": "Teams get 20 tokens. Write each team's balance on the board after every item.",
+      "68": "Before the auction, teams write a plan: what they want most and the most they'll bid. Compare plans with results at the end.",
+      "912": "Add a loan: borrow 5 tokens now, pay back 7 at the end. Debrief on interest and whether borrowing actually helped.",
+    },
+    debrief: [
+      "What did your team give up?",
+      "Did you stick to your plan? Why or why not?",
+      "How did the surprise expense change your choices?",
+    ],
+    access: "Bidding by holding up a number card lets quieter students take part without shouting. Show each item as a picture with its starting price.",
+    cards: {
+      title: "Sample auction items",
+      items: [
+        "A bike (starts at 4)",
+        "A concert ticket (starts at 3)",
+        "New shoes (starts at 2)",
+        "A video game (starts at 3)",
+        "A month of lunches (starts at 4) — this one is a need",
+        "Art supplies (starts at 2)",
+        "Surprise: every team pays 3 to fix a broken window.",
+      ],
+    },
   },
   {
     id: "budget-relay",
@@ -195,6 +294,27 @@ const GAME_FORMATS = [
       "Read two teams' plans aloud and compare their priorities.",
     ],
     teenTip: "Award the win for a plan that balances, not for speed alone. Otherwise they'll scribble anything.",
+    reinforces: "A budget has to balance: money in covers needs first, then savings, then wants.",
+    levels: {
+      k2: "No writing. Each runner carries one picture card (food, home, toy, piggy bank) to the team mat, needs first. The team is done when all the 'must have' pictures are down.",
+      "35": "A $20 budget with four lines: food, savings, fun, giving.",
+      "68": "A $200-a-month budget from a pretend teen job, with six lines including a phone bill.",
+      "912": "A take-home pay of $1,600 with rent, transport, food, savings and fun. The plan must land within $50 of a 50/30/20 split.",
+    },
+    debrief: [
+      "Which line did your team argue about?",
+      "What did you cut so it would balance?",
+      "Why does a budget have to add up exactly?",
+    ],
+    access: "Teams can relay by passing the sheet around a table instead of running. Calculators are fine. Read every budget line aloud at the start.",
+    cards: {
+      title: "Sample budget sheets",
+      items: [
+        "Grades 3–5: You have $20. Food ___ Savings ___ Fun ___ Giving ___ (must add up to $20)",
+        "Grades 6–8: You earn $200 a month. Phone ___ Food ___ Transport ___ Savings ___ Fun ___ Gifts ___",
+        "Grades 9–12: Take-home pay $1,600. Rent ___ Transport ___ Food ___ Phone ___ Savings ___ Fun ___",
+      ],
+    },
   },
   {
     id: "red-flag-green-flag",
@@ -214,6 +334,30 @@ const GAME_FORMATS = [
       "Name the specific red flag before moving to the next scenario.",
     ],
     teenTip: "Simultaneous reveal on 'three' stops students copying whoever answers first.",
+    reinforces: "Spotting warning signs quickly, and naming exactly what made something risky.",
+    levels: {
+      k2: "Use simple stories ('Someone online asks for your password'). Everyone shows a card on 'three'. If the answer is a red flag, the class says together: 'Stop and tell a grown-up!'",
+      "35": "Use game, app and shopping stories. Ask for the exact words in the story that were the red flag.",
+      "68": "Add a yellow card for 'not sure — check first', and talk about how you would check.",
+      "912": "Use realistic phishing texts, job offers and loan ads. Students name the red flag and the safe next step.",
+    },
+    debrief: [
+      "Which story was hardest to judge?",
+      "Which red flag showed up most?",
+      "What should you do when you see a red flag?",
+    ],
+    access: "Draw a ✖ on the red card and a ✔ on the green one so students who can't tell red from green can play. Read every scenario twice.",
+    cards: {
+      title: "Sample scenarios (answers in brackets)",
+      items: [
+        "A website says 'Only 2 minutes left to claim your prize!' [red]",
+        "Your bank's real app reminds you to set up a PIN. [green]",
+        "Someone in a game offers free coins for your password. [red]",
+        "A store gives you a receipt after you pay. [green]",
+        "A message says 'Don't tell your parents about this deal.' [red]",
+        "Your teacher sends home a note about the school book fair. [green]",
+      ],
+    },
   },
   {
     id: "two-truths-myth",
@@ -233,6 +377,28 @@ const GAME_FORMATS = [
       "Challenge: pairs write their own set for the next round.",
     ],
     teenTip: "Letting students write their own set at the end is the best check of whether they actually understood.",
+    reinforces: "Questioning money 'facts' you hear, and explaining why a myth sounds believable.",
+    levels: {
+      k2: "Two statements, one true and one silly, each with a picture ('Money grows on trees' and 'People earn money by working'). Thumbs up for the true one.",
+      "35": "Three statements. Pairs must say why the myth sounds true before you reveal it.",
+      "68": "After two rounds, pairs write their own set for another pair to solve.",
+      "912": "Use investing and credit myths. Pairs must say how they would check the claim.",
+    },
+    debrief: [
+      "Why do people believe the myth?",
+      "How could you check a money 'fact' you hear?",
+      "Which myth surprised you most?",
+    ],
+    access: "Read each statement aloud and number them. Students can answer by holding up one, two or three fingers instead of speaking.",
+    cards: {
+      title: "Sample sets (myth in brackets)",
+      items: [
+        "1. Banks keep your money safe. 2. Saving a little each week adds up. 3. Money in a piggy bank grows by itself. [Myth: 3]",
+        "1. A want is something you could live without. 2. Needs always cost more than wants. 3. Food is a need. [Myth: 2]",
+        "1. Paying bills on time helps your credit. 2. Checking your own credit score lowers it. 3. Credit cards charge interest if you don't pay in full. [Myth: 2]",
+        "1. Investing can lose money. 2. You have to be rich to start investing. 3. Starting early gives money more time to grow. [Myth: 2]",
+      ],
+    },
   },
   {
     id: "silent-lineup",
@@ -252,6 +418,27 @@ const GAME_FORMATS = [
       "Ask what was hardest to place and why.",
     ],
     teenTip: "The silence makes them focus. The fix-it conversation afterwards is where the reasoning comes out.",
+    reinforces: "Comparing prices, priorities or risk — and explaining the order out loud afterwards.",
+    levels: {
+      k2: "Groups of four with picture cards, ordered from cheapest to most expensive. Talking is allowed — silence is too hard at this age. Use things they know: gum, a ball, a bike, a car.",
+      "35": "Silent, but pointing and showing cards are allowed. Then fix the line together.",
+      "68": "Order from most to least necessary. There's no single right answer, so the fix-it talk is the lesson.",
+      "912": "Order savings and investments by risk, or loans by total cost.",
+    },
+    debrief: [
+      "Which card was hardest to place?",
+      "Did anyone get moved? Why?",
+      "Would the order change for a different person?",
+    ],
+    access: "Students who use a wheelchair or prefer to sit can order cards on a table instead of lining up. Every card has a picture, so non-readers can play.",
+    cards: {
+      title: "Sample sets",
+      items: [
+        "By price: pack of gum, sandwich, sneakers, bike, laptop, car",
+        "Most to least necessary: water, coat, phone, video game, concert ticket",
+        "By risk (older students): savings account, bond, index fund, one company's stock",
+      ],
+    },
   },
   {
     id: "would-you-rather",
@@ -271,6 +458,29 @@ const GAME_FORMATS = [
       "Anyone convinced may switch sides — point out that changing your mind with new information is smart.",
     ],
     teenTip: "Pick options that are genuinely close. If one is obviously right there's nothing to discuss.",
+    reinforces: "Weighing two good options and naming what you give up — opportunity cost in everyday choices.",
+    levels: {
+      k2: "Hold up two pictures. Students point or walk to one. Ask for just one 'why' from each side.",
+      "35": "Each side gets 60 seconds to agree on its best reason; anyone may switch after hearing both.",
+      "68": "Add a twist after the first vote ('the cheaper one breaks in a month') and see who switches.",
+      "912": "Use bigger choices, like a higher-paying job with a long commute or a lower-paying one nearby. Each side must name the downside of its own choice.",
+    },
+    debrief: [
+      "What did your side give up?",
+      "What made someone switch?",
+      "Is there a right answer? Why or why not?",
+    ],
+    access: "Students who can't move hold up an A or B card. Say both options twice and show each one as a picture.",
+    cards: {
+      title: "Sample prompts",
+      items: [
+        "Would you rather get $5 today or $8 next week?",
+        "Would you rather have one expensive toy or three cheaper ones?",
+        "Would you rather save for a big trip or spend a little every weekend?",
+        "Would you rather buy new shoes, or fix your old ones and buy a book?",
+        "Would you rather earn money walking dogs or washing cars?",
+      ],
+    },
   },
   {
     id: "story-circle",
@@ -290,6 +500,29 @@ const GAME_FORMATS = [
       "Close by asking what everyone will try differently this week.",
     ],
     teenTip: "Never ask about family income or how much money anyone has. Keep it about decisions, not amounts. Model a small, ordinary story so nobody feels they must impress.",
+    reinforces: "Connecting money ideas to real, everyday decisions — and learning from small mistakes.",
+    levels: {
+      k2: "Use a puppet or a storybook character instead of students' own stories ('Bear spent all his coins on candy — what should he do next time?'). Students answer with thumbs or one word.",
+      "35": "Use the prompt cards so students talk about a choice, not about money they have.",
+      "68": "Partners share with each other first, then volunteers share with the circle.",
+      "912": "Invite stories about a purchase they regret or one they're proud of, and connect each to a concept such as impulse buying or opportunity cost.",
+    },
+    debrief: [
+      "Which story reminded you of something you've done?",
+      "Which idea from today did the stories show?",
+      "What will you try differently this week?",
+    ],
+    access: "Passing is always allowed, and students can draw their story instead of telling it. Keep it about decisions, not amounts.",
+    cards: {
+      title: "Story prompts (never about family money)",
+      items: [
+        "Tell about a time you had to choose between two things you wanted.",
+        "Tell about something you saved up for, or would like to.",
+        "Tell about a time you bought something and then changed your mind.",
+        "Tell about a time you shared or gave something away.",
+        "Tell about a time you waited for something and were glad you did.",
+      ],
+    },
   },
   {
     id: "live-vote",
@@ -309,6 +542,19 @@ const GAME_FORMATS = [
       "Use the discussion prompt on the reveal to keep the conversation going.",
     ],
     teenTip: "The reveal screen has your script built in — best answer, why, the trap, and a discussion question. You can lean on it.",
+    reinforces: "Committing to an answer before the reveal, then learning from the explanation — including the common trap.",
+    levels: {
+      k2: "Read the scenario and the options aloud. Students vote with thumbs or by pointing at the screen, and you tap the class's choice.",
+      "35": "Take a show of hands for each option; a student counts and taps the winner.",
+      "68": "Partners talk for 30 seconds before anyone votes.",
+      "912": "Before the reveal, ask students to guess what the common trap will be.",
+    },
+    debrief: [
+      "Why did the best answer work?",
+      "What was the trap, and why do people fall for it?",
+      "How would you explain this to a younger student?",
+    ],
+    access: "Read everything on the screen aloud. Students vote with hands or cards, so nobody needs their own device, and you can ignore the timer if your class needs more time.",
   },
   {
     id: "speed-round",
@@ -328,11 +574,38 @@ const GAME_FORMATS = [
       "Keep score on the board and end on a high note.",
     ],
     teenTip: "Keep it fast and light. If one team runs away with it, give the trailing team a double-point round.",
+    reinforces: "Quick recall of the key words and facts so they stick.",
+    levels: {
+      k2: "Use pictures: hold up two and teams point to the answer. No racing — every team answers at the same time.",
+      "35": "Read vocabulary questions aloud; teams write answers on a mini whiteboard and show them together.",
+      "68": "Mix vocabulary with quick math, like 'What is 10% of $50?'",
+      "912": "Use real-world quick calls: fixed or variable expense? Gross or net pay?",
+    },
+    debrief: [
+      "Which word was hardest?",
+      "Which answer would you explain to a friend?",
+      "Which word will you use this week?",
+    ],
+    access: "Answering on whiteboards at the same time means the fastest talker doesn't win every point. Read each question twice.",
+    cards: {
+      title: "Sample questions (answers in brackets)",
+      items: [
+        "What do we call money you keep for later? [savings]",
+        "Is food a need or a want? [a need]",
+        "What is a budget? [a plan for your money]",
+        "What is interest? [money paid for using money — a bank pays you, a lender charges you]",
+        "Name one thing a bank does. [keeps money safe, pays interest on savings]",
+        "Name one sign of a scam. [hurry, secret, strange payment, too good to be true]",
+      ],
+    },
   },
   /* ---------------------------------------------------------------
      Deeper games (spec 06). These run over several rounds with a
      twist, so students live with the result of their choices.
-     Extra fields, all optional for older games:
+     Extra fields. The original twelve have reinforces, levels, debrief,
+     access and cards too; the rest are only on the games below.
+       multiRound marks these deeper games (badge, and the builder
+                  uses their own rules instead of the module's swap)
        topics     module ids the game suits (shown on the card, and
                   the Workshop Builder favors it for those modules)
        reinforces what it teaches, in one sentence
@@ -345,6 +618,7 @@ const GAME_FORMATS = [
      --------------------------------------------------------------- */
   {
     id: "market-day",
+    multiRound: true,
     name: "Market Day",
     emoji: "🏪",
     devices: "none",
@@ -391,6 +665,7 @@ const GAME_FORMATS = [
   },
   {
     id: "savings-jars",
+    multiRound: true,
     name: "Life Happens Savings Jars",
     emoji: "🫙",
     devices: "none",
@@ -438,6 +713,7 @@ const GAME_FORMATS = [
   },
   {
     id: "scam-detective",
+    multiRound: true,
     name: "Scam Detective Agency",
     emoji: "🔍",
     devices: "none",
@@ -483,6 +759,7 @@ const GAME_FORMATS = [
   },
   {
     id: "deal-showdown",
+    multiRound: true,
     name: "Best Deal Showdown",
     emoji: "🏷️",
     devices: "none",
@@ -528,6 +805,7 @@ const GAME_FORMATS = [
   },
   {
     id: "money-path",
+    multiRound: true,
     name: "Choose Your Money Path",
     emoji: "🛤️",
     devices: "none",
@@ -572,6 +850,7 @@ const GAME_FORMATS = [
   },
   {
     id: "credit-ladder",
+    multiRound: true,
     name: "Credit Ladder",
     emoji: "🪜",
     devices: "none",
@@ -617,6 +896,7 @@ const GAME_FORMATS = [
   },
   {
     id: "grow-garden",
+    multiRound: true,
     name: "Grow Your Money Garden",
     emoji: "🌱",
     devices: "none",
@@ -666,6 +946,7 @@ const GAME_FORMATS = [
   },
   {
     id: "savings-quest",
+    multiRound: true,
     name: "Savings Quest (on screen)",
     emoji: "🎯",
     devices: "shared",
@@ -720,6 +1001,7 @@ const GAME_FORMATS = [
   },
   {
     id: "scam-or-safe",
+    multiRound: true,
     name: "Scam or Safe? Inbox (on screen)",
     emoji: "📱",
     devices: "shared",
@@ -1211,18 +1493,18 @@ function buildLessonPlan(moduleId, opts) {
   }
 
   if (mainGame) {
-    // Games with a version for this age group use it; older games fall
-    // back to the general picture activity and the room's voting method.
+    // The game's own version for this age group, when it has one.
     var fit = mainGame.levels && mainGame.levels[profile.id];
-    // Deeper games bring their own rounds and cards, so the module's
-    // unplugged swap would contradict them.
-    var swap = !mainGame.levels && devices === "none" && pack.unpluggedSwap;
+    var forGrade = fit ? "For " + grade + ": " + fit + " " : "";
+    // Multi-round games bring their own rounds and cards, so the module's
+    // unplugged swap and the room's voting method would contradict them.
+    var swap = !mainGame.multiRound && devices === "none" && pack.unpluggedSwap;
     add("Main activity — " + mainGame.name, mainGame.minutes,
       mainGame.summary + (swap ? " " + pack.unpluggedSwap : ""),
       "",
-      fit
-        ? "For " + grade + ": " + fit + " Full rules and printable cards: Games → " + mainGame.name + "."
-        : (picture ? "Picture version: " + PICTURE_ACTIVITIES[0].how + " " : "") + deviceGuide.voting);
+      mainGame.multiRound
+        ? forGrade + "Full rules and printable cards: Games → " + mainGame.name + "."
+        : (forGrade || (picture ? "Picture version: " + PICTURE_ACTIVITIES[0].how + " " : "")) + deviceGuide.voting);
   }
 
   add("Guided practice", short ? 4 : 6,

@@ -1227,7 +1227,7 @@
     }
     var shown = GAME_FORMATS.filter(matches);
     var noDeviceCount = unpluggedGames();
-    var deepCount = GAME_FORMATS.filter(function (g) { return g.levels; }).length;
+    var deepCount = GAME_FORMATS.filter(function (g) { return g.multiRound; }).length;
 
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Games</div>' +
@@ -1239,7 +1239,7 @@
           "rarely have student devices, but a projector is often available.</p>" +
         '<p class="muted" style="max-width:66ch">The quick games work with any module — you plug in that topic\'s items, scenario, or vocabulary. ' +
           "The " + deepCount + " <strong>multi-round games</strong> go deeper: students live with the results of their choices over several rounds. " +
-          "Each one lists the topics it fits, a version for every age group, printable cards, and questions to close with.</p>" +
+          "Every game has a version for each age group, sample cards, questions to close with, and a printable game sheet.</p>" +
       "</div>" +
       '<section class="section tight"><div class="wrap">' +
         '<div class="filter-row">' +
@@ -1296,7 +1296,7 @@
         '<span class="badge gray">⏱ ' + g.minutes + " min</span>" +
         '<span class="badge gray">' + esc(g.group) + "</span>" +
         '<span class="badge gray">Energy: ' + esc(g.energy) + "</span>" +
-        (g.levels ? '<span class="badge amber">🔁 Multi-round · all ages</span>' : "") +
+        (g.multiRound ? '<span class="badge amber">🔁 Multi-round</span>' : "") +
       "</div>" +
       (g.reinforces ? '<p style="font-size:.9rem;margin:0"><strong>Reinforces:</strong> ' + esc(g.reinforces) + "</p>" : "") +
       (topics.length
@@ -1330,7 +1330,7 @@
       '<div class="game-actions">' +
         (g.play && PLAY_ENGINES[g.play.engine] ? '<a class="btn btn-primary" href="#/play/' + g.id + '">▶ Play on screen</a>' : "") +
         (planHref ? '<a class="btn btn-secondary" href="' + planHref + '">🛠️ Plan a workshop with it</a>' : "") +
-        (g.levels ? '<button class="btn btn-ghost" data-sheet="' + g.id + '">⬇ Download game sheet</button>' : "") +
+        '<button class="btn btn-ghost" data-sheet="' + g.id + '">⬇ Download game sheet</button>' +
       "</div>" +
     "</div>";
   }
