@@ -185,10 +185,9 @@
     // Loudoun 4-H edition) fall back to the general layout automatically.
     var official = officialModules();
     var elementary = official.length > 0;
-    var featured = elementary ? official : MODULES.slice(0, 6);
     // The page reads top to bottom as: where do I go (hero chart), how a
-    // workshop works, the lessons, every page explained, why it works, and
-    // the pilot plan for organizers.
+    // workshop works, every page explained, why it works, and the pilot
+    // plan for organizers. The lessons themselves live on the Modules page.
     app.innerHTML =
       // Hero: what this is, and the "what do you want to do?" chart
       '<section class="hero"><div class="wrap hero-grid">' +
@@ -219,20 +218,6 @@
           howStep(2, "Run the challenge", "Students face a real-life money scenario and vote — on a shared screen, or by walking to a corner of the room.") +
           howStep(3, "Reveal & discuss", "Show the best answer, the key concept, and the common trap, then talk it through.") +
           howStep(4, "Take it home", "Students leave with a fridge-friendly card that keeps the money talk going with family.") +
-        "</div>" +
-      "</div></section>" +
-
-      // Sample modules
-      '<section class="section"><div class="wrap">' +
-        '<div class="flex items-center wrap-flex" style="justify-content:space-between;margin-bottom:24px">' +
-          "<div><div class=\"eyebrow\">The lessons</div>" +
-            "<h2>" + (elementary ? "The Grades 1–4 Teen Teach-In sequence" : "Ready-made, standards-based topics") + "</h2>" +
-            (elementary ? '<p class="muted mb-0" style="max-width:52ch">Every official lesson, with the interactive layer added. More modules cover older students.</p>' : "") +
-            "</div>" +
-          '<a class="btn btn-secondary" href="#/modules">See all ' + MODULES.length + " modules →</a>" +
-        "</div>" +
-        '<div class="grid module-grid">' +
-          featured.map(function (m, i) { return moduleCard(m, i + 1); }).join("") +
         "</div>" +
       "</div></section>" +
 
