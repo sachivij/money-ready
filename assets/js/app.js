@@ -12,7 +12,6 @@
  *   #/facilitator    Facilitator dashboard
  *   #/prep           Teen volunteer prep
  *   #/builder        Toolkit builder (guided packet workflow)
- *   #/portal         Request-a-volunteer / partner portal
  *   #/helper         Standards-grounded helper (retrieval only)
  *   #/impact         Impact snapshot + measurement layer
  *   #/take-home/:id  Printable take-home card
@@ -283,7 +282,6 @@
             "Privacy-safe metrics you can report. What you see depends on whether you're a volunteer, a school, or an organization.") +
         "</div>" +
         '<p class="center muted mt-3" style="font-size:.88rem">Also here: ' +
-          '<a href="#/portal">Request / Partner</a> to ask for a volunteer or offer support, and ' +
           '<a href="#/helper">Standards Helper</a> for quick answers to financial-literacy questions.</p>' +
       "</div></section>" +
 
@@ -845,76 +843,6 @@
       });
     });
     fillPrep();
-    wireNav();
-  }
-
-  // ================================================================
-  // TOOLKIT BUILDER (guided packet workflow)
-  // ================================================================
-  function renderPortal() {
-    app.innerHTML =
-      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Request &amp; partner portal</div>' +
-        '<div class="eyebrow">Request a volunteer · offer support</div>' +
-        "<h1>Connect schools, teen volunteers, and community partners</h1>" +
-        '<p class="muted" style="max-width:64ch">A lightweight way for teachers to request a workshop and for partners to ' +
-          "offer help. <span class=\"pill-note\">Prototype: nothing is sent anywhere — your entry becomes a copy-ready summary you can email.</span></p>" +
-      "</div>" +
-      '<section class="section tight"><div class="wrap"><div class="grid grid-2">' +
-        // Request
-        '<div class="card"><h3>🍎 Request a volunteer</h3><p class="muted" style="font-size:.9rem">For teachers &amp; school partners.</p>' +
-          '<div class="field"><label>Topic</label><select id="rTopic">' +
-            MODULES.map(function (m) { return "<option>" + esc(m.title) + "</option>"; }).join("") +
-          "</select></div>" +
-          '<div class="field"><label>Grade band</label><select id="rGrade"><option>Grades K–2</option><option>Grades 3–5</option><option>Grades 6–8</option><option>Grades 9–12</option></select></div>' +
-          '<div class="field"><label>Format</label><select id="rFormat"><option>In-class workshop</option><option>Teen Teach-In event</option><option>Library / after-school</option><option>Assembly</option></select></div>' +
-          '<div class="field"><label>General location (city / county — no address)</label><input id="rLoc" placeholder="e.g. Richmond" /></div>' +
-          '<button class="btn btn-primary btn-block" id="rBtn">Create request summary</button>' +
-          '<div id="rOut"></div>' +
-        "</div>" +
-        // Offer
-        '<div class="card"><h3>🤝 Offer support</h3><p class="muted" style="font-size:.9rem">For coalition partners &amp; financial institutions.</p>' +
-          '<div class="field"><label>Organization type</label><select id="oType"><option>Financial institution</option><option>Nonprofit / coalition partner</option><option>Library</option><option>Employer / sponsor</option></select></div>' +
-          '<div class="field"><label>How you can help</label><div class="chips-select" id="oHelp">' +
-            ["Classroom support", "Judging help", "Workshop facilitation", "Materials / printing", "Sponsorship"].map(function (h) { return '<button class="chip-toggle" data-h="' + esc(h) + '">' + esc(h) + "</button>"; }).join("") +
-          "</div></div>" +
-          '<div class="field"><label>General location (city / county)</label><input id="oLoc" placeholder="e.g. Fairfax County" /></div>' +
-          '<button class="btn btn-primary btn-block" id="oBtn">Create offer summary</button>' +
-          '<div id="oOut"></div>' +
-        "</div>" +
-      "</div>" +
-      '<div class="callout mt-3"><div class="ico">🔒</div><div><strong>Privacy note.</strong> ' +
-        "This prototype has no server and stores nothing. It only builds a text summary you can copy into an email " +
-        "to a coordinator. Please don't enter student names or personal details.</div></div>" +
-      "</div></section>";
-
-    document.getElementById("rBtn").addEventListener("click", function () {
-      var s = "VOLUNTEER REQUEST (draft — copy into an email)\n" +
-        "Topic: " + document.getElementById("rTopic").value + "\n" +
-        "Grade band: " + document.getElementById("rGrade").value + "\n" +
-        "Format: " + document.getElementById("rFormat").value + "\n" +
-        "Location: " + (document.getElementById("rLoc").value || "—") + "\n";
-      showSummary("rOut", s);
-    });
-    var helpSel = {};
-    document.getElementById("oHelp").querySelectorAll(".chip-toggle").forEach(function (b) {
-      b.addEventListener("click", function () {
-        b.classList.toggle("on");
-        helpSel[b.getAttribute("data-h")] = b.classList.contains("on");
-      });
-    });
-    document.getElementById("oBtn").addEventListener("click", function () {
-      var help = Object.keys(helpSel).filter(function (k) { return helpSel[k]; });
-      var s = "PARTNER OFFER (draft — copy into an email)\n" +
-        "Organization type: " + document.getElementById("oType").value + "\n" +
-        "Can help with: " + (help.length ? help.join(", ") : "—") + "\n" +
-        "Location: " + (document.getElementById("oLoc").value || "—") + "\n";
-      showSummary("oOut", s);
-    });
-    function showSummary(id, text) {
-      document.getElementById(id).innerHTML =
-        '<div class="apply-box mt-2"><strong>Copy this summary:</strong>' +
-        '<pre style="white-space:pre-wrap;font-family:inherit;margin:8px 0 0">' + esc(text) + "</pre></div>";
-    }
     wireNav();
   }
 
@@ -1568,7 +1496,6 @@
       // Toolkit builder and lesson generator are now one page.
       case "builder":
       case "generator": return renderBuilderCombined(query);
-      case "portal": return renderPortal();
       case "helper": return renderHelper();
       case "impact": return renderImpact();
       case "take-home": return renderTakeHome(seg[1]);
