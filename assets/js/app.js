@@ -12,7 +12,6 @@
  *   #/facilitator    Facilitator dashboard
  *   #/prep           Teen volunteer prep
  *   #/builder        Toolkit builder (guided packet workflow)
- *   #/portal         Request-a-volunteer / partner portal
  *   #/helper         Standards-grounded helper (retrieval only)
  *   #/impact         Impact snapshot + measurement layer
  *   #/take-home/:id  Printable take-home card
@@ -231,7 +230,7 @@
         '<div class="grid grid-2 mt-3">' +
           '<a class="card feature green" href="#/games" style="text-decoration:none;color:inherit">' +
             '<div class="ico">🙌</div><h3>Games that need no devices</h3>' +
-            '<p class="muted mb-0">Ten of our twelve games run with zero screens — just movement, cards, and conversation. ' +
+            '<p class="muted mb-0">' + unpluggedGames() + " of our " + GAME_FORMATS.length + " games run with zero screens — just movement, cards, and conversation. " +
             "A workshop should never fail because the wifi did.</p></a>" +
           '<a class="card feature amber" href="#/builder" style="text-decoration:none;color:inherit">' +
             '<div class="ico">🛠️</div><h3>Workshop builder</h3>' +
@@ -266,7 +265,7 @@
             "Start here. Answer four questions and get a timed lesson plan plus the whole packet — parent letter, checklist, deck outline, everything.") +
           navGuide("🎲", "Games", "#/games",
             "I need an activity, and there may be no screens",
-            "Twelve games you can drop into any topic. Ten of them need no technology at all.") +
+            GAME_FORMATS.length + " games you can drop into any topic. " + unpluggedGames() + " of them need no technology at all.") +
           navGuide("🎤", "Facilitator", "#/facilitator",
             "The workshop is happening right now",
             "Your live dashboard during the session — current step, class results, discussion prompts, and the exit-ticket summary.") +
@@ -278,7 +277,6 @@
             "Privacy-safe metrics you can report. What you see depends on whether you're a volunteer, a school, or an organization.") +
         "</div>" +
         '<p class="center muted mt-3" style="font-size:.88rem">Also here: ' +
-          '<a href="#/portal">Request / Partner</a> to ask for a volunteer or offer support, and ' +
           '<a href="#/helper">Standards Helper</a> for quick answers to financial-literacy questions.</p>' +
       "</div></section>" +
 
@@ -408,6 +406,9 @@
   }
   function liOk(t) { return '<li><span class="ok">✓</span><span>' + esc(t) + "</span></li>"; }
   // A card on the landing page that answers "which tab do I click?"
+  function unpluggedGames() {
+    return GAME_FORMATS.filter(function (g) { return g.devices === "none"; }).length;
+  }
   function navGuide(ico, tab, href, want, does) {
     return '<a class="card" href="' + href + '" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:flex-start">' +
       '<span style="font-size:1.8rem;flex:none">' + ico + "</span>" +
@@ -876,85 +877,16 @@
   }
 
   // ================================================================
-  // TOOLKIT BUILDER (guided packet workflow)
-  // ================================================================
-  function renderPortal() {
-    app.innerHTML =
-      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Request &amp; partner portal</div>' +
-        '<div class="eyebrow">Request a volunteer · offer support</div>' +
-        "<h1>Connect schools, teen volunteers, and community partners</h1>" +
-        '<p class="muted" style="max-width:64ch">A lightweight way for teachers to request a workshop and for partners to ' +
-          "offer help. <span class=\"pill-note\">Prototype: nothing is sent anywhere — your entry becomes a copy-ready summary you can email.</span></p>" +
-      "</div>" +
-      '<section class="section tight"><div class="wrap"><div class="grid grid-2">' +
-        // Request
-        '<div class="card"><h3>🍎 Request a volunteer</h3><p class="muted" style="font-size:.9rem">For teachers &amp; school partners.</p>' +
-          '<div class="field"><label>Topic</label><select id="rTopic">' +
-            MODULES.map(function (m) { return "<option>" + esc(m.title) + "</option>"; }).join("") +
-          "</select></div>" +
-          '<div class="field"><label>Grade band</label><select id="rGrade"><option>Grades K–2</option><option>Grades 3–5</option><option>Grades 6–8</option><option>Grades 9–12</option></select></div>' +
-          '<div class="field"><label>Format</label><select id="rFormat"><option>In-class workshop</option><option>Teen Teach-In event</option><option>Library / after-school</option><option>Assembly</option></select></div>' +
-          '<div class="field"><label>General location (city / county — no address)</label><input id="rLoc" placeholder="e.g. Richmond" /></div>' +
-          '<button class="btn btn-primary btn-block" id="rBtn">Create request summary</button>' +
-          '<div id="rOut"></div>' +
-        "</div>" +
-        // Offer
-        '<div class="card"><h3>🤝 Offer support</h3><p class="muted" style="font-size:.9rem">For coalition partners &amp; financial institutions.</p>' +
-          '<div class="field"><label>Organization type</label><select id="oType"><option>Financial institution</option><option>Nonprofit / coalition partner</option><option>Library</option><option>Employer / sponsor</option></select></div>' +
-          '<div class="field"><label>How you can help</label><div class="chips-select" id="oHelp">' +
-            ["Classroom support", "Judging help", "Workshop facilitation", "Materials / printing", "Sponsorship"].map(function (h) { return '<button class="chip-toggle" data-h="' + esc(h) + '">' + esc(h) + "</button>"; }).join("") +
-          "</div></div>" +
-          '<div class="field"><label>General location (city / county)</label><input id="oLoc" placeholder="e.g. Fairfax County" /></div>' +
-          '<button class="btn btn-primary btn-block" id="oBtn">Create offer summary</button>' +
-          '<div id="oOut"></div>' +
-        "</div>" +
-      "</div>" +
-      '<div class="callout mt-3"><div class="ico">🔒</div><div><strong>Privacy note.</strong> ' +
-        "This prototype has no server and stores nothing. It only builds a text summary you can copy into an email " +
-        "to a coordinator. Please don't enter student names or personal details.</div></div>" +
-      "</div></section>";
-
-    document.getElementById("rBtn").addEventListener("click", function () {
-      var s = "VOLUNTEER REQUEST (draft — copy into an email)\n" +
-        "Topic: " + document.getElementById("rTopic").value + "\n" +
-        "Grade band: " + document.getElementById("rGrade").value + "\n" +
-        "Format: " + document.getElementById("rFormat").value + "\n" +
-        "Location: " + (document.getElementById("rLoc").value || "—") + "\n";
-      showSummary("rOut", s);
-    });
-    var helpSel = {};
-    document.getElementById("oHelp").querySelectorAll(".chip-toggle").forEach(function (b) {
-      b.addEventListener("click", function () {
-        b.classList.toggle("on");
-        helpSel[b.getAttribute("data-h")] = b.classList.contains("on");
-      });
-    });
-    document.getElementById("oBtn").addEventListener("click", function () {
-      var help = Object.keys(helpSel).filter(function (k) { return helpSel[k]; });
-      var s = "PARTNER OFFER (draft — copy into an email)\n" +
-        "Organization type: " + document.getElementById("oType").value + "\n" +
-        "Can help with: " + (help.length ? help.join(", ") : "—") + "\n" +
-        "Location: " + (document.getElementById("oLoc").value || "—") + "\n";
-      showSummary("oOut", s);
-    });
-    function showSummary(id, text) {
-      document.getElementById(id).innerHTML =
-        '<div class="apply-box mt-2"><strong>Copy this summary:</strong>' +
-        '<pre style="white-space:pre-wrap;font-family:inherit;margin:8px 0 0">' + esc(text) + "</pre></div>";
-    }
-    wireNav();
-  }
-
-  // ================================================================
   // STANDARDS-GROUNDED HELPER (retrieval only)
   // ================================================================
   function renderHelper() {
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Standards helper</div>' +
         '<div class="eyebrow">Standards-grounded helper</div>' +
-        "<h1>Quick answers — only from approved resources</h1>" +
+        "<h1>Quick answers — always with a source</h1>" +
         '<p class="muted" style="max-width:66ch">Ask a financial-literacy question and this helper looks up a plain-English ' +
-          "answer from a small set of approved-style resources, always with a source. " +
+          "answer from Jump$tart resources, or from trusted U.S. government consumer-education sources (such as CFPB, FDIC, FTC, SEC, IRS, and " +
+          "Federal Student Aid) for questions Jump$tart doesn't cover. Every answer shows its source underneath. " +
           "<strong>It does not freestyle or make things up.</strong> " +
           "<span class=\"pill-note\">Prototype: example resource set, pending Jump$tart review</span></p>" +
       "</div>" +
@@ -969,19 +901,80 @@
         "</div>" +
         '<div id="ans" class="mt-3"></div>' +
         '<div class="callout mt-3"><div class="ico">🛡️</div><div><strong>How this stays safe.</strong> ' +
-          "The helper only retrieves from the approved list above — if it doesn't have a grounded answer, it says so and " +
-          "points you to a trusted adult or the Virginia Jump$tart / National Standards resources, rather than guessing.</div></div>" +
+          "Every answer is written ahead of time from Jump$tart materials or a named government source — nothing is made up on the spot. " +
+          "If it doesn't have a grounded answer, it says so and points you to a trusted adult rather than guessing.</div></div>" +
       "</div></section>";
 
+    // ---- Matching -------------------------------------------------------
+    // A question matches an entry only through the entry's topic `tags`.
+    // Both sides are turned into word lists (lowercase, punctuation dropped,
+    // plurals folded: "taxes" -> "tax", "needs" -> "need"), and a tag counts
+    // only as whole words in a row. When tags overlap in the question, the
+    // longer phrase wins and the shorter one is ignored, so "deposit
+    // insurance" never also counts as "insurance" and "credit card" never
+    // also counts as "credit". Entries with nothing left get no answer.
+    function stem(w) {
+      if (w.length > 4 && /ies$/.test(w)) return w.slice(0, -3) + "y";
+      if (/(ss|x|ch|sh)es$/.test(w)) return w.slice(0, -2);
+      if (w.length > 3 && /s$/.test(w) && !/(ss|us|is)$/.test(w)) return w.slice(0, -1);
+      return w;
+    }
+    function words(text) {
+      var t = text.toLowerCase()
+        .replace(/401\s*\(?k\)?/g, "401k").replace(/403\s*\(?b\)?/g, "403b")
+        .replace(/['\u2019]s\b/g, "").replace(/['\u2019]/g, "")
+        .replace(/[^a-z0-9]+/g, " ").trim();
+      return t ? t.split(" ").map(stem) : [];
+    }
+    // Words too common to say what a question is about; only used to break
+    // ties between entries that matched the same tags.
+    var STOP = ["what", "when", "where", "which", "while", "should", "would", "could", "about",
+      "does", "difference", "between", "there", "their", "they", "this", "that", "with", "have",
+      "your", "from", "work", "like", "much", "many", "some", "good", "best", "people", "really", "know"];
+    var TAG_WORDS = FAQ_KNOWLEDGE.map(function (f) { return f.tags.map(words); });
+    var Q_WORDS = FAQ_KNOWLEDGE.map(function (f) { return words(f.q); });
+
     function search(query) {
-      var q = query.toLowerCase();
-      var scored = FAQ_KNOWLEDGE.map(function (f) {
-        var score = 0;
-        f.tags.forEach(function (t) { if (q.indexOf(t) >= 0) score += 2; });
-        f.q.toLowerCase().split(/\W+/).forEach(function (w) { if (w.length > 3 && q.indexOf(w) >= 0) score += 1; });
-        return { f: f, score: score };
-      }).filter(function (x) { return x.score > 0; }).sort(function (a, b) { return b.score - a.score; });
+      var qw = words(query), matches = [];
+      TAG_WORDS.forEach(function (tags, e) {
+        tags.forEach(function (tw) {
+          for (var i = 0; i + tw.length <= qw.length; i++) {
+            var hit = tw.length > 0;
+            for (var k = 0; k < tw.length && hit; k++) hit = qw[i + k] === tw[k];
+            if (hit) matches.push({ e: e, start: i, end: i + tw.length });
+          }
+        });
+      });
+      // Drop a match when a longer match (from any entry) covers it.
+      var kept = matches.filter(function (m) {
+        return !matches.some(function (n) {
+          return n.end - n.start > m.end - m.start && n.start <= m.start && n.end >= m.end;
+        });
+      });
+      var byEntry = {};
+      kept.forEach(function (m) {
+        var b = byEntry[m.e] || (byEntry[m.e] = { covered: {}, tags: 0 });
+        for (var i = m.start; i < m.end; i++) b.covered[i] = true;
+        b.tags += 1;
+      });
+      var scored = Object.keys(byEntry).map(function (e) {
+        var b = byEntry[e], score = Object.keys(b.covered).length * 10 + b.tags;
+        Q_WORDS[e].forEach(function (w) {
+          if (w.length > 3 && STOP.indexOf(w) < 0 && qw.indexOf(w) >= 0) score += 1;
+        });
+        return { f: FAQ_KNOWLEDGE[e], score: score, order: +e };
+      });
+      // Highest score first; on a tie, Jump$tart entries (listed first) win.
+      scored.sort(function (a, b) { return b.score - a.score || a.order - b.order; });
       return scored;
+    }
+    function sourceLine(f) {
+      if (f.tier === "trusted") {
+        return '<div class="helper-source">🏛️ <span>Source: ' + esc(f.source) + " · " + esc(f.url) + "</span></div>" +
+          '<p class="muted" style="font-size:.82rem;margin:4px 0 0">Jump$tart materials don\'t cover this question, ' +
+          "so this answer comes from a trusted U.S. government consumer-education source.</p>";
+      }
+      return '<div class="helper-source">📚 <span>Source: ' + esc(f.source) + "</span></div>";
     }
     function answer(query) {
       var results = search(query);
@@ -989,15 +982,15 @@
       if (!results.length) {
         out.innerHTML = '<div class="card"><h3>🤔 I don\'t have a grounded answer for that yet</h3>' +
           '<p class="muted">To stay safe, this helper only answers from its approved example resources — it won\'t guess. ' +
-          "Try one of the suggested questions above, or ask a teacher or trusted adult. A full version would draw on the " +
-          "National Standards and chapter-approved Virginia Jump$tart resources.</p></div>";
+          "Try one of the suggested questions above, or ask a teacher or trusted adult. For money questions, " +
+          "consumerfinance.gov (CFPB) is a good trusted place to look together.</p></div>";
         return;
       }
       var top = results[0].f;
       out.innerHTML =
         '<div class="card"><div class="eyebrow">Answer</div><h3>' + esc(top.q) + "</h3>" +
           '<div class="helper-answer">' + esc(top.a) + "</div>" +
-          '<div class="helper-source">📚 <span>Source: ' + esc(top.source) + "</span></div>" +
+          sourceLine(top) +
           '<p class="muted mt-2" style="font-size:.82rem;margin-bottom:0">Educational only · not financial advice · pending review.</p>' +
         "</div>" +
         (results.length > 1 ? '<div class="card mt-2"><div class="eyebrow">Related</div><div class="suggested-q">' +
@@ -1229,7 +1222,7 @@
             " more modules covering budgeting, credit, paychecks, scams, banking, college costs, and investing for older students.</p>" +
             '<a class="btn btn-secondary" href="#/modules">See all ' + MODULES.length + " modules →</a></div>" +
           '<div class="card"><div class="eyebrow">Run it without screens</div>' +
-            "<p>Ten of the twelve games in this toolkit need no devices at all — useful for elementary classrooms, " +
+            "<p>" + unpluggedGames() + " of the " + GAME_FORMATS.length + " games in this toolkit need no devices at all — useful for elementary classrooms, " +
             "libraries, and anywhere the wifi can't be trusted.</p>" +
             '<a class="btn btn-secondary" href="#/games?devices=none">Unplugged games →</a></div>' +
         "</div>" +
@@ -1242,13 +1235,16 @@
   // ================================================================
   function renderGames(query) {
     var filter = (query && query.devices) || "all";
+    var topic = query && moduleById(query.topic) ? query.topic : "";
     function matches(g) {
+      if (topic && !gameTopics(g).some(function (m) { return m.id === topic; })) return false;
       if (filter === "all") return true;
       if (filter === "none") return g.devices === "none";
       return g.devices !== "none";
     }
     var shown = GAME_FORMATS.filter(matches);
-    var noDeviceCount = GAME_FORMATS.filter(function (g) { return g.devices === "none"; }).length;
+    var noDeviceCount = unpluggedGames();
+    var deepCount = GAME_FORMATS.filter(function (g) { return g.multiRound; }).length;
 
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Games</div>' +
@@ -1257,31 +1253,57 @@
         '<p class="muted" style="max-width:66ch"><strong>' + noDeviceCount + " of these " + GAME_FORMATS.length +
           " games need no technology at all</strong> — just you, the students, and maybe some paper. " +
           "The rest use one shared screen at the front of the room. Both kinds are here on purpose: young classrooms " +
-          "rarely have student devices, but a projector is often available. " +
-          "Every game works with any module — you plug in that topic's items, scenario, or vocabulary.</p>" +
+          "rarely have student devices, but a projector is often available.</p>" +
+        '<p class="muted" style="max-width:66ch">The quick games work with any module — you plug in that topic\'s items, scenario, or vocabulary. ' +
+          "The " + deepCount + " <strong>multi-round games</strong> go deeper: students live with the results of their choices over several rounds. " +
+          "Every game has a version for each age group, sample cards, questions to close with, and a printable game sheet.</p>" +
       "</div>" +
       '<section class="section tight"><div class="wrap">' +
         '<div class="filter-row">' +
-          gameFilterBtn("all", "All games", filter) +
-          gameFilterBtn("none", "🙌 No devices needed", filter) +
-          gameFilterBtn("screen", "📺 Uses a screen", filter) +
+          gameFilterBtn("all", "All games", filter, topic) +
+          gameFilterBtn("none", "🙌 No devices needed", filter, topic) +
+          gameFilterBtn("screen", "📺 Uses a screen", filter, topic) +
+          '<label class="game-topic-filter"><span>Topic</span><select id="gameTopic">' +
+            '<option value="">Any topic</option>' +
+            MODULES.map(function (m) {
+              return '<option value="' + m.id + '"' + (m.id === topic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>";
+            }).join("") +
+          "</select></label>" +
         "</div>" +
-        '<div class="grid game-grid">' +
-          shown.map(gameCard).join("") +
-        "</div>" +
+        (shown.length
+          ? '<div class="grid game-grid">' + shown.map(function (g) { return gameCard(g, topic); }).join("") + "</div>"
+          : '<p class="muted">No games match both filters. Try "All games".</p>') +
         '<div class="callout mt-3"><div class="ico">💡</div><div><strong>Why unplugged games matter.</strong> ' +
           "Not every classroom, library, or after-school room has working screens or reliable wifi — and younger students " +
           "often engage more when they're moving and talking. A workshop should never depend on technology to succeed.</div></div>" +
       "</div></section>";
+    document.getElementById("gameTopic").addEventListener("change", function () {
+      location.hash = "#/games?devices=" + filter + (this.value ? "&topic=" + this.value : "");
+    });
+    app.querySelectorAll("[data-sheet]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var g = GAME_FORMATS.filter(function (x) { return x.id === b.getAttribute("data-sheet"); })[0];
+        if (g) download("money-ready-game-" + g.id + ".txt", gameToText(g));
+      });
+    });
     wireNav();
   }
-  function gameFilterBtn(val, label, current) {
+  function gameFilterBtn(val, label, current, topic) {
     return '<a class="btn ' + (current === val ? "btn-primary" : "btn-secondary") +
-      '" href="#/games?devices=' + val + '">' + esc(label) + "</a>";
+      '" href="#/games?devices=' + val + (topic ? "&topic=" + topic : "") + '">' + esc(label) + "</a>";
   }
-  function gameCard(g) {
+  // An array, not an object: number-like keys ("35") would sort before "k2".
+  var LEVEL_NAMES = [["k2", "Grades K–2"], ["35", "Grades 3–5"], ["68", "Grades 6–8"], ["912", "Grades 9–12"]];
+  function gameCard(g, topic) {
     var devLabel = g.devices === "none" ? "No devices needed"
       : g.devices === "shared" ? "One shared screen" : "Own device";
+    var topics = gameTopics(g);
+    // Open the builder on this game, for the filtered topic or its first fit.
+    var planTopic = topic || (topics[0] && topics[0].id);
+    var planHref = planTopic
+      ? "#/builder?topic=" + planTopic + "&game=" + g.id + "&dev=" + (g.devices === "none" ? "none" : g.devices) +
+        "&min=" + (g.minutes > 15 ? "45" : "30")
+      : "";
     return '<div class="card game-card dev-' + g.devices + '">' +
       '<div class="g-top"><span class="g-emoji">' + g.emoji + "</span><h3 style=\"margin:0\">" + esc(g.name) + "</h3></div>" +
       '<p class="muted mb-0" style="font-size:.92rem">' + esc(g.summary) + "</p>" +
@@ -1291,14 +1313,61 @@
         '<span class="badge gray">⏱ ' + g.minutes + " min</span>" +
         '<span class="badge gray">' + esc(g.group) + "</span>" +
         '<span class="badge gray">Energy: ' + esc(g.energy) + "</span>" +
+        (g.multiRound ? '<span class="badge amber">🔁 Multi-round</span>' : "") +
       "</div>" +
-      '<div class="mt-2"><strong style="font-size:.88rem">Materials:</strong> ' +
+      (g.reinforces ? '<p style="font-size:.9rem;margin:0"><strong>Reinforces:</strong> ' + esc(g.reinforces) + "</p>" : "") +
+      (topics.length
+        ? '<div class="game-topics"><strong style="font-size:.88rem">Fits:</strong> ' + topics.map(function (m) {
+            return '<a class="chip" href="#/module/' + m.id + '">' + m.emoji + " " + esc(m.title) + "</a>"; }).join("") + "</div>"
+        : "") +
+      '<div><strong style="font-size:.88rem">Materials:</strong> ' +
         '<span class="muted" style="font-size:.88rem">' + esc(g.materials.join(", ")) + "</span></div>" +
-      '<details class="mt-2"><summary style="cursor:pointer;font-weight:700;font-size:.9rem">How to play</summary>' +
+      '<details><summary style="cursor:pointer;font-weight:700;font-size:.9rem">How to play</summary>' +
         '<ol class="numbered mt-1">' + g.howToPlay.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ol>" +
         '<div class="script-box" style="font-size:.9rem;margin-top:10px"><strong>Teen tip:</strong> ' + esc(g.teenTip) + "</div>" +
       "</details>" +
+      (g.levels
+        ? '<details><summary style="cursor:pointer;font-weight:700;font-size:.9rem">Make it fit your age group</summary>' +
+            '<dl class="game-levels">' + LEVEL_NAMES.filter(function (l) { return g.levels[l[0]]; }).map(function (l) {
+              return "<dt>" + l[1] + "</dt><dd>" + esc(g.levels[l[0]]) + "</dd>"; }).join("") + "</dl>" +
+          "</details>"
+        : "") +
+      (g.cards
+        ? '<details><summary style="cursor:pointer;font-weight:700;font-size:.9rem">' + esc(g.cards.title) + "</summary>" +
+            '<ol class="numbered mt-1" style="font-size:.9rem">' + g.cards.items.map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("") + "</ol>" +
+          "</details>"
+        : "") +
+      (g.debrief || g.access
+        ? '<details><summary style="cursor:pointer;font-weight:700;font-size:.9rem">Debrief and access</summary>' +
+            (g.debrief ? '<ul class="privacy-list mt-1">' + g.debrief.map(function (q) {
+              return '<li><span class="ok">💬</span><span>' + esc(q) + "</span></li>"; }).join("") + "</ul>" : "") +
+            (g.access ? '<p class="muted" style="font-size:.9rem;margin:8px 0 0"><strong>Everyone can play:</strong> ' + esc(g.access) + "</p>" : "") +
+          "</details>"
+        : "") +
+      '<div class="game-actions">' +
+        (g.play && PLAY_ENGINES[g.play.engine] ? '<a class="btn btn-primary" href="#/play/' + g.id + '">▶ Play on screen</a>' : "") +
+        (planHref ? '<a class="btn btn-secondary" href="' + planHref + '">🛠️ Plan a workshop with it</a>' : "") +
+        '<button class="btn btn-ghost" data-sheet="' + g.id + '">⬇ Download game sheet</button>' +
+      "</div>" +
     "</div>";
+  }
+
+  // On-screen games (engines in play.js). Content comes from GAME_FORMATS.
+  function renderPlay(id) {
+    var g = GAME_FORMATS.filter(function (x) { return x.id === id; })[0];
+    if (!g || !g.play || !PLAY_ENGINES[g.play.engine]) return renderNotFound();
+    app.innerHTML =
+      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · <a href="#/games">Games</a> · ' + esc(g.name) + "</div>" +
+        '<div class="eyebrow">' + g.emoji + " Play on screen</div>" +
+        "<h1>" + esc(g.name.replace(/ \(on screen\)$/, "")) + "</h1>" +
+        '<p class="muted" style="max-width:66ch">' + esc(g.summary) + "</p>" +
+      "</div>" +
+      '<section class="section tight"><div class="wrap">' +
+        '<div id="playRoot" class="play-root"></div>' +
+        '<p class="muted center mt-3" style="font-size:.88rem">🔒 Nothing is saved or sent anywhere — the game runs only on this screen.</p>' +
+      "</div></section>";
+    PLAY_ENGINES[g.play.engine](document.getElementById("playRoot"), g);
+    wireNav();
   }
 
   // ================================================================
@@ -1550,6 +1619,7 @@
     }
     // active nav link
     var route = (location.hash || "#/").split("?")[0].replace("#/", "").split("/")[0];
+    if (route === "play") route = "games";
     document.querySelectorAll(".nav-links a").forEach(function (a) {
       a.classList.toggle("active", a.getAttribute("data-route") === route);
     });
@@ -1588,6 +1658,7 @@
       // Only present when modules are tagged with official lessons.
       case "resources": return officialModules().length ? renderResources() : renderNotFound();
       case "games": return renderGames(query);
+      case "play": return renderPlay(seg[1]);
       case "module": return renderModule(seg[1]);
       case "challenge": return renderChallenge(seg[1], query.practice === "1");
       case "facilitator": return renderFacilitator();
@@ -1595,7 +1666,6 @@
       // Toolkit builder and lesson generator are now one page.
       case "builder":
       case "generator": return renderBuilderCombined(query);
-      case "portal": return renderPortal();
       case "helper": return renderHelper();
       case "impact": return renderImpact();
       case "take-home": return renderTakeHome(seg[1]);

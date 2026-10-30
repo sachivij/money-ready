@@ -93,14 +93,6 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
     if (st < 5) probs.push('builder ' + id + ': only ' + st + ' plan steps');
   }
 
-  // --- request / partner portal ------------------------------------------
-  await go('#/portal');
-  await jsClick('#rBtn');
-  if (!(await p.$('#rOut .apply-box'))) probs.push('portal: no request summary');
-  await jsClick('#oHelp .chip-toggle');
-  await jsClick('#oBtn');
-  if (!(await p.$('#oOut .apply-box'))) probs.push('portal: no offer summary');
-
   // --- standards helper: a hit, and the no-match fallback -----------------
   await go('#/helper');
   await p.fill('#q', 'how do I spot a scam');
@@ -118,6 +110,27 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   // --- games, impact, unknown route ---------------------------------------
   await go('#/games');
   if ((await p.$$eval('.game-card', e => e.length)) < 10) probs.push('games: too few game cards');
+
+  // --- on-screen games: play each one to the end ---------------------------
+  const playIds = await p.$$eval('.game-actions a[href^="#/play/"]', e => e.map(x => x.getAttribute('href').split('/').pop()));
+  for (const id of playIds) {
+    await go('#/play/' + id);
+    if (!(await p.$('#playRoot button'))) { probs.push('play ' + id + ': nothing to press'); continue; }
+    // Press the main button on each screen (or the first choice) until
+    // the game reaches its end screen.
+    for (let i = 0; i < 40 && !(await p.$('#pqSame, #ibAgain')); i++) {
+      await p.evaluate(() => {
+        const r = document.getElementById('playRoot');
+        const b = r && (r.querySelector('.btn-primary') || r.querySelector('button'));
+        if (b) b.click();
+      });
+      await p.waitForTimeout(20);
+    }
+    if (!(await p.$('#pqSame, #ibAgain'))) probs.push('play ' + id + ': never reached the end screen');
+  }
+  await go('#/play/no-such-game');
+  if ((await p.$eval('#app', e => e.textContent)).indexOf('not found') < 0) probs.push('play: unknown game not handled');
+
   await go('#/impact');
   if (!(await p.$('.metric-card'))) probs.push('impact: no metric cards');
   await go('#/no-such-page');
