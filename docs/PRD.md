@@ -34,7 +34,7 @@ Money Ready is a free, static web app that turns existing financial literacy top
 - **Workshop Builder:** assembles a lesson plan and packet (deck outline, parent letter, checklist, sign-up form) from a module, time, and device setup.
 - **Facilitator dashboard and volunteer prep:** script, vocabulary, timed steps, practice mode.
 - **Role picker:** volunteer, school, or organization, each seeing different impact metrics.
-- **Request / partner portal, standards helper, impact snapshot, take-home cards.**
+- **Standards helper, impact snapshot, take-home cards.** (The request / partner portal was removed on 2026-10-30.)
 
 ## 6. Roadmap
 

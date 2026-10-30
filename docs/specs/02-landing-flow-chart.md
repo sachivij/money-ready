@@ -5,7 +5,7 @@
 ## What to build
 A short decision guide on the home page, built as clickable cards in a simple top-down chart that uses the role picker's three roles:
 - "I'm a teen volunteer and need a lesson" → Modules or Workshop Builder
-- "I'm a teacher and want a workshop" → Request / Partner
+- "I'm a teacher and want a workshop" → Workshop Builder (the Request / Partner page was removed)
 - "I run the program" → Impact
 
 ## Done when
