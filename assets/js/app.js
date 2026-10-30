@@ -9,7 +9,6 @@
  *   #/modules        Module library (10 cards)
  *   #/module/:id     Lesson transformation
  *   #/challenge/:id  Student challenge + reveal
- *   #/facilitator    Facilitator dashboard
  *   #/prep           Teen volunteer prep
  *   #/builder        Toolkit builder (guided packet workflow)
  *   #/helper         Standards-grounded helper (retrieval only)
@@ -178,8 +177,8 @@
 
   // ================================================================
   // STUDENTS REACHED (spec 09)
-  // Before a volunteer or teacher uses something — builds a plan, starts
-  // the Facilitator, opens an on-screen game — ask how many students will
+  // Before a volunteer or teacher uses something — builds a plan or
+  // opens an on-screen game — ask how many students will
   // take part. An answer is required to continue; "Go back" leaves without
   // counting. Organizations aren't asked. reach.js sends the count.
   // ================================================================
@@ -299,9 +298,6 @@
           navGuide("🎲", "Games", "#/games",
             "I need an activity, and there may be no screens",
             GAME_FORMATS.length + " games you can drop into any topic. " + unpluggedGames() + " of them need no technology at all.") +
-          navGuide("🎤", "Facilitator", "#/facilitator",
-            "The workshop is happening right now",
-            "Your live dashboard during the session — current step, class results, discussion prompts, and the exit-ticket summary.") +
           navGuide("📊", "Impact", "#/impact",
             "I need numbers to share with someone",
             "Privacy-safe metrics you can report. What you see depends on whether you're a volunteer, a school, or an organization.") +
@@ -398,7 +394,7 @@
         }).join("") +
       "</ol>" +
       '<div class="path-quick">' +
-        '<a href="#/facilitator">🎤 Workshop happening right now?</a>' +
+        '<a href="#/builder">🎤 Workshop happening right now?</a>' +
         '<a href="#/games">🎲 Just need a game?</a>' +
       "</div></nav>";
   }
@@ -659,7 +655,7 @@
           confidenceRow(m) +
           '<div class="flex gap wrap-flex mt-2 no-print">' +
             '<a class="btn btn-primary" href="#/take-home/' + m.id + '">Get the take-home card</a>' +
-            '<a class="btn btn-secondary" href="#/facilitator">Open facilitator dashboard</a>' +
+            '<a class="btn btn-secondary" href="#/builder?topic=' + m.id + '">Build a workshop on this</a>' +
             '<a class="btn btn-ghost" href="#/modules">Back to modules</a>' +
           "</div>" +
         "</div>" +
@@ -702,122 +698,6 @@
           "Thanks! Recorded anonymously on this device only.";
       });
     });
-  }
-
-  // ================================================================
-  // FACILITATOR DASHBOARD
-  // ================================================================
-  function renderFacilitator() {
-    var current = MODULES[0];
-    var code = roomCode();
-    app.innerHTML =
-      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Facilitator dashboard</div>' +
-        '<div class="eyebrow">Facilitator dashboard</div>' +
-        "<h1>Run the session from one screen</h1>" +
-        '<p class="muted"><span class="pill-note">Demo data</span> Numbers below are simulated to show the live workshop flow. ' +
-          "No student data is collected.</p>" +
-      "</div>" +
-      '<section class="section tight"><div class="wrap"><div class="dash-grid">' +
-        // Left column
-        "<div>" +
-          '<div class="card">' +
-            '<div class="flex items-center wrap-flex gap" style="justify-content:space-between">' +
-              "<div><div class=\"eyebrow\">Current module</div>" +
-                '<select id="modSelect" style="font-size:1.1rem;font-weight:700;border:none;padding:6px 0;background:transparent">' +
-                  MODULES.map(function (m) { return '<option value="' + m.id + '">' + m.emoji + " " + esc(m.title) + "</option>"; }).join("") +
-                "</select></div>" +
-              '<div class="center"><div class="eyebrow">Room code</div>' +
-                '<div style="font-size:1.4rem;font-weight:800;letter-spacing:.15em">' + code + "</div></div>" +
-            "</div>" +
-            '<div class="flex items-center gap mt-2" style="justify-content:space-between">' +
-              '<div class="dash-stat"><span class="live-dot"></span> <span class="muted">Students joined</span> ' +
-                '<span class="big" id="joined">0</span></div>' +
-              '<div class="toggle-row" id="modeToggle">' +
-                '<button class="btn btn-primary" data-mode="shared">📺 Shared screen</button>' +
-                '<button class="btn btn-secondary" data-mode="hotseat">🎤 Hotseat</button>' +
-              "</div>" +
-            "</div>" +
-          "</div>" +
-
-          '<div class="card mt-3"><div class="eyebrow">Class response results <span class="pill-note">live demo</span></div>' +
-            '<div id="results"></div>' +
-          "</div>" +
-        "</div>" +
-
-        // Right column
-        "<div>" +
-          '<div class="card" style="background:var(--green-soft);border-color:rgba(31,157,107,.25)">' +
-            '<div class="eyebrow">Suggested discussion prompt</div>' +
-            '<p id="prompt" style="font-size:1.15rem;font-weight:700;margin-bottom:0"></p>' +
-          "</div>" +
-          '<div class="card mt-3"><div class="eyebrow">Session controls</div>' +
-            '<p class="muted" style="font-size:.9rem">Step: <strong id="stepName">—</strong></p>' +
-            '<button class="btn btn-primary btn-block" id="nextBtn">Next activity →</button>' +
-            '<button class="btn btn-secondary btn-block mt-2" id="dlBtn">📋 Generate exit-ticket summary</button>' +
-            '<p class="muted mt-2" style="font-size:.8rem;margin-bottom:0">Summary is aggregate only — no names, no personal data.</p>' +
-          "</div>" +
-          '<div id="exitOut" class="mt-3"></div>' +
-          '<div class="card mt-3"><div class="eyebrow">Mode</div><p id="modeLabel" class="mb-0">' +
-            "📺 <strong>Shared screen</strong> — one projected view the whole class answers together.</p></div>" +
-        "</div>" +
-      "</div></div></section>";
-
-    var joinedEl = document.getElementById("joined");
-    var joined = 0, target = 18 + Math.floor(Math.random() * 10);
-    var join = setInterval(function () {
-      if (joined < target) { joined += 1; joinedEl.textContent = joined; }
-      else clearInterval(join);
-    }, 180);
-    timers.push(join);
-
-    function refresh() {
-      var m = moduleById(document.getElementById("modSelect").value);
-      document.getElementById("prompt").textContent = m.reveal.discussionPrompt;
-      // demo response distribution, best answer leading
-      var opts = m.challenge.options, best = m.challenge.best;
-      var demo = opts.map(function (_, i) { return i === best ? 46 + Math.floor(Math.random() * 20) : 6 + Math.floor(Math.random() * 22); });
-      var sum = demo.reduce(function (a, b) { return a + b; }, 0);
-      document.getElementById("results").innerHTML = opts.map(function (opt, i) {
-        var pct = Math.round((demo[i] / sum) * 100);
-        return '<div class="result-bar"><div class="rb-top"><span>' + String.fromCharCode(65 + i) + ". " + esc(opt) +
-          "</span><span>" + pct + '%</span></div><div class="rb-track"><div class="rb-fill ' +
-          (i === best ? "best" : "other") + '" style="width:' + Math.max(pct, 8) + '%">' + (i === best ? "Best" : "") + "</div></div></div>";
-      }).join("");
-      // steps
-      stepIndex = 0;
-      document.getElementById("stepName").textContent = m.prep.steps[0];
-    }
-    var stepIndex = 0;
-    document.getElementById("modSelect").addEventListener("change", refresh);
-    document.getElementById("nextBtn").addEventListener("click", function () {
-      var m = moduleById(document.getElementById("modSelect").value);
-      stepIndex = (stepIndex + 1) % m.prep.steps.length;
-      document.getElementById("stepName").textContent = m.prep.steps[stepIndex];
-    });
-    document.getElementById("dlBtn").addEventListener("click", function () {
-      var m = moduleById(document.getElementById("modSelect").value);
-      var txt = "Money Ready — Exit Ticket Summary (EXAMPLE / aggregate only)\n" +
-        "Module: " + m.title + "\nRoom: " + code + "\n\n" +
-        "Students joined: " + joined + "\n" +
-        "Key concept: " + m.reveal.keyConcept + "\n" +
-        "Discussion prompt: " + m.reveal.discussionPrompt + "\n" +
-        "Apply it: " + m.reveal.applyIt + "\n\n" +
-        "Privacy note: no names, logins, or personal data collected. Demo figures.\n";
-      showExitSummary(txt, m.id);
-    });
-    document.getElementById("modeToggle").querySelectorAll("button").forEach(function (b) {
-      b.addEventListener("click", function () {
-        document.querySelectorAll("#modeToggle button").forEach(function (x) { x.className = "btn btn-secondary"; });
-        b.className = "btn btn-primary";
-        var shared = b.getAttribute("data-mode") === "shared";
-        document.getElementById("modeLabel").innerHTML = shared
-          ? "📺 <strong>Shared screen</strong> — one projected view the whole class answers together."
-          : "🎤 <strong>Hotseat</strong> — one student at a time answers on the main screen while the class coaches.";
-      });
-    });
-    refresh();
-    wireNav();
-    askStudents("facilitator", "", function () {});
   }
 
   // ================================================================
@@ -1391,7 +1271,8 @@
   // ================================================================
   function renderBuilderCombined(query) {
     query = query || {};
-    var dev = DEVICE_GUIDES[query.dev] ? query.dev : "none";
+    // Two choices. Old links with "shared" or "personal" open as devices.
+    var dev = query.dev === "devices" || query.dev === "shared" || query.dev === "personal" ? "devices" : "none";
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Workshop builder</div>' +
         '<div class="eyebrow">Workshop builder</div>' +
@@ -1405,9 +1286,12 @@
       '<section class="section tight"><div class="wrap">' +
         '<div class="card"><div class="grid grid-2">' +
           '<div class="field"><label for="gTopic">1. Topic</label><select id="gTopic">' +
-            MODULES.map(function (m) {
-              return '<option value="' + m.id + '"' + (m.id === query.topic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>"; }).join("") +
-          "</select></div>" +
+            '<optgroup label="Modules">' + MODULES.map(topicOption).join("") + "</optgroup>" +
+            '<optgroup label="More topics (from trusted sources)">' + EXTRA_TOPICS.map(topicOption).join("") + "</optgroup>" +
+          "</select>" +
+          '<div class="topic-search"><input id="gFind" type="text" placeholder="Other topic? Try taxes, coins, insurance…" aria-label="Find a topic" />' +
+            '<button class="btn btn-secondary" id="gFindBtn" type="button">Find</button></div>' +
+          '<div id="gFindOut" class="muted" style="font-size:.85rem;margin-top:6px"></div></div>' +
           '<div class="field"><label for="gGrade">2. Age group</label><select id="gGrade">' +
             ["Grades K–2", "Grades 3–5", "Grades 6–8", "Grades 9–12"].map(function (g, i) {
               var on = query.grade ? g === query.grade : i === 1;
@@ -1423,12 +1307,41 @@
           "</select></div>" +
         "</div>" +
         '<div class="field"><label>What technology is actually in the room?</label><div class="chips-select" id="gDev">' +
-          [["none", "🙌 No devices at all"], ["shared", "📺 One shared screen"], ["personal", "📱 Students have devices"]].map(function (d) {
+          [["none", "🙌 No devices"], ["devices", "📺 Devices (a screen and/or students' devices)"]].map(function (d) {
             return '<button class="chip-toggle' + (d[0] === dev ? " on" : "") + '" data-dev="' + d[0] + '">' + d[1] + "</button>"; }).join("") +
         "</div></div>" +
         '<button class="btn btn-primary btn-lg" id="genLesson">✨ Build my workshop</button></div>' +
         '<div id="planOut" class="mt-3"></div>' +
       "</div></section>";
+
+    function topicOption(m) {
+      return '<option value="' + m.id + '"' + (m.id === query.topic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>";
+    }
+    // Find a topic by typing. Only topics with checked content can match;
+    // with no match it says so instead of making something up.
+    function findTopicByText() {
+      var text = document.getElementById("gFind").value;
+      var out = document.getElementById("gFindOut");
+      var hits = searchTopics(text);
+      if (!text.trim()) { out.innerHTML = ""; return; }
+      if (!hits.length) {
+        out.innerHTML = "No checked content for \"" + esc(text) + "\" yet, so the builder won't invent a game for it. " +
+          "Pick one of the topics in the list, or ask the team to add it (each new topic needs a named trusted source).";
+        return;
+      }
+      out.innerHTML = "Found: " + hits.slice(0, 5).map(function (t) {
+        return '<button class="chip-toggle" type="button" data-pick="' + t.id + '">' + t.emoji + " " + esc(t.title) + "</button>";
+      }).join(" ");
+      out.querySelectorAll("[data-pick]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          document.getElementById("gTopic").value = b.getAttribute("data-pick");
+          out.innerHTML = "";
+          build();
+        });
+      });
+    }
+    document.getElementById("gFindBtn").addEventListener("click", findTopicByText);
+    document.getElementById("gFind").addEventListener("keydown", function (e) { if (e.key === "Enter") findTopicByText(); });
 
     document.getElementById("gDev").querySelectorAll(".chip-toggle").forEach(function (b) {
       b.addEventListener("click", function () {
@@ -1467,7 +1380,7 @@
     }
     document.getElementById("genLesson").addEventListener("click", function () { build(); });
     wireNav();
-    if (query.topic && moduleById(query.topic)) build(query.game);
+    if (query.topic && findTopic(query.topic)) build(query.game);
   }
 
   function renderPlan(plan, rebuild) {
@@ -1500,6 +1413,15 @@
         '<div class="card mt-3" style="border-left:5px solid var(--green);box-shadow:none">' +
           "<strong>Learning objective:</strong> " + esc(m.objective) + "</div>" +
 
+        (m.extraTopic && plan.topicGame
+          ? '<div class="callout mt-3"><div class="ico">🏛️</div><div><strong>Not a Jump$tart module.</strong> ' +
+            "Every fact in this workshop's game comes from a trusted U.S. government consumer-education source: " +
+            esc(plan.topicGame.sources.map(function (x) { return x.name + " (" + x.url + ")"; }).join("; ")) + ".</div></div>"
+          : "") +
+
+        // The game for this topic, up front: every round and answer.
+        topicGameCard(plan) +
+
         // K–2 picture banner
         (plan.pictureBased
           ? '<div class="callout mt-3"><div class="ico">🎨</div><div><strong>This plan is built for pre-readers.</strong> ' +
@@ -1529,12 +1451,24 @@
         "</div>" +
 
         // Run of show
-        '<div class="eyebrow mt-4">Run of show — what to do, minute by minute</div>' +
+        '<div class="eyebrow mt-4">Run of show: what to say and do, minute by minute</div>' +
+        '<p class="muted" style="font-size:.9rem;margin:0 0 8px">🗣 <strong>Say</strong> lines are word for word, so you can read them straight off the page. ' +
+          "✋ <strong>Do</strong> steps go in order.</p>" +
         plan.steps.map(function (s) {
           return '<div class="plan-step"><div class="plan-time">' + s.minutes + " min</div>" +
-            "<div><h4>" + esc(s.name) + "</h4><p>" + esc(s.what) + "</p>" +
+            "<div><h4>" + esc(s.name) + '</h4><p class="muted" style="font-size:.92rem">' + esc(s.what) + "</p>" +
             (s.script ? '<div class="script-box mt-1" style="font-size:.9rem"><strong>Say this:</strong> ' + esc(s.script) + "</div>" : "") +
-            (s.how ? '<div class="apply-box mt-1" style="font-size:.9rem"><strong>How to run it:</strong> ' + esc(s.how) + "</div>" : "") +
+            (s.say && s.say.length ? '<div class="script-box mt-1 say-box"><strong>🗣 Say</strong>' +
+              s.say.map(function (l) { return "<p>“" + esc(l) + "”</p>"; }).join("") + "</div>" : "") +
+            (s.do && s.do.length ? '<div class="do-box mt-1"><strong>✋ Do</strong><ol>' +
+              s.do.map(function (l) { return "<li>" + esc(l) + "</li>"; }).join("") + "</ol></div>" : "") +
+            (s.rounds ? '<div class="round-script mt-1"><strong>🎮 Round by round</strong>' + s.rounds.map(function (r, i) {
+                return '<div class="rs-round"><div class="rs-n">Round ' + (i + 1) + "</div>" +
+                  r.say.map(function (l) { return '<p class="rs-say">🗣 “' + esc(l) + "”</p>"; }).join("") +
+                  r.do.map(function (l) { return '<p class="rs-do">✋ ' + esc(l) + "</p>"; }).join("") +
+                  '<p class="rs-say rs-answer">🗣 Then say: “' + esc(r.answer) + "”</p></div>";
+              }).join("") + "</div>" : "") +
+            (s.how ? '<div class="apply-box mt-1" style="font-size:.86rem"><strong>💡 Tip:</strong> ' + esc(s.how) + "</div>" : "") +
             "</div></div>";
         }).join("") +
 
@@ -1582,9 +1516,9 @@
         "</ul>" +
 
         '<div class="flex gap wrap-flex mt-3 no-print">' +
-          '<a class="btn btn-primary" href="#/take-home/' + m.id + '">Take-home card</a>' +
+          (m.extraTopic ? "" : '<a class="btn btn-primary" href="#/take-home/' + m.id + '">Take-home card</a>') +
           '<a class="btn btn-secondary" href="#/games?devices=' + (plan.devices === "none" ? "none" : "all") + '">Browse games</a>' +
-          '<a class="btn btn-ghost" href="#/prep?topic=' + m.id + '">Full volunteer prep</a>' +
+          (m.extraTopic ? "" : '<a class="btn btn-ghost" href="#/prep?topic=' + m.id + '">Full volunteer prep</a>') +
         "</div>" +
       "</div>";
 
@@ -1604,11 +1538,125 @@
         copyBtn.textContent = ok ? "✓ Link copied" : "Copy failed — use the address bar";
       });
     });
+    var cardsBtn = document.getElementById("gameCards");
+    if (cardsBtn) cardsBtn.addEventListener("click", function () {
+      download("money-ready-game-" + m.id + "-" + plan.profile.id + ".txt", topicGameToText(plan.topicGame) +
+        "\n\nEducational only. Not financial advice. No personal data collected.");
+    });
     document.getElementById("planDownload").addEventListener("click", function () {
       download("money-ready-" + m.id + "-" + plan.totalMinutes + "min.txt", planToText(plan, packet));
     });
     out.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
+  // The ready-to-play game in a plan: play it on screen, or print cards.
+  function topicGameCard(plan) {
+    var g = plan.topicGame;
+    if (!g || !g.rounds.length) return "";
+    var qs = "?topic=" + plan.module.id + "&grade=" + plan.profile.id;
+    var noScreen = plan.devices === "none";
+    var main = plan.mainGame && !plan.mainGame.multiRound ? plan.mainGame : null;
+    var srcNames = g.sources.map(function (x) { return x.name; });
+    return '<div class="card mt-3 topic-game" style="box-shadow:none;border:2px solid var(--green)">' +
+      '<div class="eyebrow">🎮 Your game for this topic · ' + (noScreen ? "no screen needed" : "ready to play") + "</div>" +
+      '<h3 style="margin:4px 0">' + esc(g.title) + "</h3>" +
+      // At a glance: what the game is, who it is for, how to run it.
+      '<div class="game-facts">' +
+        "<div><span>Topic</span><strong>" + esc(g.topic.title) + "</strong></div>" +
+        "<div><span>Made for</span><strong>" + esc(plan.grade) + "</strong></div>" +
+        "<div><span>Rounds</span><strong>" + g.rounds.length + " questions</strong></div>" +
+        "<div><span>Style</span><strong>" + (noScreen
+          ? (g.picture ? "Big picture cards you hold up" : "Answer cards + you read the questions")
+          : (g.picture ? "Two big pictures, read aloud" : "Picture answers + why")) + "</strong></div>" +
+        "<div><span>Run it as</span><strong>" + (main ? main.emoji + " " + esc(main.name) : "On screen or with the cards") + "</strong></div>" +
+        (srcNames.length ? "<div><span>Facts from</span><strong>" + esc(srcNames.join("; ")) + "</strong></div>" : "") +
+      "</div>" +
+      '<p class="muted" style="font-size:.92rem;margin:10px 0 0"><strong>Students practice:</strong> ' + esc(g.topic.objective) +
+        (noScreen
+          ? " No screen needed: print the answer cards, hold them up (or tape one in each corner), and read each question from the script below. Students vote by pointing, moving, or raising hands."
+          : " Put the game on the room's screen. Students vote with hands or on their own devices (the game shows a play-along link). " +
+            "Tap an answer once for every vote you count, then Reveal: the screen shows the answer and how the class voted.") + "</p>" +
+      '<div class="flex gap wrap-flex no-print mt-2">' +
+        (noScreen
+          ? '<a class="btn btn-primary" href="#/game-cards' + qs + '">🖨 Print the answer cards</a>'
+          : '<a class="btn btn-primary" href="#/game' + qs + '">▶ Start the game on screen</a>' +
+            '<a class="btn btn-secondary" href="#/game-cards' + qs + '">🖨 Print the answer cards (backup)</a>') +
+        '<button class="btn btn-ghost" id="gameCards">⬇ Download the questions (text)</button>' +
+      "</div>" +
+      '<div class="eyebrow mt-3">What\'s in the game: every round, with the answer</div>' +
+      '<div class="round-grid' + (g.picture ? " pic" : "") + '">' + g.rounds.map(function (r, i) {
+        var s = roundSource(r, g.topic);
+        return '<div class="round-card"><div class="round-n">Round ' + (i + 1) + "</div>" +
+          '<div class="round-q">' + esc(r.q) + "</div>" +
+          '<div class="round-opts">' + r.opts.map(function (o, k) {
+            return '<span class="round-opt' + (k === r.best ? " ok" : "") + '"><span class="round-emoji" aria-hidden="true">' + o[0] + "</span>" +
+              esc(o[1]) + (k === r.best ? ' <span class="round-tick" aria-label="right answer">✓</span>' : "") + "</span>";
+          }).join("") + "</div>" +
+          '<div class="round-why">' + (r.best < 0 ? "Any answer is OK. " : "") + esc(r.why) + "</div>" +
+          (s ? '<div class="round-src">Source: ' + esc(s.name) + (s.url ? " · " + esc(s.url) : "") + "</div>" : "") +
+          "</div>";
+      }).join("") + "</div>" +
+    "</div>";
+  }
+
+  // #/game-cards?topic=…&grade=… : printable answer cards for rooms with
+  // no screen. One page per round with a big card for each answer, and an
+  // answer key at the end, so the cards students see don't give it away.
+  function renderGameCards(query) {
+    var grade = /^(k2|35|68|912)$/.test(query.grade || "") ? query.grade : "35";
+    var g = buildTopicGame(query.topic, grade);
+    if (!g || !g.rounds.length) return renderNotFound();
+    var gradeName = Object.keys(GRADE_PROFILES).filter(function (k) { return GRADE_PROFILES[k].id === grade; })[0];
+    app.innerHTML =
+      '<div class="wrap page-head no-print"><div class="breadcrumb"><a href="#/">Home</a> · ' +
+        '<a href="#/builder?topic=' + encodeURIComponent(query.topic) + "&grade=" + encodeURIComponent(gradeName) + '&dev=none">Workshop builder</a> · Answer cards</div>' +
+        '<div class="eyebrow">🖨 No screen needed · ' + esc(gradeName) + "</div>" +
+        "<h1>Answer cards: " + esc(g.title.replace(/^\S+ /, "")) + "</h1>" +
+        '<p class="muted" style="max-width:66ch">Print these (one page per round). For each round, read the question out loud, hold up the cards ' +
+          "or tape one in each corner, and let students point or walk to their answer. The answer key is on the last page, just for you.</p>" +
+        '<button class="btn btn-primary" onclick="window.print()">🖨 Print</button>' +
+      "</div>" +
+      '<section class="section tight"><div class="wrap">' +
+        g.rounds.map(function (r, i) {
+          return '<div class="pcard-round"><div class="pcard-q"><span>Round ' + (i + 1) + "</span> " + esc(r.q) + "</div>" +
+            '<div class="pcard-grid' + (r.opts.length === 2 ? " two" : "") + '">' + r.opts.map(function (o, k) {
+              return '<div class="pcard">' + (g.picture ? "" : '<div class="pcard-letter">' + "ABCD".charAt(k) + "</div>") +
+                '<div class="pcard-emoji" aria-hidden="true">' + o[0] + '</div><div class="pcard-word">' + esc(o[1]) + "</div></div>";
+            }).join("") + "</div></div>";
+        }).join("") +
+        '<div class="pcard-round pcard-key"><h2>Answer key (for the volunteer)</h2><ol>' +
+          g.rounds.map(function (r) {
+            var s = roundSource(r, g.topic);
+            return "<li><strong>" + esc(r.q) + "</strong><br>" +
+              (r.best < 0 ? "Any answer is OK." : "Answer: " + r.opts[r.best][0] + " " + esc(r.opts[r.best][1]) + ".") + " " + esc(r.why) +
+              (s ? '<br><span class="muted" style="font-size:.85rem">Source: ' + esc(s.name) + (s.url ? " · " + esc(s.url) : "") + "</span>" : "") + "</li>";
+          }).join("") + "</ol></div>" +
+      "</div></section>";
+    wireNav();
+  }
+
+  // #/game?topic=<module or extra topic>&grade=<k2|35|68|912>
+  function renderTopicGame(query) {
+    var grade = /^(k2|35|68|912)$/.test(query.grade || "") ? query.grade : "35";
+    var g = buildTopicGame(query.topic, grade);
+    if (!g || !g.rounds.length) return renderNotFound();
+    var gradeName = Object.keys(GRADE_PROFILES).filter(function (k) { return GRADE_PROFILES[k].id === grade; })[0];
+    app.innerHTML =
+      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · ' +
+        '<a href="#/builder?topic=' + encodeURIComponent(query.topic) + "&grade=" + encodeURIComponent(gradeName) + '&dev=devices">Workshop builder</a> · Game</div>' +
+        '<div class="eyebrow">' + g.topic.emoji + (query.solo === "1" ? " Play along" : " Play on screen") + " · " + esc(gradeName) + "</div>" +
+        "<h1>" + esc(g.title.replace(/^\S+ /, "")) + "</h1>" +
+        (g.topic.extraTopic ? '<p class="muted" style="max-width:66ch">Every round shows where its facts come from.</p>' : "") +
+      "</div>" +
+      '<section class="section tight"><div class="wrap">' +
+        '<div id="playRoot" class="play-root"></div>' +
+        '<p class="muted center mt-3" style="font-size:.88rem">🔒 Nothing is saved or sent anywhere. The game runs only on this screen.</p>' +
+      "</div></section>";
+    g.solo = query.solo === "1";
+    if (!g.solo) g.playLink = location.href.split("#")[0] + "#/game?topic=" + encodeURIComponent(query.topic) + "&grade=" + grade + "&solo=1";
+    PLAY_ENGINES.quiz(document.getElementById("playRoot"), g);
+    wireNav();
+  }
+
   function renderNotFound() {
     app.innerHTML = '<section class="section"><div class="wrap center">' +
       "<h1>Page not found</h1><p class=\"muted\">That link doesn't match a screen.</p>" +
@@ -1633,6 +1681,7 @@
     // active nav link
     var route = (location.hash || "#/").split("?")[0].replace("#/", "").split("/")[0];
     if (route === "play") route = "games";
+    if (route === "game" || route === "game-cards") route = "builder";
     document.querySelectorAll(".nav-links a").forEach(function (a) {
       a.classList.toggle("active", a.getAttribute("data-route") === route);
     });
@@ -1658,6 +1707,8 @@
   }
   function route() {
     clearTimers();
+    // Stop a game reading aloud when the page changes.
+    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) { /* no voice */ }
     var asking = document.getElementById("studentsOverlay");
     if (asking) asking.remove();
     window.scrollTo(0, 0);
@@ -1674,9 +1725,12 @@
       case "resources": return officialModules().length ? renderResources() : renderNotFound();
       case "games": return renderGames(query);
       case "play": return renderPlay(seg[1]);
+      case "game": return renderTopicGame(query);
+      case "game-cards": return renderGameCards(query);
       case "module": return renderModule(seg[1]);
       case "challenge": return renderChallenge(seg[1], query.practice === "1");
-      case "facilitator": return renderFacilitator();
+      // The Facilitator dashboard was folded into the builder's game.
+      case "facilitator": return renderBuilderCombined(query);
       case "prep": return renderPrep(query);
       // Toolkit builder and lesson generator are now one page.
       case "builder":

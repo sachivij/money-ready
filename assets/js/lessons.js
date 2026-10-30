@@ -1356,6 +1356,23 @@ const DEVICE_GUIDES = {
     results: "The class results bar chart appears on screen. Ask a student from each option to explain their thinking.",
     backup: "If the screen fails, switch to Four Corners — you have the scenario in your notes and it works with nothing.",
   },
+  // The Workshop Builder offers two choices: no devices, or devices (a
+  // screen in the room and/or students' own devices). Older links that
+  // say "shared" or "personal" open as "devices".
+  devices: {
+    label: "Devices in the room",
+    icon: "📺",
+    setup: [
+      "Open the plan's game on the room's screen (or your laptop) before students arrive and check it displays.",
+      "If students have their own devices, write the play-along link on the board.",
+      "Stand where you can see both the screen and the students' faces.",
+      "Print the take-home cards, and the answer cards as a backup.",
+    ],
+    voting: "Read each round aloud. Students vote with hands, or on their own device with the play-along link. Tap one answer on the screen for every vote you count, then tap Reveal.",
+    showing: "The screen shows the question and answer pictures. Read it aloud anyway — do not assume everyone can see or read it.",
+    results: "The bars on the screen show how the class voted. Ask a student from each answer to explain their thinking.",
+    backup: "If the screen fails, switch to the printed answer cards — the script has every question.",
+  },
   personal: {
     label: "Students have devices",
     icon: "📱",
@@ -1411,16 +1428,14 @@ const PICTURE_ACTIVITIES = [
 function buildLessonPlan(moduleId, opts) {
   opts = opts || {};
   var minutes = Number(opts.minutes) || 30;
-  var devices = opts.devices || "none"; // "none" | "shared" | "personal"
+  var devices = opts.devices === "shared" || opts.devices === "personal" ? "devices" : opts.devices || "none"; // "none" | "devices"
   var grade = opts.grade || "Grades 3–5";
   var groupSize = opts.groupSize || "Whole class";
 
-  var mod = null;
-  for (var i = 0; i < MODULES.length; i++) {
-    if (MODULES[i].id === moduleId) { mod = MODULES[i]; break; }
-  }
+  // A module, or one of the extra topics written from trusted sources.
+  var mod = findTopic(moduleId);
   if (!mod) return null;
-  var pack = LESSON_PACKS[moduleId] || {};
+  var pack = LESSON_PACKS[moduleId] || mod.pack || {};
 
   // How this age group learns, and what the room's technology changes.
   var profile = GRADE_PROFILES[grade] || GRADE_PROFILES["Grades 3–5"];
@@ -1429,7 +1444,6 @@ function buildLessonPlan(moduleId, opts) {
 
   // Which games are usable in this room?
   var allowed = devices === "none" ? ["none"]
-    : devices === "shared" ? ["none", "shared"]
     : ["none", "shared", "personal"];
   var usableGames = GAME_FORMATS.filter(function (g) {
     return allowed.indexOf(g.devices) >= 0;
@@ -1492,6 +1506,9 @@ function buildLessonPlan(moduleId, opts) {
         : "Say each word, give the plain-English meaning, then ask for an example from their own life before moving on.");
   }
 
+  // The ready-to-play game for this topic and age group (game-bank.js).
+  var topicGame = buildTopicGame(moduleId, profile.id);
+
   if (mainGame) {
     // The game's own version for this age group, when it has one.
     var fit = mainGame.levels && mainGame.levels[profile.id];
@@ -1499,8 +1516,12 @@ function buildLessonPlan(moduleId, opts) {
     // Multi-round games bring their own rounds and cards, so the module's
     // unplugged swap and the room's voting method would contradict them.
     var swap = !mainGame.multiRound && devices === "none" && pack.unpluggedSwap;
+    // Single-question formats get their questions from the topic game.
+    var useRounds = !mainGame.multiRound && topicGame && topicGame.rounds.length;
     add("Main activity — " + mainGame.name, mainGame.minutes,
-      mainGame.summary + (swap ? " " + pack.unpluggedSwap : ""),
+      mainGame.summary + (swap ? " " + pack.unpluggedSwap : "") +
+        (useRounds ? " Questions: use the " + topicGame.rounds.length + " rounds of \"" + topicGame.title.replace(/^\S+ /, "") +
+          "\" below" + (devices === "none" ? " (print the game cards)." : " (play them on screen).") : ""),
       "",
       mainGame.multiRound
         ? forGrade + "Full rules and printable cards: Games → " + mainGame.name + "."
@@ -1585,6 +1606,12 @@ function buildLessonPlan(moduleId, opts) {
     "One-on-one": "Go at their pace and let them lead. Ask more questions than you answer.",
   };
 
+  // Word-for-word lines and step-by-step actions for every step.
+  writeScripts(steps, {
+    mod: mod, pack: pack, picture: picture, devices: devices, gradeId: profile.id,
+    vocab: vocabList, mainGame: mainGame, extraGame: extraGame, topicGame: topicGame,
+  });
+
   return {
     module: mod,
     pack: pack,
@@ -1602,10 +1629,159 @@ function buildLessonPlan(moduleId, opts) {
     games: usableGames,
     mainGame: mainGame,
     alternatives: alternatives,
+    topicGame: topicGame,
     materials: (mainGame ? mainGame.materials : []).concat(
       devices === "none" ? ["Printed take-home cards"] : ["Screen or projector", "Printed take-home cards"]
     ).concat(picture ? ["Picture cards or printed images", "Paper and crayons for drawing"] : []),
   };
+}
+
+/* ===================================================================
+   SCRIPTS
+   Gives every step `say` (lines to say out loud, word for word) and
+   `do` (what to do, in order). Main activities using the topic game also
+   get `rounds`: a say/do script for each round. Everything comes from the
+   module or topic content, so editing data.js / game-bank.js updates it.
+   =================================================================== */
+function writeScripts(steps, c) {
+  var mod = c.mod, pack = c.pack, pic = c.picture;
+  var reveal = mod.reveal || {};
+  var big = reveal.keyConcept || mod.title;
+  // Pre-readers get the plain half of "Term — plain words" key concepts.
+  if (pic && big.indexOf(" — ") > 0) big = big.split(" — ")[1];
+  big = big.charAt(0).toUpperCase() + big.slice(1);
+  var letters = "ABCD";
+  function first(text) {
+    var m = String(text || "").match(/^.*?[.!?](\s|$)/);
+    return m ? m[0].trim() : String(text || "");
+  }
+  // How students answer in this room, as an instruction.
+  var voteDo = pic
+    ? "Students point to the picture they pick (or walk to it). Count the hands for each picture out loud."
+    : c.devices === "none"
+      ? "Students vote with their bodies: walk to a corner, or hold up 1–4 fingers on the count of three. Count each answer out loud."
+      : "Students vote with hands (or on their own devices with the play-along link). Tap the answer on the screen once for every vote you count, then tap Reveal.";
+
+  function roundScript(r, i) {
+    var opts = r.opts.map(function (o, k) { return (pic ? "" : letters[k] + ": ") + o[1]; });
+    var ans = r.best < 0 ? null : r.opts[r.best][1];
+    return {
+      say: [
+        "Round " + (i + 1) + ". " + r.q,
+        pic ? "Is it… " + opts.join("… or… ") + "?" : opts.join(". ") + ".",
+        pic ? "Point to your answer in three, two, one… go!" : "Think for five seconds. Ready? Vote in three, two, one… go!",
+      ],
+      do: [voteDo, "Ask one student who picked each answer: \"Why did you pick that?\""],
+      answer: (ans ? "The answer is " + ans + "! " : "Any answer is OK! ") + r.why,
+    };
+  }
+
+  steps.forEach(function (s) {
+    var n = s.name;
+    if (n === "Welcome & hook") {
+      s.say = [s.script || "Hi everyone! Today we're going to talk about " + mod.title.toLowerCase() + "."];
+      s.script = "";
+      s.do = [
+        "Stand at the front where everyone can see you. Smile and wait for quiet before you start.",
+        pack.hook || "Ask a question that connects the topic to their own lives.",
+        pic ? "Take answers with thumbs up or down, or by pointing. No writing." : "Wait five full seconds, then take 2–3 answers.",
+        "Say: \"Great thinking! That's exactly what we're talking about today.\"",
+      ];
+    } else if (n === "Mini-lesson") {
+      var idea = pack.miniLesson || mod.summary;
+      s.say = pic
+        ? [first(idea), "Let's say it together: " + big + "!", "One more time, nice and loud: " + big + "!"]
+        : [idea, "So here's the big idea for today: " + big + "."];
+      s.do = [
+        pic ? "Draw the idea as a simple picture on the board while you talk." : "Write the big idea on the board: \"" + big + "\".",
+        "Ask: \"Who can say that back to me in their own words?\" Take 2 answers.",
+        pic ? "Point to your drawing every time you say the big idea." : "Leave it on the board for the rest of the session.",
+      ];
+    } else if (n === "Key vocabulary") {
+      s.say = c.vocab.map(function (v) {
+        return pic
+          ? "Our word is " + v.term + ". Say it with me: " + v.term + "! It means " + v.def.charAt(0).toLowerCase() + v.def.slice(1)
+          : v.term + ": " + v.def + " Who can give me an example?";
+      });
+      s.do = pic
+        ? ["For each word: say it, draw it on the board, and have the class say it back.", "Make up a hand motion for each word and have everyone copy it."]
+        : ["Write each word on the board as you say it.", "Take one example from a student for each word before moving on."];
+    } else if (n.indexOf("Main activity") === 0 && c.mainGame) {
+      var g = c.mainGame;
+      var rounds = c.topicGame && !g.multiRound ? c.topicGame.rounds : [];
+      s.say = [
+        "Now it's game time! We're going to play " + g.name + ".",
+        rounds.length
+          ? "I'll ask a question, you pick an answer, and then we'll find out the answer together. Ready?"
+          : "Here's how it works. Listen carefully!",
+      ];
+      var level = g.levels && g.levels[c.gradeId];
+      s.do = (level ? ["Make it fit this age group: " + level] : []).concat((g.howToPlay || []).map(function (h) {
+        // The rounds below replace the module's single scenario.
+        return rounds.length && /scenario/i.test(h) ? "Read the round's question and answers out loud (word for word below)." : h;
+      }));
+      if (rounds.length) {
+        s.do.push("Use the " + rounds.length + " rounds below as the questions. After each vote, read the answer line out loud.");
+        s.rounds = rounds.map(roundScript);
+      }
+      s.do.push("At the end, ask: \"" + ((g.debrief || [])[0] || "What did you learn from this game?") + "\"");
+    } else if (n === "Guided practice") {
+      var ch = mod.challenge;
+      if (ch && !pic) {
+        s.say = [
+          "Let's try one together. " + ch.scenario,
+          ch.options.map(function (o, k) { return letters[k] + ": " + o; }).join(". ") + ".",
+          "Turn to a partner and pick one. You have 30 seconds.",
+          "The best answer is " + (reveal.bestAnswer || letters[ch.best]) + ". " + (reveal.why || ""),
+        ];
+      } else {
+        s.say = [
+          "Let's do one together. I'll draw, and you tell me what to do.",
+          "Remember our big idea: " + big + ".",
+          reveal.discussionPrompt ? (pic ? first(reveal.discussionPrompt) : reveal.discussionPrompt) : "Who can give me an example?",
+        ];
+      }
+      s.do = [
+        pack.guidedPractice || "Work through an example together on the board.",
+        pic ? "You hold the marker. Students give the answers by pointing or with thumbs." : "Do the first example together, the next one in pairs.",
+        reveal.commonTrap ? "Watch for this mistake: " + reveal.commonTrap + "." : "Praise good reasons, not just right answers.",
+      ];
+    } else if (n.indexOf("Second activity") === 0 && c.extraGame) {
+      s.say = ["Let's get moving with one more game: " + c.extraGame.name + "!"];
+      s.do = (c.extraGame.howToPlay || []).slice();
+    } else if (n === "Extension") {
+      var ext = pack.extension || "Students explain today's idea to someone who missed it.";
+      s.say = ["Here's a challenge for you: " + ext.replace(/^Students /, "").replace(/\.$/, "") + "."];
+      s.do = [
+        pic ? "Hand out paper and crayons. Walk around and ask each student to tell you about their drawing." : "Give them 4 minutes, then ask 2–3 students to share.",
+        "Don't collect anything with names on it. Students keep their work.",
+      ];
+    } else if (n === "Check for understanding") {
+      s.say = pic
+        ? ["Thumbs up if this is true: " + big + "!", "Show me again: thumbs up if you will use this at home!"]
+        : [
+          "Quick check. Finish this sentence for your partner: \"Today I learned that…\"",
+          reveal.applyIt || "Tell me one way you'll use this idea this week.",
+          "Hold up one to five fingers: how sure do you feel about today's idea?",
+        ];
+      s.do = [
+        pack.checkUnderstanding || "Make sure every student can say the big idea.",
+        "Look around the whole room, not just the front. If lots of thumbs or fingers are low, say the big idea again with a new example.",
+      ];
+    } else if (n === "Wrap-up & take-home") {
+      var th = mod.takeHome || {};
+      s.say = [
+        "You all did amazing today! Remember: " + big + ".",
+        "This card is called \"" + (th.title || "Take-home") + "\". Take it home and ask a grown-up: \"" + (th.familyQuestion || "") + "\"",
+        "Thank you for being such great money thinkers!",
+      ];
+      s.do = [
+        "Hand out the take-home cards.",
+        pic ? "Hold up a card and point to each box so they know what goes where. The drawing is their part; a grown-up can do the writing." : "Read the family question out loud once more.",
+        "Thank the teacher. Leave the room as tidy as you found it.",
+      ];
+    }
+  });
 }
 
 /* Modules a game suits: its own `topics`, plus any lesson pack that lists
@@ -1689,6 +1865,23 @@ function gameToText(g) {
   return lines.join("\n");
 }
 
+/* Plain-text game cards for a topic game: one card per round, with the
+   answer and source on the back, for rooms with no screen. */
+function topicGameToText(game) {
+  var lines = [
+    "GAME CARDS: " + game.title.toUpperCase(),
+    game.rounds.length + " rounds. Read the question aloud, students vote, then read the answer.",
+  ];
+  game.rounds.forEach(function (r, i) {
+    var src = roundSource(r, game.topic);
+    lines.push("", "- - - - - - - - - - - - - - - - - - - - - - - -", "ROUND " + (i + 1) + ": " + r.q);
+    r.opts.forEach(function (o, k) { lines.push("  " + String.fromCharCode(65 + k) + ". " + o[0] + " " + o[1]); });
+    lines.push("  ANSWER: " + (r.best < 0 ? "Any answer is OK." : String.fromCharCode(65 + r.best) + ". " + r.opts[r.best][1]) + " " + r.why);
+    if (src) lines.push("  Source: " + src.name + (src.url ? " (" + src.url + ")" : ""));
+  });
+  return lines.join("\n");
+}
+
 /* Plain-text version of a whole plan and packet, for downloading. */
 function planToText(plan, packet) {
   var m = plan.module;
@@ -1703,10 +1896,19 @@ function planToText(plan, packet) {
   plan.steps.forEach(function (s) {
     lines.push("", s.minutes + " min  " + s.name, "  " + s.what);
     if (s.script) lines.push("  Say this: " + s.script);
-    if (s.how) lines.push("  How to run it: " + s.how);
+    (s.say || []).forEach(function (l, i) { lines.push((i ? "           " : "  SAY:     ") + "\"" + l + "\""); });
+    (s.do || []).forEach(function (l, i) { lines.push("  DO " + (i + 1) + ".    " + l); });
+    (s.rounds || []).forEach(function (r, i) {
+      lines.push("  ROUND " + (i + 1) + ":");
+      r.say.forEach(function (l) { lines.push("    Say: \"" + l + "\""); });
+      r.do.forEach(function (l) { lines.push("    Do:  " + l); });
+      lines.push("    Then say: \"" + r.answer + "\"");
+    });
+    if (s.how) lines.push("  Tip: " + s.how);
   });
   lines.push("", "MATERIALS");
   plan.materials.forEach(function (x) { lines.push("[ ] " + x); });
+  if (plan.topicGame) lines.push("", "=".repeat(48), topicGameToText(plan.topicGame));
   packet.forEach(function (it) {
     lines.push("", "=".repeat(48), it.title.toUpperCase(), "=".repeat(48), it.body);
   });
@@ -1752,12 +1954,13 @@ function buildPacket(plan) {
         "\nGrade band: " + grade + "\nLength: " + plan.totalMinutes + " min\nObjective: " + m.objective +
         "\nFormat: teen-led, interactive (challenge → vote → reveal → discuss → take-home)" +
         "\nTechnology required: " + plan.deviceGuide.label +
+        (m.extraTopic && plan.topicGame ? "\nContent sources: " + plan.topicGame.sources.map(function (x) { return x.name; }).join("; ") : "") +
         "\nPrivacy: educational only; no student data collected.",
     },
     {
       ico: "✅", title: "Event checklist", sub: "Day-of run of show",
       body: "BEFORE:\n" + plan.deviceGuide.setup.map(function (x) { return "[ ] " + x; }).join("\n") +
-        "\n[ ] Rehearse the opening script out loud\n[ ] Load module: " + m.title +
+        "\n[ ] Rehearse the opening script out loud\n[ ] " + (m.extraTopic ? "Open the topic game: " : "Load module: ") + m.title +
         "\nDURING:\n" + plan.steps.map(function (s) { return "[ ] " + s.name + " (" + s.minutes + " min)"; }).join("\n") +
         "\nAFTER:\n[ ] Thank the class and the teacher\n[ ] Note what went well on the reflection page",
     },

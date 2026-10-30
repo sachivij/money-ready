@@ -273,5 +273,210 @@ var PLAY_ENGINES = (function () {
     pickLevel();
   }
 
-  return { "savings-quest": savingsQuest, inbox: inbox };
+  // ================================================================
+  // TOPIC QUIZ — the game the Workshop Builder makes for a topic.
+  // `game` comes from buildTopicGame() (game-bank.js). The class votes
+  // any way the room allows; the volunteer counts the votes on screen and
+  // reveals the right one (this replaced the Facilitator dashboard). K–2 games show two big
+  // pictures and read every question aloud with the browser's own voice.
+  // ================================================================
+  function speak(text) {
+    try {
+      if (!window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no voice on this device; the volunteer reads aloud */ }
+  }
+  var canSpeak = typeof window !== "undefined" && !!window.speechSynthesis;
+
+  // Two ways to play:
+  //   class (default) — on the room's screen. The volunteer taps an answer
+  //     once for every vote counted in the room, then taps Reveal; bars show
+  //     the real split. The end screen has a counts-only class summary.
+  //   solo (game.solo) — one student on their own device: tap an answer
+  //     and see if it's right.
+  function quiz(root, game) {
+    var pic = game.picture;
+    var solo = !!game.solo;
+    var order, i, stars, votes;
+
+    function src(r) {
+      var s = roundSource(r, game.topic);
+      return s ? '<div class="helper-source qz-src">' + (s.url ? "🏛️" : "📚") + " <span>Source: " + esc(s.name) +
+        (s.url ? " · " + esc(s.url) : "") + "</span></div>" : "";
+    }
+    function hear(text) {
+      return canSpeak ? '<button class="btn btn-secondary qz-hear" data-say="' + esc(text) + '" aria-label="Hear it">🔊 Hear it</button>' : "";
+    }
+    function wireHear() {
+      root.querySelectorAll("[data-say]").forEach(function (b) {
+        b.addEventListener("click", function () { speak(b.getAttribute("data-say")); });
+      });
+    }
+    function sum(v) { return v.reduce(function (a, b) { return a + b; }, 0); }
+
+    function intro() {
+      root.innerHTML =
+        '<div class="play-panel center' + (pic ? " qz-pic" : "") + '"><div class="qz-hero" aria-hidden="true">' + esc(game.topic.emoji) + "</div>" +
+        "<h2>" + esc(game.title) + "</h2>" +
+        '<p class="muted">' + game.rounds.length + " rounds" + (pic ? " · two big pictures each time, read aloud" : "") + "</p>" +
+        '<ol class="numbered qz-how">' +
+          (solo
+            ? "<li>Read the question" + (pic ? " or tap 🔊." : ".") + "</li><li>Tap your answer.</li><li>See if you're right and why. ⭐ for each right answer.</li>"
+            : "<li>" + (pic ? "Tap 🔊 or read the question out loud." : "Read the question out loud.") + "</li>" +
+              "<li>Students vote: " + (pic ? "point, walk to a picture, or raise hands" : "hands, corners, thumbs") +
+                (game.playLink ? ", or on their own device" : "") + ".</li>" +
+              "<li>Tap an answer once for <strong>every vote</strong> you count. Made a mistake? Tap ↩ Undo.</li>" +
+              "<li>Tap <strong>Reveal</strong> to see the answer and how the class voted.</li>") +
+        "</ol>" +
+        (!solo && game.playLink
+          ? '<div class="qz-link"><strong>📱 Students with devices can play along:</strong><div class="play-link">' + esc(game.playLink) + "</div>" +
+            '<span class="muted" style="font-size:.82rem">Their taps stay on their own device, so still count their votes here (ask them to raise hands).</span></div>'
+          : "") +
+        '<button class="btn btn-primary btn-lg mt-2" id="qzGo">▶ Start</button></div>';
+      document.getElementById("qzGo").addEventListener("click", function () {
+        order = shuffle(game.rounds).map(function (r) {
+          // Shuffle each round's answers once, so counting doesn't jump around.
+          return { r: r, opts: shuffle(r.opts.map(function (o, k) { return { e: o[0], t: o[1], k: k }; })) };
+        });
+        votes = order.map(function (x) { return x.r.opts.map(function () { return 0; }); });
+        i = 0; stars = 0;
+        ask();
+      });
+    }
+
+    function ask() {
+      var x = order[i], r = x.r, v = votes[i], n = sum(v), undo = [];
+      function draw() {
+        n = sum(v);
+        root.innerHTML =
+          '<div class="play-panel' + (pic ? " qz-pic" : "") + '">' +
+          '<div class="eyebrow">Round ' + (i + 1) + " of " + order.length + ' · <span aria-label="' + stars + ' stars">⭐ ' + stars + "</span>" +
+            (solo ? "" : ' · <span id="qzCount">' + n + " vote" + (n === 1 ? "" : "s") + " counted</span>") + "</div>" +
+          '<div class="qz-q"><h2>' + esc(r.q) + "</h2>" + hear(r.q) + "</div>" +
+          '<div class="qz-opts' + (x.opts.length === 2 ? " two" : "") + '">' +
+            x.opts.map(function (o) {
+              return '<button class="qz-opt" data-k="' + o.k + '" aria-label="' + esc(o.t) + (solo ? "" : ", " + v[o.k] + " votes") + '">' +
+                '<span class="qz-emoji" aria-hidden="true">' + o.e + '</span><span class="qz-label">' + esc(o.t) + "</span>" +
+                (solo ? "" : '<span class="qz-votes">' + (v[o.k] ? v[o.k] + (v[o.k] === 1 ? " vote" : " votes") : "tap to count") + "</span>") +
+                "</button>";
+            }).join("") +
+          "</div>" +
+          (solo ? "" :
+            '<div class="flex gap wrap-flex mt-3" style="justify-content:center">' +
+              '<button class="btn btn-secondary" id="qzUndo"' + (undo.length ? "" : " disabled") + ">↩ Undo</button>" +
+              '<button class="btn btn-primary btn-lg" id="qzReveal">Reveal the answer →</button></div>') +
+          "</div>";
+        root.querySelectorAll(".qz-opt").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var k = Number(b.getAttribute("data-k"));
+            if (solo) { v[k] = 1; return answer(); }
+            v[k]++; undo.push(k); draw();
+            var again = root.querySelector('.qz-opt[data-k="' + k + '"]');
+            if (again) again.focus();
+          });
+        });
+        if (!solo) {
+          document.getElementById("qzUndo").addEventListener("click", function () {
+            if (undo.length) { v[undo.pop()]--; draw(); }
+          });
+          document.getElementById("qzReveal").addEventListener("click", answer);
+        }
+        wireHear();
+      }
+      draw();
+      if (pic) speak(r.q);
+      root.querySelector(".qz-opt").focus();
+    }
+
+    function answer() {
+      var x = order[i], r = x.r, v = votes[i], n = sum(v);
+      var any = r.best < 0;
+      var top = v.indexOf(Math.max.apply(null, v));
+      // Solo: right if they tapped it. Class: right if the most votes went to it.
+      var right = any ? true : n ? v[r.best] === v[top] : null;
+      if (right) stars++;
+      var last = i >= order.length - 1;
+      var best = any ? null : r.opts[r.best];
+      var head = any ? "Any answer is OK!"
+        : right === null ? "Here's the answer:"
+        : right ? (solo ? "Yes! That's right." : "Yes! Most of the class got it.")
+        : (solo ? "Not quite. The answer is:" : "Good try! The answer is:");
+      root.innerHTML =
+        '<div class="play-panel' + (pic ? " qz-pic" : "") + '">' +
+        '<div class="eyebrow">Round ' + (i + 1) + " of " + order.length + " · ⭐ " + stars + "</div>" +
+        '<div class="ib-result ' + (right === false ? "no" : "ok") + ' qz-result" role="status">' +
+          '<div class="qz-big" aria-hidden="true">' + (right === false ? "🤔" : "🎉") + "</div>" +
+          "<strong>" + esc(head) + "</strong>" +
+          (best ? '<div class="qz-answer"><span class="qz-emoji" aria-hidden="true">' + best[0] + "</span> " + esc(best[1]) + "</div>" : "") +
+          "<p>" + esc(r.why) + "</p>" + hear(r.why) +
+        "</div>" +
+        (!solo && n
+          ? '<div class="qz-bars" aria-label="How the class voted">' + x.opts.map(function (o) {
+              var pct = Math.round((v[o.k] / n) * 100);
+              var ok = any || o.k === r.best;
+              return '<div class="result-bar"><div class="rb-top"><span>' + o.e + " " + esc(o.t) + (ok && !any ? " ✓" : "") + "</span><span>" +
+                v[o.k] + " · " + pct + '%</span></div><div class="rb-track"><div class="rb-fill ' + (ok ? "best" : "other") +
+                '" style="width:' + Math.max(pct, 2) + '%"></div></div></div>';
+            }).join("") + "</div>"
+          : "") +
+        src(r) +
+        '<div class="center mt-3"><button class="btn btn-primary btn-lg" id="qzNext">' + (last ? "See our stars →" : "Next round →") + "</button></div></div>";
+      wireHear();
+      if (pic) speak((right ? "Yes! " : "") + r.why);
+      document.getElementById("qzNext").addEventListener("click", function () {
+        if (last) return finish();
+        i++;
+        ask();
+      });
+      document.getElementById("qzNext").focus();
+    }
+
+    // Counts-only summary of how the class voted, for the volunteer's notes.
+    function summary() {
+      var lines = ["Money Ready game summary (counts only, no names)", game.title.replace(/^\S+ /, ""), ""];
+      order.forEach(function (x, k) {
+        var v = votes[k], n = sum(v), r = x.r;
+        lines.push("Round " + (k + 1) + ": " + r.q);
+        lines.push(n ? "  " + n + " votes, " + Math.round(((r.best < 0 ? n : v[r.best]) / n) * 100) + "% picked " +
+          (r.best < 0 ? "an answer (any is OK)" : '"' + r.opts[r.best][1] + '"') : "  No votes counted");
+      });
+      return lines.join("\n");
+    }
+
+    function finish() {
+      var srcs = game.sources || [];
+      var counted = !solo && votes.some(function (v) { return sum(v) > 0; });
+      root.innerHTML =
+        '<div class="play-panel center' + (pic ? " qz-pic" : "") + '"><div class="qz-hero" aria-hidden="true">' +
+          new Array(stars + 1).join("⭐") + (stars ? "" : "🌱") + "</div>" +
+        "<h2>" + (solo ? "You got " : "We got ") + stars + " of " + order.length + " stars!</h2>" +
+        '<p class="muted">What we learned:</p>' +
+        '<ul class="play-list" style="text-align:left;max-width:560px;margin:0 auto">' +
+          order.map(function (x) { return "<li>" + esc(x.r.why) + "</li>"; }).join("") + "</ul>" +
+        (counted
+          ? '<details class="mt-2" style="text-align:left;max-width:560px;margin-left:auto;margin-right:auto"><summary style="cursor:pointer;font-weight:700">How the class voted (counts only)</summary>' +
+            '<pre id="qzSummary" class="qz-summary">' + esc(summary()) + "</pre>" +
+            '<button class="btn btn-secondary" id="qzCopy">📋 Copy summary</button> <span id="qzCopied" class="muted" style="font-size:.85rem"></span></details>'
+          : "") +
+        (srcs.length ? '<p class="muted mt-2" style="font-size:.88rem">Sources: ' +
+          srcs.map(function (s) { return esc(s.name) + (s.url ? " (" + esc(s.url) + ")" : ""); }).join("; ") + "</p>" : "") +
+        '<div class="flex gap wrap-flex mt-3" style="justify-content:center">' +
+          '<button class="btn btn-primary" id="qzAgain">Play again</button></div></div>';
+      if (pic) speak((solo ? "You got " : "We got ") + stars + " stars!");
+      var copy = document.getElementById("qzCopy");
+      if (copy) copy.addEventListener("click", function () {
+        var done = function (ok) { document.getElementById("qzCopied").textContent = ok ? "Copied!" : "Select the text above to copy it."; };
+        try { navigator.clipboard.writeText(summary()).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }
+      });
+      document.getElementById("qzAgain").addEventListener("click", intro);
+      document.getElementById("qzAgain").focus();
+    }
+
+    intro();
+  }
+
+  return { "savings-quest": savingsQuest, inbox: inbox, quiz: quiz };
 })();
