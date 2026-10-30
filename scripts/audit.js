@@ -111,6 +111,12 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
       if (extra && (await p.$eval('#playRoot', e => e.textContent)).indexOf('Sources:') < 0) probs.push('game ' + id + ': extra topic shows no sources');
     }
   }
+  // The plan shows every round of the topic's game, and extra topics say where facts come from.
+  await go('#/builder?topic=insurance-basics&grade=Grades%206%E2%80%938&min=30&group=Whole%20class&dev=none');
+  await p.waitForTimeout(150);
+  const shown = await p.$$eval('#planOut .round-card', e => e.length);
+  if (shown < 4) probs.push('builder: plan shows ' + shown + ' game rounds (want every round)');
+  if ((await p.$eval('#planOut', e => e.textContent)).indexOf('Not a Jump$tart module') < 0) probs.push('builder: extra topic plan has no source note');
   await go('#/builder');
   await p.fill('#gFind', 'how do taxes work');
   await jsClick('#gFindBtn');

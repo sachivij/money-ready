@@ -476,11 +476,6 @@
         "</div>" +
         '<div class="card mt-3" style="border-left:5px solid var(--green)">' +
           "<strong>Learning objective:</strong> " + esc(m.objective) + "</div>" +
-        (m.extraTopic && plan.topicGame
-          ? '<div class="callout mt-3"><div class="ico">🏛️</div><div><strong>Not a Jump$tart module.</strong> ' +
-            "Every fact in this workshop's game comes from a trusted U.S. government consumer-education source: " +
-            esc(plan.topicGame.sources.map(function (x) { return x.name + " (" + x.url + ")"; }).join("; ")) + ".</div></div>"
-          : "") +
       "</div>" +
       '<section class="section tight"><div class="wrap">' +
         "<h2 class=\"center\" style=\"margin-bottom:8px\">From static lesson to live learning moment</h2>" +
@@ -1468,6 +1463,15 @@
         '<div class="card mt-3" style="border-left:5px solid var(--green);box-shadow:none">' +
           "<strong>Learning objective:</strong> " + esc(m.objective) + "</div>" +
 
+        (m.extraTopic && plan.topicGame
+          ? '<div class="callout mt-3"><div class="ico">🏛️</div><div><strong>Not a Jump$tart module.</strong> ' +
+            "Every fact in this workshop's game comes from a trusted U.S. government consumer-education source: " +
+            esc(plan.topicGame.sources.map(function (x) { return x.name + " (" + x.url + ")"; }).join("; ")) + ".</div></div>"
+          : "") +
+
+        // The game for this topic, up front: every round and answer.
+        topicGameCard(plan) +
+
         // K–2 picture banner
         (plan.pictureBased
           ? '<div class="callout mt-3"><div class="ico">🎨</div><div><strong>This plan is built for pre-readers.</strong> ' +
@@ -1514,8 +1518,6 @@
                 ' <span class="muted" style="font-size:.85rem">· ' + g.minutes + " min</span></button>"; }).join("") +
             "</div></div>"
           : "") +
-
-        topicGameCard(plan) +
 
         // Picture activity bank for K–2
         (plan.pictureActivities.length
@@ -1589,30 +1591,39 @@
     var g = plan.topicGame;
     if (!g || !g.rounds.length) return "";
     var href = "#/game?topic=" + plan.module.id + "&grade=" + plan.profile.id;
-    return '<div class="card mt-3" style="box-shadow:none;border:2px solid var(--green)">' +
-      '<div class="eyebrow">🎮 Your game · ready to play</div>' +
-      "<h3 style=\"margin:4px 0\">" + esc(g.title) + "</h3>" +
-      '<p class="muted" style="font-size:.92rem">' + g.rounds.length + " rounds made for " + esc(plan.grade) + ". " +
-        (g.picture
-          ? "Two big pictures per round and almost no words. The screen can read each question out loud."
-          : "Each round has picture answers, the right answer, and why.") +
-        (plan.devices === "none" ? " No screen in the room? Download the game cards and read them out; students vote by moving or with hands." : "") +
-      "</p>" +
-      '<div class="flex gap wrap-flex no-print">' +
+    var main = plan.mainGame && !plan.mainGame.multiRound ? plan.mainGame : null;
+    var srcNames = g.sources.map(function (x) { return x.name; });
+    return '<div class="card mt-3 topic-game" style="box-shadow:none;border:2px solid var(--green)">' +
+      '<div class="eyebrow">🎮 Your game for this topic · ready to play</div>' +
+      '<h3 style="margin:4px 0">' + esc(g.title) + "</h3>" +
+      // At a glance: what the game is, who it is for, how to run it.
+      '<div class="game-facts">' +
+        "<div><span>Topic</span><strong>" + esc(g.topic.title) + "</strong></div>" +
+        "<div><span>Made for</span><strong>" + esc(plan.grade) + "</strong></div>" +
+        "<div><span>Rounds</span><strong>" + g.rounds.length + " questions</strong></div>" +
+        "<div><span>Style</span><strong>" + (g.picture ? "Two big pictures, read aloud" : "Picture answers + why") + "</strong></div>" +
+        "<div><span>Run it as</span><strong>" + (main ? main.emoji + " " + esc(main.name) : "On screen or with the cards") + "</strong></div>" +
+        (srcNames.length ? "<div><span>Facts from</span><strong>" + esc(srcNames.join("; ")) + "</strong></div>" : "") +
+      "</div>" +
+      '<p class="muted" style="font-size:.92rem;margin:10px 0 0"><strong>Students practice:</strong> ' + esc(g.topic.objective) +
+        (plan.devices === "none" ? " No screen in the room? Download the game cards and read each one out; students vote by moving or with hands." : "") + "</p>" +
+      '<div class="flex gap wrap-flex no-print mt-2">' +
         '<a class="btn btn-primary" href="' + href + '">▶ Play on screen</a>' +
         '<button class="btn btn-secondary" id="gameCards">⬇ Download game cards</button>' +
       "</div>" +
-      '<details class="mt-2"><summary style="cursor:pointer;font-weight:700">See all ' + g.rounds.length + " rounds and answers</summary>" +
-        '<div class="mt-2">' + g.rounds.map(function (r, i) {
-          var s = roundSource(r, g.topic);
-          return '<div class="game-round"><strong>' + (i + 1) + ". " + esc(r.q) + "</strong><br>" +
-            r.opts.map(function (o, k) {
-              return '<span class="' + (k === r.best ? "opt-ok" : "") + '">' + o[0] + " " + esc(o[1]) + (k === r.best ? " ✓" : "") + "</span>";
-            }).join(" &nbsp;·&nbsp; ") +
-            '<br><span class="muted">' + esc(r.why) + "</span>" +
-            (s ? '<br><span class="muted" style="font-size:.82rem">Source: ' + esc(s.name) + (s.url ? " · " + esc(s.url) : "") + "</span>" : "") +
-            "</div>";
-        }).join("") + "</div></details>" +
+      '<div class="eyebrow mt-3">What\'s in the game: every round, with the answer</div>' +
+      '<div class="round-grid' + (g.picture ? " pic" : "") + '">' + g.rounds.map(function (r, i) {
+        var s = roundSource(r, g.topic);
+        return '<div class="round-card"><div class="round-n">Round ' + (i + 1) + "</div>" +
+          '<div class="round-q">' + esc(r.q) + "</div>" +
+          '<div class="round-opts">' + r.opts.map(function (o, k) {
+            return '<span class="round-opt' + (k === r.best ? " ok" : "") + '"><span class="round-emoji" aria-hidden="true">' + o[0] + "</span>" +
+              esc(o[1]) + (k === r.best ? ' <span class="round-tick" aria-label="right answer">✓</span>' : "") + "</span>";
+          }).join("") + "</div>" +
+          '<div class="round-why">' + (r.best < 0 ? "Any answer is OK. " : "") + esc(r.why) + "</div>" +
+          (s ? '<div class="round-src">Source: ' + esc(s.name) + (s.url ? " · " + esc(s.url) : "") + "</div>" : "") +
+          "</div>";
+      }).join("") + "</div>" +
     "</div>";
   }
 

@@ -519,8 +519,26 @@ a { color: var(--green-dark); }
 .qz-pic .qz-result p { font-size: 1.3rem; }
 .topic-search { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
 .topic-search input { flex: 1; min-width: 200px; }
-.game-round { border-left: 3px solid var(--green); padding: 4px 0 4px 14px; margin-bottom: 12px; font-size: .92rem; }
-.game-round .opt-ok { font-weight: 800; color: var(--green-dark); }
+.game-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; margin-top: 10px; }
+.game-facts > div { background: var(--cream-2); border-radius: 12px; padding: 8px 12px; }
+.game-facts span { display: block; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); }
+.game-facts strong { font-size: .92rem; }
+.round-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-top: 8px; }
+.round-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; background: #fff; display: flex; flex-direction: column; gap: 8px; }
+.round-n { font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--green-dark); }
+.round-q { font-weight: 800; line-height: 1.3; }
+.round-opts { display: flex; flex-direction: column; gap: 6px; }
+.round-opt { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 10px; background: var(--cream-2); font-size: .9rem; }
+.round-opt.ok { background: var(--green-soft); border: 2px solid var(--green); font-weight: 700; }
+.round-emoji { font-size: 1.5rem; line-height: 1; }
+.round-tick { color: var(--green-dark); font-weight: 800; margin-left: auto; }
+.round-why { font-size: .88rem; color: var(--ink-soft); }
+.round-src { font-size: .78rem; color: var(--ink-soft); border-top: 1px dashed var(--line); padding-top: 6px; }
+.round-grid.pic .round-opts { flex-direction: row; }
+.round-grid.pic .round-opt { flex: 1; flex-direction: column; text-align: center; padding: 10px 6px; }
+.round-grid.pic .round-emoji { font-size: 2.6rem; }
+.round-grid.pic .round-tick { margin-left: 0; }
+@media print { .round-card { break-inside: avoid; } }
 @media (max-width: 620px) {
   .game-topic-filter { margin-left: 0; width: 100%; }
   .game-topic-filter select { flex: 1; min-width: 0; }
@@ -528,6 +546,7 @@ a { color: var(--green-dark); }
   .pq-split-out { gap: 14px; }
   .pq-big { font-size: 2.4rem; }
   .qz-pic .qz-opt { min-height: 160px; }
+  .game-facts { grid-template-columns: 1fr 1fr; }
   .qz-pic .qz-emoji { font-size: 4rem; }
   .qz-pic h2 { font-size: 1.6rem; }
 }

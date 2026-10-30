@@ -495,6 +495,17 @@ function buildTopicGame(topicId, gradeId, count) {
   var picture = gradeId === "k2";
   var rounds = (picture ? bank.picture : bank.rounds) || [];
   if (count) rounds = rounds.slice(0, count);
+  // Most rounds are written with the right answer first. Rotate the
+  // answers so printed cards don't always have the answer in spot A.
+  rounds = rounds.map(function (r, i) {
+    var n = r.opts.length, shift = i % n;
+    var opts = r.opts.slice(shift).concat(r.opts.slice(0, shift));
+    var copy = {};
+    for (var k in r) copy[k] = r[k];
+    copy.opts = opts;
+    copy.best = r.best < 0 ? r.best : (r.best - shift + n) % n;
+    return copy;
+  });
   return {
     topic: topic,
     picture: picture,
