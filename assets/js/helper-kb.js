@@ -44,6 +44,28 @@ var KB_SRC = {
   va529: ["Virginia529, Commonwealth of Virginia", "virginia529.com"],
   hud: ["U.S. Department of Housing and Urban Development (HUD)", "hud.gov"],
 };
+// One line on what each source is, shown on the Resources page.
+var KB_SRC_ABOUT = {
+  cfpb: "The federal agency that protects consumers; plain-language guides on credit, banking and scams.",
+  cfpbKids: "CFPB's activities for parents and teachers, organized by age.",
+  fdic: "Insures bank deposits; its Money Smart lessons cover banking and saving.",
+  ftc: "Fights fraud and identity theft; guides on scams and staying safe online.",
+  sec: "Oversees investing; Investor.gov explains stocks, funds and compound interest.",
+  irs: "The federal tax agency; explains what taxes are and how they work.",
+  fsa: "Explains paying for college: grants, loans, scholarships and the FAFSA.",
+  fed: "The Federal Reserve's free lessons on money, banking and inflation.",
+  dol: "Rules for teen workers: ages, hours and safe jobs.",
+  ncua: "Insures credit unions and explains how they differ from banks.",
+  naic: "State insurance regulators' guides to how insurance works.",
+  treasury: "Savings bonds and how the government borrows money.",
+  mint: "Makes U.S. coins; facts about each coin.",
+  ssa: "Social Security numbers and why to keep them private.",
+  sba: "Helps people start and run small businesses.",
+  bls: "Facts about jobs, pay and careers.",
+  courts: "Explains bankruptcy and what happens when debts can't be paid.",
+  va529: "Virginia's college savings program.",
+  hud: "Housing help, renting and buying a home.",
+};
 function kbTrusted(src) { return { tier: "trusted", source: KB_SRC[src][0], url: KB_SRC[src][1] }; }
 function kbEntry(entry, extra) { for (var k in extra) entry[k] = extra[k]; return entry; }
 

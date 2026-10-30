@@ -236,16 +236,18 @@ Worth also checking by hand when relevant, since the audit does not:
 
 ## Decisions worth knowing
 
-**Three account types, not logins.** Volunteer / school / organization is a
-view preference stored on the device. It changes only which impact metrics
-are shown. It is deliberately not an account — no password, no server, no
-personal data.
+**No role question, no Impact tab, no Modules tab (2026-10-30, Sumeet).** The
+"Who's using the toolkit?" pop-up, the header role chip and the Impact page
+were removed. The home page chart still quietly remembers volunteer / school /
+organization on the device, only so the students-reached count (spec 09)
+knows the role; anyone who never picks counts as a volunteer. The Modules tab
+was folded into **Resources**, which only explains what each resource is (no
+games on it). Old `#/modules` and `#/impact` links redirect. Module pages
+(`#/module/:id`) still exist for the builder and prep links.
 
-**Impact metrics per role** (`ACCOUNT_TYPES` in `lessons.js`):
-- volunteer — 7 metrics
-- school — 5 metrics, and the label reads **"Lessons completed"**
-- organization — 7 metrics, four of them tagged "program-wide total", plus
-  the measurement layer and the value-of-volunteer-time figure
+**Volunteer Prep covers every topic.** Modules plus `EXTRA_TOPICS`; age group
+uses `GRADE_PROFILES`, length rescales the timed steps, and answers come only
+from the Standards Helper's cited entries (`searchKB` in `app.js`).
 
 **Games: 17 of 21 need no devices.** This is a feature, not a
 limitation. Elementary classrooms often have no student devices and

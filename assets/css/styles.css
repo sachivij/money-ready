@@ -405,8 +405,7 @@ a { color: var(--green-dark); }
 .footer-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .footer-badges .badge { background: rgba(255,255,255,.1); color: #dff0eb; border-color: rgba(255,255,255,.15); }
 
-/* ---------- Account type picker ---------- */
-.role-chip { padding: 8px 14px; font-size: .85rem; flex: none; }
+/* ---------- Pop-up (students reached) ---------- */
 .role-overlay {
   position: fixed; inset: 0; z-index: 200; display: grid; place-items: center;
   background: rgba(22, 51, 60, .55); backdrop-filter: blur(4px); padding: 20px;
@@ -415,23 +414,11 @@ a { color: var(--green-dark); }
   background: var(--white); border-radius: var(--radius-lg); padding: 32px;
   max-width: 760px; width: 100%; box-shadow: var(--shadow-lg); max-height: 90vh; overflow-y: auto;
 }
-.role-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 22px; }
-.role-option {
-  text-align: left; cursor: pointer; font: inherit; background: #fff;
-  border: 2px solid var(--line); border-radius: var(--radius); padding: 20px;
-  transition: .15s; display: flex; flex-direction: column; gap: 6px;
-}
-.role-option:hover { border-color: var(--green); transform: translateY(-2px); box-shadow: var(--shadow); }
-.role-option.on { border-color: var(--green); background: var(--green-soft); }
-.role-option .ro-emoji { font-size: 2rem; }
-.role-option .ro-name { font-weight: 800; }
-.role-option .ro-blurb { font-size: .87rem; color: var(--ink-soft); }
 .role-note { font-size: .82rem; color: var(--ink-soft); margin-top: 18px; }
-.role-banner {
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  background: var(--blue-soft); border: 1px solid rgba(61,125,214,.25);
-  border-radius: var(--radius-sm); padding: 12px 16px; font-size: .9rem;
-}
+
+/* ---------- Volunteer prep ---------- */
+.prep-layout { grid-template-columns: 320px 1fr; align-items: start; }
+@media (max-width: 900px) { .prep-layout { grid-template-columns: 1fr; } }
 
 /* ---------- Games ---------- */
 .game-grid { grid-template-columns: repeat(3, 1fr); }
@@ -604,11 +591,10 @@ a { color: var(--green-dark); }
 .plan-step p { margin: 0; font-size: .93rem; color: var(--ink-soft); }
 
 @media (max-width: 900px) {
-  .role-options, .game-grid { grid-template-columns: repeat(2, 1fr); }
-  .role-chip { display: none; }
+  .game-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 620px) {
-  .role-options, .game-grid { grid-template-columns: 1fr; }
+  .game-grid { grid-template-columns: 1fr; }
   .plan-step { grid-template-columns: 1fr; gap: 2px; }
 }
 
