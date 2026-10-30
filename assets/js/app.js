@@ -927,7 +927,7 @@
         '<div class="eyebrow">Standards-grounded helper</div>' +
         "<h1>Quick answers — always with a source</h1>" +
         '<p class="muted" style="max-width:66ch">Ask a financial-literacy question and this helper looks up a plain-English ' +
-          "answer from Jump$tart resources, or from trusted U.S. government consumer-education sources (CFPB, FDIC, FTC, SEC, IRS, " +
+          "answer from Jump$tart resources, or from trusted U.S. government consumer-education sources (such as CFPB, FDIC, FTC, SEC, IRS, and " +
           "Federal Student Aid) for questions Jump$tart doesn't cover. Every answer shows its source underneath. " +
           "<strong>It does not freestyle or make things up.</strong> " +
           "<span class=\"pill-note\">Prototype: example resource set, pending Jump$tart review</span></p>" +
@@ -947,31 +947,67 @@
           "If it doesn't have a grounded answer, it says so and points you to a trusted adult rather than guessing.</div></div>" +
       "</div></section>";
 
-    // Words too common to say what a question is about. Without this list,
-    // "what" alone matched every stored question.
+    // ---- Matching -------------------------------------------------------
+    // A question matches an entry only through the entry's topic `tags`.
+    // Both sides are turned into word lists (lowercase, punctuation dropped,
+    // plurals folded: "taxes" -> "tax", "needs" -> "need"), and a tag counts
+    // only as whole words in a row. When tags overlap in the question, the
+    // longer phrase wins and the shorter one is ignored, so "deposit
+    // insurance" never also counts as "insurance" and "credit card" never
+    // also counts as "credit". Entries with nothing left get no answer.
+    function stem(w) {
+      if (w.length > 4 && /ies$/.test(w)) return w.slice(0, -3) + "y";
+      if (/(ss|x|ch|sh)es$/.test(w)) return w.slice(0, -2);
+      if (w.length > 3 && /s$/.test(w) && !/(ss|us|is)$/.test(w)) return w.slice(0, -1);
+      return w;
+    }
+    function words(text) {
+      var t = text.toLowerCase()
+        .replace(/401\s*\(?k\)?/g, "401k").replace(/403\s*\(?b\)?/g, "403b")
+        .replace(/['\u2019]s\b/g, "").replace(/['\u2019]/g, "")
+        .replace(/[^a-z0-9]+/g, " ").trim();
+      return t ? t.split(" ").map(stem) : [];
+    }
+    // Words too common to say what a question is about; only used to break
+    // ties between entries that matched the same tags.
     var STOP = ["what", "when", "where", "which", "while", "should", "would", "could", "about",
       "does", "difference", "between", "there", "their", "they", "this", "that", "with", "have",
-      "your", "from", "work", "like", "much", "many", "some", "good", "best", "people", "really"];
-    function hasWord(text, word) {
-      // Whole-word match, allowing a plural ("stock" matches "stocks").
-      var w = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      return new RegExp("(^|[^a-z])" + w + "(s|es)?([^a-z]|$)").test(text);
-    }
-    // A question only matches an entry when it contains one of the entry's
-    // topic tags. Other shared words only break ties between matches.
+      "your", "from", "work", "like", "much", "many", "some", "good", "best", "people", "really", "know"];
+    var TAG_WORDS = FAQ_KNOWLEDGE.map(function (f) { return f.tags.map(words); });
+    var Q_WORDS = FAQ_KNOWLEDGE.map(function (f) { return words(f.q); });
+
     function search(query) {
-      var q = query.toLowerCase();
-      var scored = FAQ_KNOWLEDGE.map(function (f) {
-        var tagScore = 0, score = 0;
-        f.tags.forEach(function (t) { if (hasWord(q, t)) tagScore += 2 * t.split(" ").length + 1; });
-        if (tagScore) {
-          score = tagScore;
-          f.q.toLowerCase().split(/\W+/).forEach(function (w) {
-            if (w.length > 3 && STOP.indexOf(w) < 0 && hasWord(q, w)) score += 1;
-          });
-        }
-        return { f: f, score: score };
-      }).filter(function (x) { return x.score > 0; }).sort(function (a, b) { return b.score - a.score; });
+      var qw = words(query), matches = [];
+      TAG_WORDS.forEach(function (tags, e) {
+        tags.forEach(function (tw) {
+          for (var i = 0; i + tw.length <= qw.length; i++) {
+            var hit = tw.length > 0;
+            for (var k = 0; k < tw.length && hit; k++) hit = qw[i + k] === tw[k];
+            if (hit) matches.push({ e: e, start: i, end: i + tw.length });
+          }
+        });
+      });
+      // Drop a match when a longer match (from any entry) covers it.
+      var kept = matches.filter(function (m) {
+        return !matches.some(function (n) {
+          return n.end - n.start > m.end - m.start && n.start <= m.start && n.end >= m.end;
+        });
+      });
+      var byEntry = {};
+      kept.forEach(function (m) {
+        var b = byEntry[m.e] || (byEntry[m.e] = { covered: {}, tags: 0 });
+        for (var i = m.start; i < m.end; i++) b.covered[i] = true;
+        b.tags += 1;
+      });
+      var scored = Object.keys(byEntry).map(function (e) {
+        var b = byEntry[e], score = Object.keys(b.covered).length * 10 + b.tags;
+        Q_WORDS[e].forEach(function (w) {
+          if (w.length > 3 && STOP.indexOf(w) < 0 && qw.indexOf(w) >= 0) score += 1;
+        });
+        return { f: FAQ_KNOWLEDGE[e], score: score, order: +e };
+      });
+      // Highest score first; on a tie, Jump$tart entries (listed first) win.
+      scored.sort(function (a, b) { return b.score - a.score || a.order - b.order; });
       return scored;
     }
     function sourceLine(f) {
