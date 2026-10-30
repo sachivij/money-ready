@@ -963,7 +963,7 @@
       var q = query.toLowerCase();
       var scored = FAQ_KNOWLEDGE.map(function (f) {
         var tagScore = 0, score = 0;
-        f.tags.forEach(function (t) { if (hasWord(q, t)) tagScore += 2 + t.split(" ").length; });
+        f.tags.forEach(function (t) { if (hasWord(q, t)) tagScore += 2 * t.split(" ").length + 1; });
         if (tagScore) {
           score = tagScore;
           f.q.toLowerCase().split(/\W+/).forEach(function (w) {
