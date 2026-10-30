@@ -25,7 +25,7 @@
  */
 var Reach = (function () {
   // The Google Apps Script web app address. Empty means "don't send".
-  var ENDPOINT = "";
+  var ENDPOINT = "https://script.google.com/macros/s/AKfycbzXKmExTbv4_h63fFisIte3_b4_wot61E1v38oUdZgMM15l2pp3L2W2kAIZK9cekT1W/exec";
   // Only these sites send counts.
   var SEND_FROM = ["money-ready.vercel.app"];
 
