@@ -53,7 +53,7 @@ mostly through the GitHub web UI and the live site.
 | 05 | K–2 picture mode across the whole site | Not started. The builder already has a K–2 picture mode; this extends it to modules and take-home cards. |
 | 06 | More games | Done. Nine multi-round games (7 unplugged, 2 on-screen at `#/play/<id>`), each with topics, a version per age group, printable cards and debrief questions. Owner: Ridhi Poranki. |
 | 07 | Volunteer/school matching ("like a dating profile") | Blocked on owner decisions: who sees profiles, what is allowed, coordinator approval. Must stay no-personal-data. |
-| 09 | Count students reached and workshops used | Done in code; needs the Google Sheet set up (`docs/impact-sheet/README.md`) and its address pasted into `reach.js`. Volunteers and teachers must enter a student count before building a plan, running the Facilitator or opening an on-screen game. Owner: Ridhi Poranki. |
+| 09 | Count students reached and workshops used | Done. Volunteers and teachers must enter a student count before building a plan, running the Facilitator or opening an on-screen game; counts go to a private Google Sheet (setup in `docs/impact-sheet/README.md`, address in `reach.js`). Owner: Ridhi Poranki. |
 
 **Workshop Builder phase 1 (PR #4, merged)**
 - `rankGames()` in `lessons.js` scores games by topic (`bestGames` in each
