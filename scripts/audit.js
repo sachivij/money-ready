@@ -91,7 +91,7 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
     if (n !== 7) probs.push('builder ' + id + ': ' + n + ' packet items (want 7)');
     const st = await p.$$eval('#planOut .plan-step', e => e.length);
     if (st < 5) probs.push('builder ' + id + ': only ' + st + ' plan steps');
-    if (!(await p.$('#planOut a[href^="#/game?"]'))) probs.push('builder ' + id + ': no playable game in the plan');
+    if (!(await p.$('#planOut a[href^="#/game"]'))) probs.push('builder ' + id + ': no game in the plan');
   }
 
   // --- builder games: every topic (modules + extra topics) × age group ----
@@ -117,6 +117,11 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   const shown = await p.$$eval('#planOut .round-card', e => e.length);
   if (shown < 4) probs.push('builder: plan shows ' + shown + ' game rounds (want every round)');
   if ((await p.$eval('#planOut', e => e.textContent)).indexOf('Not a Jump$tart module') < 0) probs.push('builder: extra topic plan has no source note');
+  // No devices: no screen game, printable answer cards instead.
+  if (await p.$('#planOut a[href^="#/game?"]')) probs.push('builder: no-device plan offers an on-screen game');
+  if (!(await p.$('#planOut a[href^="#/game-cards?"]'))) probs.push('builder: no-device plan has no printable answer cards');
+  await go('#/game-cards?topic=needs-vs-wants&grade=k2');
+  if ((await p.$$eval('.pcard-round', e => e.length)) < 5) probs.push('game cards: missing rounds or answer key');
   await go('#/builder');
   await p.fill('#gFind', 'how do taxes work');
   await jsClick('#gFindBtn');

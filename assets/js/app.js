@@ -1602,26 +1602,32 @@
   function topicGameCard(plan) {
     var g = plan.topicGame;
     if (!g || !g.rounds.length) return "";
-    var href = "#/game?topic=" + plan.module.id + "&grade=" + plan.profile.id;
+    var qs = "?topic=" + plan.module.id + "&grade=" + plan.profile.id;
+    var noScreen = plan.devices === "none";
     var main = plan.mainGame && !plan.mainGame.multiRound ? plan.mainGame : null;
     var srcNames = g.sources.map(function (x) { return x.name; });
     return '<div class="card mt-3 topic-game" style="box-shadow:none;border:2px solid var(--green)">' +
-      '<div class="eyebrow">🎮 Your game for this topic · ready to play</div>' +
+      '<div class="eyebrow">🎮 Your game for this topic · ' + (noScreen ? "no screen needed" : "ready to play") + "</div>" +
       '<h3 style="margin:4px 0">' + esc(g.title) + "</h3>" +
       // At a glance: what the game is, who it is for, how to run it.
       '<div class="game-facts">' +
         "<div><span>Topic</span><strong>" + esc(g.topic.title) + "</strong></div>" +
         "<div><span>Made for</span><strong>" + esc(plan.grade) + "</strong></div>" +
         "<div><span>Rounds</span><strong>" + g.rounds.length + " questions</strong></div>" +
-        "<div><span>Style</span><strong>" + (g.picture ? "Two big pictures, read aloud" : "Picture answers + why") + "</strong></div>" +
+        "<div><span>Style</span><strong>" + (noScreen
+          ? (g.picture ? "Big picture cards you hold up" : "Answer cards + you read the questions")
+          : (g.picture ? "Two big pictures, read aloud" : "Picture answers + why")) + "</strong></div>" +
         "<div><span>Run it as</span><strong>" + (main ? main.emoji + " " + esc(main.name) : "On screen or with the cards") + "</strong></div>" +
         (srcNames.length ? "<div><span>Facts from</span><strong>" + esc(srcNames.join("; ")) + "</strong></div>" : "") +
       "</div>" +
       '<p class="muted" style="font-size:.92rem;margin:10px 0 0"><strong>Students practice:</strong> ' + esc(g.topic.objective) +
-        (plan.devices === "none" ? " No screen in the room? Download the game cards and read each one out; students vote by moving or with hands." : "") + "</p>" +
+        (noScreen ? " No screen needed: print the answer cards, hold them up (or tape one in each corner), and read each question from the script below. Students vote by pointing, moving, or raising hands." : "") + "</p>" +
       '<div class="flex gap wrap-flex no-print mt-2">' +
-        '<a class="btn btn-primary" href="' + href + '">▶ Play on screen</a>' +
-        '<button class="btn btn-secondary" id="gameCards">⬇ Download game cards</button>' +
+        (noScreen
+          ? '<a class="btn btn-primary" href="#/game-cards' + qs + '">🖨 Print the answer cards</a>'
+          : '<a class="btn btn-primary" href="#/game' + qs + '">▶ Play on screen</a>' +
+            '<a class="btn btn-secondary" href="#/game-cards' + qs + '">🖨 Print the answer cards</a>') +
+        '<button class="btn btn-ghost" id="gameCards">⬇ Download the questions (text)</button>' +
       "</div>" +
       '<div class="eyebrow mt-3">What\'s in the game: every round, with the answer</div>' +
       '<div class="round-grid' + (g.picture ? " pic" : "") + '">' + g.rounds.map(function (r, i) {
@@ -1637,6 +1643,42 @@
           "</div>";
       }).join("") + "</div>" +
     "</div>";
+  }
+
+  // #/game-cards?topic=…&grade=… : printable answer cards for rooms with
+  // no screen. One page per round with a big card for each answer, and an
+  // answer key at the end, so the cards students see don't give it away.
+  function renderGameCards(query) {
+    var grade = /^(k2|35|68|912)$/.test(query.grade || "") ? query.grade : "35";
+    var g = buildTopicGame(query.topic, grade);
+    if (!g || !g.rounds.length) return renderNotFound();
+    var gradeName = Object.keys(GRADE_PROFILES).filter(function (k) { return GRADE_PROFILES[k].id === grade; })[0];
+    app.innerHTML =
+      '<div class="wrap page-head no-print"><div class="breadcrumb"><a href="#/">Home</a> · ' +
+        '<a href="#/builder?topic=' + encodeURIComponent(query.topic) + "&grade=" + encodeURIComponent(gradeName) + '&dev=none">Workshop builder</a> · Answer cards</div>' +
+        '<div class="eyebrow">🖨 No screen needed · ' + esc(gradeName) + "</div>" +
+        "<h1>Answer cards: " + esc(g.title.replace(/^\S+ /, "")) + "</h1>" +
+        '<p class="muted" style="max-width:66ch">Print these (one page per round). For each round, read the question out loud, hold up the cards ' +
+          "or tape one in each corner, and let students point or walk to their answer. The answer key is on the last page, just for you.</p>" +
+        '<button class="btn btn-primary" onclick="window.print()">🖨 Print</button>' +
+      "</div>" +
+      '<section class="section tight"><div class="wrap">' +
+        g.rounds.map(function (r, i) {
+          return '<div class="pcard-round"><div class="pcard-q"><span>Round ' + (i + 1) + "</span> " + esc(r.q) + "</div>" +
+            '<div class="pcard-grid' + (r.opts.length === 2 ? " two" : "") + '">' + r.opts.map(function (o, k) {
+              return '<div class="pcard">' + (g.picture ? "" : '<div class="pcard-letter">' + "ABCD".charAt(k) + "</div>") +
+                '<div class="pcard-emoji" aria-hidden="true">' + o[0] + '</div><div class="pcard-word">' + esc(o[1]) + "</div></div>";
+            }).join("") + "</div></div>";
+        }).join("") +
+        '<div class="pcard-round pcard-key"><h2>Answer key (for the volunteer)</h2><ol>' +
+          g.rounds.map(function (r) {
+            var s = roundSource(r, g.topic);
+            return "<li><strong>" + esc(r.q) + "</strong><br>" +
+              (r.best < 0 ? "Any answer is OK." : "Answer: " + r.opts[r.best][0] + " " + esc(r.opts[r.best][1]) + ".") + " " + esc(r.why) +
+              (s ? '<br><span class="muted" style="font-size:.85rem">Source: ' + esc(s.name) + (s.url ? " · " + esc(s.url) : "") + "</span>" : "") + "</li>";
+          }).join("") + "</ol></div>" +
+      "</div></section>";
+    wireNav();
   }
 
   // #/game?topic=<module or extra topic>&grade=<k2|35|68|912>
@@ -1684,7 +1726,7 @@
     // active nav link
     var route = (location.hash || "#/").split("?")[0].replace("#/", "").split("/")[0];
     if (route === "play") route = "games";
-    if (route === "game") route = "builder";
+    if (route === "game" || route === "game-cards") route = "builder";
     document.querySelectorAll(".nav-links a").forEach(function (a) {
       a.classList.toggle("active", a.getAttribute("data-route") === route);
     });
@@ -1727,6 +1769,7 @@
       case "games": return renderGames(query);
       case "play": return renderPlay(seg[1]);
       case "game": return renderTopicGame(query);
+      case "game-cards": return renderGameCards(query);
       case "module": return renderModule(seg[1]);
       case "challenge": return renderChallenge(seg[1], query.practice === "1");
       case "facilitator": return renderFacilitator();
