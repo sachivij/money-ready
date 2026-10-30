@@ -556,3 +556,16 @@ a { color: var(--green-dark); }
   .section { padding: 0; }
   .card { box-shadow: none; break-inside: avoid; }
 }
+
+/* ---------- Students-reached question (spec 09) ---------- */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.students-modal h2 { margin: 6px 0 16px; }
+.students-field input {
+  width: 100%; font: inherit; font-size: 2rem; font-weight: 800; text-align: center;
+  padding: 12px 14px; border: 2px solid var(--line); border-radius: var(--radius-sm); background: #fff;
+}
+.students-field input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
+.students-hint { font-size: .9rem; color: var(--ink-soft); margin: 8px 0 0; }
+.students-hint.bad { color: #9c2f1d; font-weight: 700; }
+.students-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
+.students-actions .btn-primary:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }

@@ -963,7 +963,7 @@ const GAME_FORMATS = [
       "After six weeks the screen shows whether the class reached its goal, and how a steady 'save 3 a week' plan would have done with the same cards.",
       "Play again with a different strategy and compare.",
     ],
-    teenTip: "Let a different student tap the buttons each week, and read each card out in a dramatic voice. Nothing is saved or sent anywhere — it all runs in the browser.",
+    teenTip: "Let a different student tap the buttons each week, and read each card out in a dramatic voice. Scores are never saved or sent — it all runs in the browser.",
     topics: ["save-or-spend", "budget-battle", "banking-basics", "investing-tomorrow", "paycheck-puzzle"],
     reinforces: "Saving a little every time adds up, surprises are easier to handle with a cushion, and interest rewards money left in the bank.",
     levels: {

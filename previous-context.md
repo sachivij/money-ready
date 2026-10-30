@@ -53,6 +53,7 @@ mostly through the GitHub web UI and the live site.
 | 05 | K–2 picture mode across the whole site | Not started. The builder already has a K–2 picture mode; this extends it to modules and take-home cards. |
 | 06 | More games | Done. Nine multi-round games (7 unplugged, 2 on-screen at `#/play/<id>`), each with topics, a version per age group, printable cards and debrief questions. Owner: Ridhi Poranki. |
 | 07 | Volunteer/school matching ("like a dating profile") | Blocked on owner decisions: who sees profiles, what is allowed, coordinator approval. Must stay no-personal-data. |
+| 09 | Count students reached and workshops used | Done in code; needs the Google Sheet set up (`docs/impact-sheet/README.md`) and its address pasted into `reach.js`. Volunteers and teachers must enter a student count before building a plan, running the Facilitator or opening an on-screen game. Owner: Ridhi Poranki. |
 
 **Workshop Builder phase 1 (PR #4, merged)**
 - `rankGames()` in `lessons.js` scores games by topic (`bestGames` in each
@@ -101,12 +102,17 @@ to "Generator" (the old `#/generator` route still works as an alias).
 1. **No backend. No build step. No dependencies.** Plain HTML, CSS, and
    ES5-style JavaScript loaded with `<script>` tags. Anyone can open
    `index.html` from disk and the whole app works, offline.
-2. **No external requests of any kind** — no CDN, no web fonts, no
-   analytics. This is what makes the privacy claim true rather than
-   aspirational, and it means the app cannot break because a third party
-   did.
+2. **No external requests — with one agreed exception.** No CDN, no web
+   fonts, no analytics. This is what makes the privacy claim true rather
+   than aspirational, and it means the app cannot break because a third
+   party did. **Exception (spec 09, agreed by the owner 2026-10-30):**
+   `assets/js/reach.js` sends one anonymous count to a private Google
+   Sheet when a volunteer or teacher starts an activity — kind, module or
+   game id, number of students, role, site. Nothing else, only from the
+   live site, and the app works the same if it fails. Don't widen this
+   (no analytics, no extra fields) without asking the owner.
 3. **Privacy-safe by design.** No names, no logins, no personal data,
-   nothing sent anywhere. The only stored state is an account-type
+   and nothing sent anywhere except that one count. The only stored state is an account-type
    preference and anonymous confidence tallies, both in `localStorage` on
    the viewer's own device. Every `localStorage` access is wrapped in
    try/catch with an in-memory fallback, because private browsing throws.
@@ -132,6 +138,8 @@ assets/js/lessons.js    ACCOUNT_TYPES, IMPACT_METRICS, GAME_FORMATS,
                         GRADE_PROFILES, DEVICE_GUIDES, PICTURE_ACTIVITIES,
                         LESSON_PACKS, buildLessonPlan(), buildPacket().
 assets/js/metrics.js    Privacy-safe aggregate counters in localStorage.
+assets/js/reach.js      Sends the students-reached count (spec 09). Holds
+                        the Google Sheet address; see docs/impact-sheet/.
 assets/js/play.js       Engines for the on-screen games (#/play/<game id>).
                         Their words live in GAME_FORMATS, not here.
 assets/js/app.js        Hash router + every screen.
@@ -168,7 +176,8 @@ The 4-H repo is **derived from this one**, not developed separately.
 
 ```bash
 # 1. copy the shared files into a working copy
-cp assets/js/app.js assets/js/data.js assets/js/lessons.js assets/js/play.js  <copy>/assets/js/
+cp assets/js/app.js assets/js/data.js assets/js/helper-kb.js assets/js/lessons.js \
+   assets/js/play.js assets/js/reach.js  <copy>/assets/js/
 cp index.html <copy>/
 
 # 2. remove the Jump$tart-only content

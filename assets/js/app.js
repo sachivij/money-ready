@@ -108,7 +108,7 @@
   // ================================================================
   // ACCOUNT TYPE (volunteer / school / organization)
   // Stored on this device only — it is a view preference, not a login.
-  // No password, no personal data, nothing sent anywhere.
+  // No password, no personal data, and the role itself is never sent.
   // ================================================================
   var ROLE_KEY = "moneyReady.accountType.v1";
   // In-memory fallback so the choice still sticks for the session when
@@ -174,6 +174,66 @@
     el.addEventListener("click", function (ev) {
       if (ev.target === el && getRole()) el.remove();
     });
+  }
+
+  // ================================================================
+  // STUDENTS REACHED (spec 09)
+  // Before a volunteer or teacher uses something — builds a plan, starts
+  // the Facilitator, opens an on-screen game — ask how many students will
+  // take part. An answer is required to continue; "Go back" leaves without
+  // counting. Organizations aren't asked. reach.js sends the count.
+  // ================================================================
+  function askStudents(kind, item, onDone) {
+    var role = getRole();
+    // No role yet: the role picker is showing, and picking a role re-runs
+    // the page, which asks again.
+    if (!role) return;
+    if ((role !== "volunteer" && role !== "school") || Reach.alreadyCounted(kind, item)) return onDone();
+
+    var old = document.getElementById("studentsOverlay");
+    if (old) old.remove();
+    var el = document.createElement("div");
+    el.className = "role-overlay";
+    el.id = "studentsOverlay";
+    el.innerHTML =
+      '<form class="role-modal students-modal" role="dialog" aria-modal="true" aria-labelledby="studentsTitle" novalidate>' +
+        '<div class="eyebrow">Before you start</div>' +
+        '<h2 id="studentsTitle">How many students will be participating in this activity?</h2>' +
+        '<label class="students-field"><span class="sr-only">Number of students</span>' +
+          '<input id="studentsInput" type="number" inputmode="numeric" min="1" max="' + Reach.MAX_STUDENTS +
+            '" step="1" placeholder="e.g. 24" required aria-describedby="studentsHint"></label>' +
+        '<p id="studentsHint" class="students-hint" aria-live="polite">Enter a whole number from 1 to ' + Reach.MAX_STUDENTS + ".</p>" +
+        '<div class="students-actions">' +
+          '<button type="submit" class="btn btn-primary btn-lg" id="studentsGo" disabled>Continue →</button>' +
+          '<button type="button" class="btn btn-ghost" id="studentsBack">Go back</button>' +
+        "</div>" +
+        '<p class="role-note">🔒 We count how many students Money Ready reaches. Only this number and the activity are sent to ' +
+          "the project team — never names or anything about your students.</p>" +
+      "</form>";
+    document.body.appendChild(el);
+    var input = el.querySelector("#studentsInput");
+    var go = el.querySelector("#studentsGo");
+    var hint = el.querySelector("#studentsHint");
+    input.addEventListener("input", function () {
+      var ok = Reach.parseStudents(input.value) !== null;
+      go.disabled = !ok;
+      hint.classList.toggle("bad", !ok && input.value !== "");
+    });
+    el.querySelector("form").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var n = Reach.parseStudents(input.value);
+      if (n === null) { hint.classList.add("bad"); input.focus(); return; }
+      Reach.record(kind, item, n, role);
+      el.remove();
+      onDone();
+    });
+    function back() {
+      el.remove();
+      if (history.length > 1) history.back(); else location.hash = "#/";
+    }
+    el.querySelector("#studentsBack").addEventListener("click", back);
+    el.addEventListener("keydown", function (ev) { if (ev.key === "Escape") back(); });
+    input.focus();
   }
 
   // ================================================================
@@ -271,7 +331,8 @@
           "<div><h3 style=\"margin-bottom:8px\">Privacy-safe by design</h3>" +
             '<p class="mb-0 muted">This prototype is built to protect students from the ground up. ' +
               "It collects <strong>no names, no logins, and no personal data</strong>. Impact numbers are " +
-              "aggregate counts only, and there is no backend server — nothing to leak.</p>" +
+              "aggregate counts only: when a volunteer or teacher starts an activity, the site sends just the number of " +
+              "students and which activity, so the team can count students reached.</p>" +
             '<a class="btn btn-ghost" style="padding-left:0" href="#/impact">See how impact is measured →</a>' +
           "</div>" +
         "</div>" +
@@ -756,6 +817,7 @@
     });
     refresh();
     wireNav();
+    askStudents("facilitator", "", function () {});
   }
 
   // ================================================================
@@ -1051,7 +1113,9 @@
 
         '<div class="callout mt-3"><div class="ico">🔒</div><div><strong>Privacy-safe by design.</strong> ' +
           "Real metrics are aggregate counts only — no names, no logins, no personal data, no tracking. Everything a " +
-          "volunteer records stays on their own device unless they choose to copy a summary.</div></div>" +
+          "volunteer records stays on their own device unless they choose to copy a summary. The one exception: when a " +
+          "volunteer or teacher starts an activity, the site sends the number of students and which activity to the " +
+          "project team, so we can count how many students Money Ready reaches.</div></div>" +
       "</div></section>";
 
     var sw = document.getElementById("switchRole");
@@ -1308,10 +1372,12 @@
       "</div>" +
       '<section class="section tight"><div class="wrap">' +
         '<div id="playRoot" class="play-root"></div>' +
-        '<p class="muted center mt-3" style="font-size:.88rem">🔒 Nothing is saved or sent anywhere — the game runs only on this screen.</p>' +
+        '<p class="muted center mt-3" style="font-size:.88rem">🔒 Scores are never saved or sent — the game runs only on this screen.</p>' +
       "</div></section>";
-    PLAY_ENGINES[g.play.engine](document.getElementById("playRoot"), g);
     wireNav();
+    askStudents("game", g.id, function () {
+      PLAY_ENGINES[g.play.engine](document.getElementById("playRoot"), g);
+    });
   }
 
   // ================================================================
@@ -1382,6 +1448,9 @@
         dev: dev,
       };
       if (game) choices.game = game;
+      askStudents("builder", choices.topic, function () { showBuilt(choices); });
+    }
+    function showBuilt(choices) {
       var plan = buildLessonPlan(choices.topic, {
         minutes: Number(choices.min),
         grade: choices.grade,
@@ -1589,6 +1658,8 @@
   }
   function route() {
     clearTimers();
+    var asking = document.getElementById("studentsOverlay");
+    if (asking) asking.remove();
     window.scrollTo(0, 0);
     var raw = (location.hash || "#/").slice(1); // remove '#'
     var parts = raw.split("?");
