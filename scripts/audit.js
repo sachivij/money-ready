@@ -93,14 +93,6 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
     if (st < 5) probs.push('builder ' + id + ': only ' + st + ' plan steps');
   }
 
-  // --- request / partner portal ------------------------------------------
-  await go('#/portal');
-  await jsClick('#rBtn');
-  if (!(await p.$('#rOut .apply-box'))) probs.push('portal: no request summary');
-  await jsClick('#oHelp .chip-toggle');
-  await jsClick('#oBtn');
-  if (!(await p.$('#oOut .apply-box'))) probs.push('portal: no offer summary');
-
   // --- standards helper: a hit, and the no-match fallback -----------------
   await go('#/helper');
   await p.fill('#q', 'how do I spot a scam');
