@@ -311,7 +311,11 @@ a { color: var(--green-dark); }
 /* ---------- Facilitator dashboard ---------- */
 .dash-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; }
 .dash-stat { display: flex; align-items: center; gap: 14px; }
-.dash-stat .big { font-size: 2rem; font-weight: 800; }
+.dash-stat .big { font-size: 2rem; font-weight: 800; min-width: 2ch; text-align: center; }
+.tally-btn { min-width: 48px; padding: 8px 10px; justify-content: center; }
+.tally-line { display: flex; align-items: center; gap: 8px; }
+.tally-line .rb-track { flex: 1; }
+.play-link { font-family: monospace; font-size: .85rem; background: var(--cream-2); border-radius: 10px; padding: 8px 10px; word-break: break-all; }
 .result-bar { margin: 10px 0; }
 .result-bar .rb-top { display: flex; justify-content: space-between; font-size: .9rem; font-weight: 600; margin-bottom: 4px; }
 .rb-track { height: 26px; background: var(--cream-2); border-radius: 8px; overflow: hidden; }

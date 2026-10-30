@@ -14,3 +14,4 @@
 
 ## Added after review
 - **A full script for every step.** Each step of the run of show has 🗣 Say lines (word for word) and ✋ Do steps (in order), built from the module or topic content by `writeScripts()` in `lessons.js`. The main activity adds a round-by-round script: the question, the answers, how students vote, and the answer to read out. The downloaded plan includes all of it.
+- **Facilitator dashboard counts real votes.** It used to show made-up demo numbers. It now runs the topic game: the volunteer taps +1 for each vote counted in the room, the bars show the real split, "Reveal the answer" shows the answer and source, and the exit-ticket summary reports real counts per round. Students with devices can play the same game on their own screens from a link, but their taps can't reach the dashboard without an internet server (an owner decision, not built).

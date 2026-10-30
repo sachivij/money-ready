@@ -646,115 +646,150 @@
   // ================================================================
   // FACILITATOR DASHBOARD
   // ================================================================
-  function renderFacilitator() {
-    var current = MODULES[0];
-    var code = roomCode();
+  function renderFacilitator(query) {
+    query = query || {};
+    var topics = MODULES.concat(EXTRA_TOPICS);
+    var startTopic = findTopic(query.topic) ? query.topic : MODULES[0].id;
+    var startGrade = /^(k2|35|68|912)$/.test(query.grade || "") ? query.grade : "35";
+    var gradeIds = [["k2", "Grades K–2"], ["35", "Grades 3–5"], ["68", "Grades 6–8"], ["912", "Grades 9–12"]];
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Facilitator dashboard</div>' +
         '<div class="eyebrow">Facilitator dashboard</div>' +
-        "<h1>Run the session from one screen</h1>" +
-        '<p class="muted"><span class="pill-note">Demo data</span> Numbers below are simulated to show the live workshop flow. ' +
-          "No student data is collected.</p>" +
+        "<h1>Run the game and count real votes</h1>" +
+        '<p class="muted" style="max-width:70ch">Put this on the room\'s screen (or keep it on your own phone). Read each round, let the class vote ' +
+          "with hands, corners or thumbs, and tap <strong>+1</strong> for every vote you count. The bars show your class's real answers. " +
+          "🔒 Nothing leaves this device and nothing is saved.</p>" +
       "</div>" +
       '<section class="section tight"><div class="wrap"><div class="dash-grid">' +
-        // Left column
+        // Left column: the round and the tallies
         "<div>" +
           '<div class="card">' +
-            '<div class="flex items-center wrap-flex gap" style="justify-content:space-between">' +
-              "<div><div class=\"eyebrow\">Current module</div>" +
-                '<select id="modSelect" style="font-size:1.1rem;font-weight:700;border:none;padding:6px 0;background:transparent">' +
-                  MODULES.map(function (m) { return '<option value="' + m.id + '">' + m.emoji + " " + esc(m.title) + "</option>"; }).join("") +
-                "</select></div>" +
-              '<div class="center"><div class="eyebrow">Room code</div>' +
-                '<div style="font-size:1.4rem;font-weight:800;letter-spacing:.15em">' + code + "</div></div>" +
+            '<div class="grid grid-2">' +
+              '<div class="field" style="margin:0"><label for="modSelect">Topic</label><select id="modSelect">' +
+                '<optgroup label="Modules">' + MODULES.map(function (m) {
+                  return '<option value="' + m.id + '"' + (m.id === startTopic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>"; }).join("") + "</optgroup>" +
+                '<optgroup label="More topics (from trusted sources)">' + EXTRA_TOPICS.map(function (m) {
+                  return '<option value="' + m.id + '"' + (m.id === startTopic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>"; }).join("") + "</optgroup>" +
+              "</select></div>" +
+              '<div class="field" style="margin:0"><label for="facGrade">Age group</label><select id="facGrade">' +
+                gradeIds.map(function (g) { return '<option value="' + g[0] + '"' + (g[0] === startGrade ? " selected" : "") + ">" + g[1] + "</option>"; }).join("") +
+              "</select></div>" +
             "</div>" +
-            '<div class="flex items-center gap mt-2" style="justify-content:space-between">' +
-              '<div class="dash-stat"><span class="live-dot"></span> <span class="muted">Students joined</span> ' +
-                '<span class="big" id="joined">0</span></div>' +
-              '<div class="toggle-row" id="modeToggle">' +
-                '<button class="btn btn-primary" data-mode="shared">📺 Shared screen</button>' +
-                '<button class="btn btn-secondary" data-mode="hotseat">🎤 Hotseat</button>' +
-              "</div>" +
-            "</div>" +
+            '<div class="dash-stat mt-2"><span class="muted">Students in the room</span>' +
+              '<button class="btn btn-secondary tally-btn" id="kidsLess" aria-label="One fewer student">−</button>' +
+              '<span class="big" id="joined" aria-live="polite">0</span>' +
+              '<button class="btn btn-secondary tally-btn" id="kidsMore" aria-label="One more student">+</button></div>' +
           "</div>" +
-
-          '<div class="card mt-3"><div class="eyebrow">Class response results <span class="pill-note">live demo</span></div>' +
-            '<div id="results"></div>' +
-          "</div>" +
+          '<div class="card mt-3" id="roundCard"></div>' +
         "</div>" +
 
-        // Right column
+        // Right column: prompt, controls, play-along link
         "<div>" +
           '<div class="card" style="background:var(--green-soft);border-color:rgba(31,157,107,.25)">' +
             '<div class="eyebrow">Suggested discussion prompt</div>' +
             '<p id="prompt" style="font-size:1.15rem;font-weight:700;margin-bottom:0"></p>' +
           "</div>" +
           '<div class="card mt-3"><div class="eyebrow">Session controls</div>' +
-            '<p class="muted" style="font-size:.9rem">Step: <strong id="stepName">—</strong></p>' +
-            '<button class="btn btn-primary btn-block" id="nextBtn">Next activity →</button>' +
-            '<button class="btn btn-secondary btn-block mt-2" id="dlBtn">📋 Generate exit-ticket summary</button>' +
-            '<p class="muted mt-2" style="font-size:.8rem;margin-bottom:0">Summary is aggregate only — no names, no personal data.</p>' +
+            '<p class="muted" style="font-size:.9rem">Round <strong id="stepName">—</strong></p>' +
+            '<button class="btn btn-primary btn-block" id="nextBtn">Next round →</button>' +
+            '<button class="btn btn-secondary btn-block mt-2" id="dlBtn">📋 Make exit-ticket summary</button>' +
+            '<p class="muted mt-2" style="font-size:.8rem;margin-bottom:0">Counts only. No names, no personal data.</p>' +
           "</div>" +
+          '<div class="card mt-3"><div class="eyebrow">📱 Students have devices?</div>' +
+            '<p style="font-size:.92rem">They can play the same game on their own screens. Write this on the board:</p>' +
+            '<div class="play-link" id="playLink"></div>' +
+            '<p class="muted mt-1" style="font-size:.82rem;margin-bottom:0">Each device plays on its own; their taps don\'t reach this screen ' +
+              "(that would need an internet server). Ask for a show of hands and count the votes here.</p></div>" +
           '<div id="exitOut" class="mt-3"></div>' +
-          '<div class="card mt-3"><div class="eyebrow">Mode</div><p id="modeLabel" class="mb-0">' +
-            "📺 <strong>Shared screen</strong> — one projected view the whole class answers together.</p></div>" +
         "</div>" +
       "</div></div></section>";
 
-    var joinedEl = document.getElementById("joined");
-    var joined = 0, target = 18 + Math.floor(Math.random() * 10);
-    var join = setInterval(function () {
-      if (joined < target) { joined += 1; joinedEl.textContent = joined; }
-      else clearInterval(join);
-    }, 180);
-    timers.push(join);
+    var game, round, tallies, revealed, kids = 0;
+    var kidsEl = document.getElementById("joined");
+    function setKids(n) { kids = Math.max(0, n); kidsEl.textContent = kids; }
+    document.getElementById("kidsLess").addEventListener("click", function () { setKids(kids - 1); });
+    document.getElementById("kidsMore").addEventListener("click", function () { setKids(kids + 1); });
 
-    function refresh() {
-      var m = moduleById(document.getElementById("modSelect").value);
-      document.getElementById("prompt").textContent = m.reveal.discussionPrompt;
-      // demo response distribution, best answer leading
-      var opts = m.challenge.options, best = m.challenge.best;
-      var demo = opts.map(function (_, i) { return i === best ? 46 + Math.floor(Math.random() * 20) : 6 + Math.floor(Math.random() * 22); });
-      var sum = demo.reduce(function (a, b) { return a + b; }, 0);
-      document.getElementById("results").innerHTML = opts.map(function (opt, i) {
-        var pct = Math.round((demo[i] / sum) * 100);
-        return '<div class="result-bar"><div class="rb-top"><span>' + String.fromCharCode(65 + i) + ". " + esc(opt) +
-          "</span><span>" + pct + '%</span></div><div class="rb-track"><div class="rb-fill ' +
-          (i === best ? "best" : "other") + '" style="width:' + Math.max(pct, 8) + '%">' + (i === best ? "Best" : "") + "</div></div></div>";
-      }).join("");
-      // steps
-      stepIndex = 0;
-      document.getElementById("stepName").textContent = m.prep.steps[0];
+    function load() {
+      var id = document.getElementById("modSelect").value;
+      var grade = document.getElementById("facGrade").value;
+      game = buildTopicGame(id, grade);
+      round = 0;
+      tallies = game.rounds.map(function (r) { return r.opts.map(function () { return 0; }); });
+      revealed = game.rounds.map(function () { return false; });
+      var t = findTopic(id);
+      document.getElementById("prompt").textContent = (t.reveal && t.reveal.discussionPrompt) || "";
+      var link = location.href.split("#")[0] + "#/game?topic=" + id + "&grade=" + grade;
+      document.getElementById("playLink").textContent = link;
+      show();
     }
-    var stepIndex = 0;
-    document.getElementById("modSelect").addEventListener("change", refresh);
+
+    function show() {
+      var r = game.rounds[round];
+      var votes = tallies[round];
+      var sum = votes.reduce(function (a, b) { return a + b; }, 0);
+      var open = revealed[round];
+      var src = roundSource(r, game.topic);
+      document.getElementById("stepName").textContent = (round + 1) + " of " + game.rounds.length;
+      document.getElementById("roundCard").innerHTML =
+        '<div class="eyebrow">Round ' + (round + 1) + " of " + game.rounds.length + " · " + sum + " vote" + (sum === 1 ? "" : "s") + " counted</div>" +
+        '<h2 style="margin:4px 0 12px">' + esc(r.q) + "</h2>" +
+        r.opts.map(function (o, k) {
+          var pct = sum ? Math.round((votes[k] / sum) * 100) : 0;
+          var best = open && k === r.best;
+          return '<div class="result-bar tally-row"><div class="rb-top"><span>' + (game.picture ? "" : "ABCD".charAt(k) + ". ") + o[0] + " " + esc(o[1]) +
+              (best ? " ✓" : "") + "</span><span>" + votes[k] + " · " + pct + "%</span></div>" +
+            '<div class="tally-line"><div class="rb-track"><div class="rb-fill ' + (open ? (k === r.best || r.best < 0 ? "best" : "other") : "other") +
+              '" style="width:' + Math.max(pct, 2) + '%"></div></div>' +
+            '<button class="btn btn-secondary tally-btn" data-minus="' + k + '" aria-label="Take away a vote for ' + esc(o[1]) + '">−</button>' +
+            '<button class="btn btn-primary tally-btn" data-plus="' + k + '" aria-label="Add a vote for ' + esc(o[1]) + '">+1</button></div></div>';
+        }).join("") +
+        (open
+          ? '<div class="ib-result ok mt-2"><strong>' + (r.best < 0 ? "Any answer is OK." : "Answer: " + r.opts[r.best][0] + " " + esc(r.opts[r.best][1])) +
+              "</strong><p>" + esc(r.why) + "</p>" +
+              (src ? '<p class="muted" style="font-size:.82rem">Source: ' + esc(src.name) + (src.url ? " · " + esc(src.url) : "") + "</p>" : "") + "</div>"
+          : '<button class="btn btn-primary mt-2" id="revealBtn">Reveal the answer</button>');
+      document.querySelectorAll("#roundCard [data-plus]").forEach(function (b) {
+        b.addEventListener("click", function () { tallies[round][Number(b.getAttribute("data-plus"))]++; show(); });
+      });
+      document.querySelectorAll("#roundCard [data-minus]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var k = Number(b.getAttribute("data-minus"));
+          if (tallies[round][k] > 0) tallies[round][k]--;
+          show();
+        });
+      });
+      var rb = document.getElementById("revealBtn");
+      if (rb) rb.addEventListener("click", function () { revealed[round] = true; show(); });
+    }
+
+    document.getElementById("modSelect").addEventListener("change", load);
+    document.getElementById("facGrade").addEventListener("change", load);
     document.getElementById("nextBtn").addEventListener("click", function () {
-      var m = moduleById(document.getElementById("modSelect").value);
-      stepIndex = (stepIndex + 1) % m.prep.steps.length;
-      document.getElementById("stepName").textContent = m.prep.steps[stepIndex];
+      round = (round + 1) % game.rounds.length;
+      show();
     });
     document.getElementById("dlBtn").addEventListener("click", function () {
-      var m = moduleById(document.getElementById("modSelect").value);
-      var txt = "Money Ready — Exit Ticket Summary (EXAMPLE / aggregate only)\n" +
-        "Module: " + m.title + "\nRoom: " + code + "\n\n" +
-        "Students joined: " + joined + "\n" +
-        "Key concept: " + m.reveal.keyConcept + "\n" +
-        "Discussion prompt: " + m.reveal.discussionPrompt + "\n" +
-        "Apply it: " + m.reveal.applyIt + "\n\n" +
-        "Privacy note: no names, logins, or personal data collected. Demo figures.\n";
-      showExitSummary(txt, m.id);
-    });
-    document.getElementById("modeToggle").querySelectorAll("button").forEach(function (b) {
-      b.addEventListener("click", function () {
-        document.querySelectorAll("#modeToggle button").forEach(function (x) { x.className = "btn btn-secondary"; });
-        b.className = "btn btn-primary";
-        var shared = b.getAttribute("data-mode") === "shared";
-        document.getElementById("modeLabel").innerHTML = shared
-          ? "📺 <strong>Shared screen</strong> — one projected view the whole class answers together."
-          : "🎤 <strong>Hotseat</strong> — one student at a time answers on the main screen while the class coaches.";
+      var lines = [
+        "Money Ready — Exit Ticket Summary (aggregate only)",
+        "Topic: " + game.topic.title,
+        "Age group: " + document.getElementById("facGrade").selectedOptions[0].textContent,
+        "Students in the room: " + kids,
+        "",
+      ];
+      game.rounds.forEach(function (r, i) {
+        var v = tallies[i], sum = v.reduce(function (a, b) { return a + b; }, 0);
+        if (!sum) { lines.push("Round " + (i + 1) + ": not played"); return; }
+        var right = r.best < 0 ? sum : v[r.best];
+        lines.push("Round " + (i + 1) + ": " + r.q, "  " + sum + " votes, " + Math.round((right / sum) * 100) + "% picked the answer (" +
+          (r.best < 0 ? "any answer" : r.opts[r.best][1]) + ")");
       });
+      var t = game.topic;
+      if (t.reveal) lines.push("", "Key concept: " + t.reveal.keyConcept, "Discussion prompt: " + t.reveal.discussionPrompt);
+      lines.push("", "Privacy note: counts only. No names, logins, or personal data.");
+      showExitSummary(lines.join("\n"), t.id);
     });
-    refresh();
+    load();
     wireNav();
   }
 
@@ -1627,6 +1662,7 @@
           ? '<a class="btn btn-primary" href="#/game-cards' + qs + '">🖨 Print the answer cards</a>'
           : '<a class="btn btn-primary" href="#/game' + qs + '">▶ Play on screen</a>' +
             '<a class="btn btn-secondary" href="#/game-cards' + qs + '">🖨 Print the answer cards</a>') +
+        '<a class="btn btn-secondary" href="#/facilitator' + qs + '">📊 Count votes on the dashboard</a>' +
         '<button class="btn btn-ghost" id="gameCards">⬇ Download the questions (text)</button>' +
       "</div>" +
       '<div class="eyebrow mt-3">What\'s in the game: every round, with the answer</div>' +
@@ -1772,7 +1808,7 @@
       case "game-cards": return renderGameCards(query);
       case "module": return renderModule(seg[1]);
       case "challenge": return renderChallenge(seg[1], query.practice === "1");
-      case "facilitator": return renderFacilitator();
+      case "facilitator": return renderFacilitator(query);
       case "prep": return renderPrep(query);
       // Toolkit builder and lesson generator are now one page.
       case "builder":

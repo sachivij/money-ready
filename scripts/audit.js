@@ -65,8 +65,16 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   await go('#/facilitator');
   await p.waitForTimeout(500);
   await p.selectOption('#modSelect', ids[Math.min(4, ids.length - 1)]);
+  await jsClick('#kidsMore');
+  await jsClick('#roundCard [data-plus="0"]');
+  await jsClick('#roundCard [data-plus="0"]');
+  await jsClick('#roundCard [data-plus="1"]');
+  if ((await p.$eval('#roundCard', e => e.textContent)).indexOf('3 votes counted') < 0) probs.push('facilitator: tallies do not count');
+  await jsClick('#revealBtn');
+  if (!(await p.$('#roundCard .ib-result'))) probs.push('facilitator: reveal did not show the answer');
+  await p.selectOption('#modSelect', 'coins-counting');
+  await p.selectOption('#facGrade', 'k2');
   await jsClick('#nextBtn');
-  await jsClick('#modeToggle button[data-mode="hotseat"]');
   await jsClick('#dlBtn');
   if (!(await p.waitForSelector('#exitText', { timeout: 2000 }).then(() => 1).catch(() => 0))) {
     probs.push('facilitator: exit summary panel did not appear');
