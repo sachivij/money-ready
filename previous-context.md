@@ -50,10 +50,12 @@ mostly through the GitHub web UI and the live site.
 | 02 | Landing page "where do I go?" flow chart | Done. A "What do you want to do?" chart sits in the home page hero (`PATHS` and `pathChart()` in `app.js`): one main button per role plus smaller links, and picking a path sets the role. The home page skips the first-visit role pop-up (the chart does that job); other pages still show it. Owner: Ridhi Poranki. |
 | 03 | Works on school computers | Not started. Needs a real Chromebook test. |
 | 04 | 4-H edition, no clover | Already done earlier (💵 mark, see Decisions). Confirm on the 4-H site, then mark Done. |
-| 05 | K–2 picture mode across the whole site | Not started. The builder already has a K–2 picture mode; this extends it to modules and take-home cards. |
+| 05 | K–2 picture mode across the whole site | In progress (Sumeet). K–2 games are done (spec 08); modules and take-home cards are next. |
 | 06 | More games | Done. Nine multi-round games (7 unplugged, 2 on-screen at `#/play/<id>`), each with topics, a version per age group, printable cards and debrief questions. Owner: Ridhi Poranki. |
 | 07 | Volunteer/school matching ("like a dating profile") | Blocked on owner decisions: who sees profiles, what is allowed, coordinator approval. Must stay no-personal-data. |
-| 09 | Count students reached and workshops used | Done. Volunteers and teachers must enter a student count before building a plan, running the Facilitator or opening an on-screen game; counts go to a private Google Sheet (setup in `docs/impact-sheet/README.md`, address in `reach.js`). Owner: Ridhi Poranki. |
+| 08 | Builder makes playable games | PR #11 (Sumeet). Every plan carries a game for its topic and age group, a word-for-word Say/Do script for every step, and 8 extra topics with cited sources. See "Builder games" under Decisions. |
+| 10 | Live join on student devices | Needs decisions (Sumeet): approval, hosting service, privacy rules. |
+| 09 | Count students reached and workshops used | Done. Volunteers and teachers must enter a student count before building a plan, or opening an on-screen game; counts go to a private Google Sheet (setup in `docs/impact-sheet/README.md`, address in `reach.js`). Owner: Ridhi Poranki. |
 
 **Workshop Builder phase 1 (PR #4, merged)**
 - `rankGames()` in `lessons.js` scores games by topic (`bestGames` in each
@@ -140,6 +142,8 @@ assets/js/lessons.js    ACCOUNT_TYPES, IMPACT_METRICS, GAME_FORMATS,
 assets/js/metrics.js    Privacy-safe aggregate counters in localStorage.
 assets/js/reach.js      Sends the students-reached count (spec 09). Holds
                         the Google Sheet address; see docs/impact-sheet/.
+assets/js/game-bank.js  Rounds for the builder's games (GAME_BANK) and the
+                        extra topics with cited sources (EXTRA_TOPICS).
 assets/js/play.js       Engines for the on-screen games (#/play/<game id>).
                         Their words live in GAME_FORMATS, not here.
 assets/js/app.js        Hash router + every screen.
@@ -256,6 +260,23 @@ and list their own `topics`; the two on-screen ones add `play`. The
 builder gives a game a bonus for its `topics` (just below a pack's second
 `bestGames` pick) and uses its `levels` text in the main activity step. Topics that point at modules a
 build doesn't have (the 4-H edition drops some) are ignored.
+
+**Builder games (spec 08).** `buildTopicGame()` (game-bank.js) makes a
+game for any module or extra topic: K–2 gets the `picture` rounds (two big
+pictures, read aloud with the browser's own speech), older grades the
+`rounds` set. Every plan shows it up front, and `writeScripts()` in
+lessons.js gives every step word-for-word Say lines and ordered Do steps,
+with a round-by-round script for the main activity. The builder asks only
+**No devices** or **Devices** (old `shared`/`personal` links map to
+devices). No devices: printable answer cards at `#/game-cards`, answer key
+last. Devices: `#/game` on the room's screen, where the volunteer taps an
+answer once per vote counted, then Reveal shows the real split. Students
+can play along on their own device (`&solo=1`), but their taps can't reach
+the screen without a server (spec 10). **The Facilitator dashboard was
+removed on 2026-10-30 at the owner's request**; `#/facilitator` opens the
+builder. Extra topics cite a `KB_SRC` source on every round and have no
+take-home or prep page. The "Other topic?" box only finds written topics
+and never invents one. `game-bank.js` isn't in the 4-H build yet.
 
 **Grades K–2 switches the generated plan to picture mode**: no reading,
 drawing and pointing instead of writing, two vocabulary words instead of
