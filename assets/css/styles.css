@@ -539,6 +539,17 @@ a { color: var(--green-dark); }
 .round-grid.pic .round-emoji { font-size: 2.6rem; }
 .round-grid.pic .round-tick { margin-left: 0; }
 @media print { .round-card { break-inside: avoid; } }
+.say-box { font-size: .95rem; }
+.say-box p { margin: 6px 0 0; font-style: italic; }
+.do-box { background: var(--cream-2); border-radius: 12px; padding: 10px 14px; font-size: .92rem; }
+.do-box ol { margin: 6px 0 0; padding-left: 20px; }
+.do-box li { margin-bottom: 4px; }
+.round-script { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; font-size: .9rem; }
+.rs-round { border-top: 1px dashed var(--line); padding-top: 8px; margin-top: 8px; }
+.rs-n { font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--green-dark); }
+.rs-round p { margin: 3px 0; }
+.rs-say { font-style: italic; }
+.rs-answer { font-weight: 700; color: var(--green-dark); }
 @media (max-width: 620px) {
   .game-topic-filter { margin-left: 0; width: 100%; }
   .game-topic-filter select { flex: 1; min-width: 0; }

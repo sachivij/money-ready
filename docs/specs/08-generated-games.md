@@ -11,3 +11,6 @@
 - Every module and every extra topic builds a plan and a playable game for every age group.
 - A K–2 student can play a round without reading.
 - Every round on an extra topic shows its source.
+
+## Added after review
+- **A full script for every step.** Each step of the run of show has 🗣 Say lines (word for word) and ✋ Do steps (in order), built from the module or topic content by `writeScripts()` in `lessons.js`. The main activity adds a round-by-round script: the question, the answers, how students vote, and the answer to read out. The downloaded plan includes all of it.

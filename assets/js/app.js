@@ -1501,12 +1501,24 @@
         "</div>" +
 
         // Run of show
-        '<div class="eyebrow mt-4">Run of show — what to do, minute by minute</div>' +
+        '<div class="eyebrow mt-4">Run of show: what to say and do, minute by minute</div>' +
+        '<p class="muted" style="font-size:.9rem;margin:0 0 8px">🗣 <strong>Say</strong> lines are word for word, so you can read them straight off the page. ' +
+          "✋ <strong>Do</strong> steps go in order.</p>" +
         plan.steps.map(function (s) {
           return '<div class="plan-step"><div class="plan-time">' + s.minutes + " min</div>" +
-            "<div><h4>" + esc(s.name) + "</h4><p>" + esc(s.what) + "</p>" +
+            "<div><h4>" + esc(s.name) + '</h4><p class="muted" style="font-size:.92rem">' + esc(s.what) + "</p>" +
             (s.script ? '<div class="script-box mt-1" style="font-size:.9rem"><strong>Say this:</strong> ' + esc(s.script) + "</div>" : "") +
-            (s.how ? '<div class="apply-box mt-1" style="font-size:.9rem"><strong>How to run it:</strong> ' + esc(s.how) + "</div>" : "") +
+            (s.say && s.say.length ? '<div class="script-box mt-1 say-box"><strong>🗣 Say</strong>' +
+              s.say.map(function (l) { return "<p>“" + esc(l) + "”</p>"; }).join("") + "</div>" : "") +
+            (s.do && s.do.length ? '<div class="do-box mt-1"><strong>✋ Do</strong><ol>' +
+              s.do.map(function (l) { return "<li>" + esc(l) + "</li>"; }).join("") + "</ol></div>" : "") +
+            (s.rounds ? '<div class="round-script mt-1"><strong>🎮 Round by round</strong>' + s.rounds.map(function (r, i) {
+                return '<div class="rs-round"><div class="rs-n">Round ' + (i + 1) + "</div>" +
+                  r.say.map(function (l) { return '<p class="rs-say">🗣 “' + esc(l) + "”</p>"; }).join("") +
+                  r.do.map(function (l) { return '<p class="rs-do">✋ ' + esc(l) + "</p>"; }).join("") +
+                  '<p class="rs-say rs-answer">🗣 Then say: “' + esc(r.answer) + "”</p></div>";
+              }).join("") + "</div>" : "") +
+            (s.how ? '<div class="apply-box mt-1" style="font-size:.86rem"><strong>💡 Tip:</strong> ' + esc(s.how) + "</div>" : "") +
             "</div></div>";
         }).join("") +
 
