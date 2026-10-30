@@ -11,7 +11,7 @@ To claim a spec, put your name in Owner and push to `main` before you start. Eac
 | 05 | [K–2 picture mode](05-k2-picture-mode.md) | In progress (K–2 games first) | Sumeet |
 | 06 | [More games](06-more-games.md) | Done | Ridhi Poranki |
 | 07 | [Volunteer and school matching](07-matching.md) | Needs decisions | |
-| 08 | [Builder makes playable games, incl. other topics](08-generated-games.md) | In progress | Sumeet |
+| 08 | [Builder makes playable games, incl. other topics](08-generated-games.md) | Done | Sumeet |
 | 09 | [Count students reached and workshops used](09-impact-tracking.md) | Done | Ridhi Poranki |
 | 10 | [Students join the game live on their own devices](10-live-join.md) | Needs decisions | Sumeet |
 
