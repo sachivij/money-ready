@@ -963,7 +963,7 @@ const GAME_FORMATS = [
       "After six weeks the screen shows whether the class reached its goal, and how a steady 'save 3 a week' plan would have done with the same cards.",
       "Play again with a different strategy and compare.",
     ],
-    teenTip: "Let a different student tap the buttons each week, and read each card out in a dramatic voice. Nothing is saved or sent anywhere — it all runs in the browser.",
+    teenTip: "Let a different student tap the buttons each week, and read each card out in a dramatic voice. Scores are never saved or sent — it all runs in the browser.",
     topics: ["save-or-spend", "budget-battle", "banking-basics", "investing-tomorrow", "paycheck-puzzle"],
     reinforces: "Saving a little every time adds up, surprises are easier to handle with a cushion, and interest rewards money left in the bank.",
     levels: {
@@ -1356,6 +1356,23 @@ const DEVICE_GUIDES = {
     results: "The class results bar chart appears on screen. Ask a student from each option to explain their thinking.",
     backup: "If the screen fails, switch to Four Corners — you have the scenario in your notes and it works with nothing.",
   },
+  // The Workshop Builder offers two choices: no devices, or devices (a
+  // screen in the room and/or students' own devices). Older links that
+  // say "shared" or "personal" open as "devices".
+  devices: {
+    label: "Devices in the room",
+    icon: "📺",
+    setup: [
+      "Open the plan's game on the room's screen (or your laptop) before students arrive and check it displays.",
+      "If students have their own devices, write the play-along link on the board.",
+      "Stand where you can see both the screen and the students' faces.",
+      "Print the take-home cards, and the answer cards as a backup.",
+    ],
+    voting: "Read each round aloud. Students vote with hands, or on their own device with the play-along link. Tap one answer on the screen for every vote you count, then tap Reveal.",
+    showing: "The screen shows the question and answer pictures. Read it aloud anyway — do not assume everyone can see or read it.",
+    results: "The bars on the screen show how the class voted. Ask a student from each answer to explain their thinking.",
+    backup: "If the screen fails, switch to the printed answer cards — the script has every question.",
+  },
   personal: {
     label: "Students have devices",
     icon: "📱",
@@ -1411,7 +1428,7 @@ const PICTURE_ACTIVITIES = [
 function buildLessonPlan(moduleId, opts) {
   opts = opts || {};
   var minutes = Number(opts.minutes) || 30;
-  var devices = opts.devices || "none"; // "none" | "shared" | "personal"
+  var devices = opts.devices === "shared" || opts.devices === "personal" ? "devices" : opts.devices || "none"; // "none" | "devices"
   var grade = opts.grade || "Grades 3–5";
   var groupSize = opts.groupSize || "Whole class";
 
@@ -1427,7 +1444,6 @@ function buildLessonPlan(moduleId, opts) {
 
   // Which games are usable in this room?
   var allowed = devices === "none" ? ["none"]
-    : devices === "shared" ? ["none", "shared"]
     : ["none", "shared", "personal"];
   var usableGames = GAME_FORMATS.filter(function (g) {
     return allowed.indexOf(g.devices) >= 0;
@@ -1644,7 +1660,7 @@ function writeScripts(steps, c) {
     ? "Students point to the picture they pick (or walk to it). Count the hands for each picture out loud."
     : c.devices === "none"
       ? "Students vote with their bodies: walk to a corner, or hold up 1–4 fingers on the count of three. Count each answer out loud."
-      : "Show the question on the screen. Take a show of hands for each answer, then tap the one most students picked.";
+      : "Students vote with hands (or on their own devices with the play-along link). Tap the answer on the screen once for every vote you count, then tap Reveal.";
 
   function roundScript(r, i) {
     var opts = r.opts.map(function (o, k) { return (pic ? "" : letters[k] + ": ") + o[1]; });

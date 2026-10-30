@@ -31,6 +31,15 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   p.on('console', m => { if (m.type() === 'error') probs.push('CONSOLE: ' + m.text()); });
 
   const go = async h => { await p.goto(B + h, { waitUntil: 'networkidle' }); await p.waitForTimeout(110); };
+  // Volunteers and teachers are asked how many students before they build a
+  // plan or play an on-screen game (spec 09).
+  const answerStudents = async () => {
+    if (await p.$('#studentsInput')) {
+      await p.fill('#studentsInput', '25');
+      await p.click('#studentsGo');
+      await p.waitForTimeout(40);
+    }
+  };
   const jsClick = async s => p.evaluate(x => {
     const e = document.querySelector(x); if (e) { e.click(); return 1; } return 0;
   }, s);
@@ -61,25 +70,23 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
     if ((await p.$$eval('.th-box', e => e.length)) !== 3) probs.push('take-home ' + id + ': wrong box count');
   }
 
-  // --- facilitator dashboard -------------------------------------------
+  // --- the old Facilitator link opens the builder; the game counts votes ---
   await go('#/facilitator');
-  await p.waitForTimeout(500);
-  await p.selectOption('#modSelect', ids[Math.min(4, ids.length - 1)]);
-  await jsClick('#kidsMore');
-  await jsClick('#roundCard [data-plus="0"]');
-  await jsClick('#roundCard [data-plus="0"]');
-  await jsClick('#roundCard [data-plus="1"]');
-  if ((await p.$eval('#roundCard', e => e.textContent)).indexOf('3 votes counted') < 0) probs.push('facilitator: tallies do not count');
-  await jsClick('#revealBtn');
-  if (!(await p.$('#roundCard .ib-result'))) probs.push('facilitator: reveal did not show the answer');
-  await p.selectOption('#modSelect', 'coins-counting');
-  await p.selectOption('#facGrade', 'k2');
-  await jsClick('#nextBtn');
-  await jsClick('#dlBtn');
-  if (!(await p.waitForSelector('#exitText', { timeout: 2000 }).then(() => 1).catch(() => 0))) {
-    probs.push('facilitator: exit summary panel did not appear');
-  }
-  await jsClick('#copyExit');
+  if (!(await p.$('#genLesson'))) probs.push('facilitator: old link does not open the builder');
+  await go('#/game?topic=needs-vs-wants&grade=35');
+  await jsClick('#qzGo');
+  await jsClick('.qz-opt');
+  await jsClick('.qz-opt');
+  await jsClick('.qz-opt:nth-child(2)');
+  if ((await p.$eval('#qzCount', e => e.textContent)).indexOf('3 votes') < 0) probs.push('game: vote counting does not add up');
+  await jsClick('#qzUndo');
+  if ((await p.$eval('#qzCount', e => e.textContent)).indexOf('2 votes') < 0) probs.push('game: undo does not take a vote away');
+  await jsClick('#qzReveal');
+  if (!(await p.$('.qz-bars'))) probs.push('game: reveal does not show how the class voted');
+  await go('#/game?topic=needs-vs-wants&grade=35&solo=1');
+  await jsClick('#qzGo');
+  await jsClick('.qz-opt');
+  if (!(await p.$('#qzNext'))) probs.push('game: solo play does not answer on one tap');
 
   // --- volunteer prep: every topic --------------------------------------
   await go('#/prep');
@@ -94,6 +101,7 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   for (const id of ids) {
     await p.selectOption('#gTopic', id);
     await jsClick('#genLesson');
+    await answerStudents();
     await p.waitForTimeout(60);
     const n = await p.$$eval('#planOut .packet-item', e => e.length);
     if (n !== 7) probs.push('builder ' + id + ': ' + n + ' packet items (want 7)');
@@ -112,7 +120,11 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
       await jsClick('#qzGo');
       if (grade === 'k2' && (await p.$$eval('.qz-opt', e => e.length)) !== 2) probs.push('game ' + id + ' k2: not two pictures');
       for (let i = 0; i < 30 && !(await p.$('#qzAgain')); i++) {
-        await p.evaluate(() => { const b = document.querySelector('#qzNext') || document.querySelector('.qz-opt'); if (b) b.click(); });
+        await p.evaluate(() => {
+          const n = document.querySelector('#qzNext'); if (n) return n.click();
+          const o = document.querySelector('.qz-opt'); if (o) o.click();
+          const r = document.querySelector('#qzReveal'); if (r) r.click();
+        });
       }
       if (!(await p.$('#qzAgain'))) probs.push('game ' + id + ' ' + grade + ': never reached the end screen');
       const extra = await p.evaluate(x => !!findTopic(x).extraTopic, id);
@@ -122,12 +134,18 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   // The plan shows every round of the topic's game, and extra topics say where facts come from.
   await go('#/builder?topic=insurance-basics&grade=Grades%206%E2%80%938&min=30&group=Whole%20class&dev=none');
   await p.waitForTimeout(150);
+  await answerStudents();
   const shown = await p.$$eval('#planOut .round-card', e => e.length);
   if (shown < 4) probs.push('builder: plan shows ' + shown + ' game rounds (want every round)');
   if ((await p.$eval('#planOut', e => e.textContent)).indexOf('Not a Jump$tart module') < 0) probs.push('builder: extra topic plan has no source note');
   // No devices: no screen game, printable answer cards instead.
   if (await p.$('#planOut a[href^="#/game?"]')) probs.push('builder: no-device plan offers an on-screen game');
   if (!(await p.$('#planOut a[href^="#/game-cards?"]'))) probs.push('builder: no-device plan has no printable answer cards');
+  await go('#/builder?topic=insurance-basics&grade=Grades%206%E2%80%938&min=30&group=Whole%20class&dev=devices');
+  await p.waitForTimeout(150);
+  await answerStudents();
+  if (!(await p.$('#planOut a[href^="#/game?"]'))) probs.push('builder: devices plan has no on-screen game');
+  if ((await p.$$eval('#gDev .chip-toggle', e => e.length)) !== 2) probs.push('builder: device question should have two choices');
   await go('#/game-cards?topic=needs-vs-wants&grade=k2');
   if ((await p.$$eval('.pcard-round', e => e.length)) < 5) probs.push('game cards: missing rounds or answer key');
   await go('#/builder');
@@ -162,6 +180,7 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   const playIds = await p.$$eval('.game-actions a[href^="#/play/"]', e => e.map(x => x.getAttribute('href').split('/').pop()));
   for (const id of playIds) {
     await go('#/play/' + id);
+    await answerStudents();
     if (!(await p.$('#playRoot button'))) { probs.push('play ' + id + ': nothing to press'); continue; }
     // Press the main button on each screen (or the first choice) until
     // the game reaches its end screen.
@@ -184,6 +203,32 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   if ((await p.$eval('#app', e => e.textContent)).indexOf('not found') < 0) {
     probs.push('router: unknown route not handled');
   }
+
+  // --- students question: required, validated, not asked of organizations --
+  await p.evaluate(() => sessionStorage.clear());
+  await go('#/builder');
+  await jsClick('#genLesson');
+  if (!(await p.$('#studentsInput'))) probs.push('students: not asked before building a plan');
+  for (const bad of ['', '0', '-3', '2.5', 'abc', '501']) {
+    // Set the value directly: a number box won't let you type letters.
+    await p.evaluate(v => {
+      const i = document.getElementById('studentsInput');
+      i.value = v; i.dispatchEvent(new Event('input'));
+    }, bad);
+    if (!(await p.$eval('#studentsGo', b => b.disabled))) probs.push('students: accepted "' + bad + '"');
+  }
+  await p.fill('#studentsInput', '30');
+  await p.click('#studentsGo');
+  await p.waitForTimeout(60);
+  if (await p.$('#studentsInput')) probs.push('students: question did not close after a valid answer');
+  if (!(await p.$('#planOut .plan-step'))) probs.push('students: plan not built after answering');
+  await jsClick('#genLesson');
+  await p.waitForTimeout(40);
+  if (await p.$('#studentsInput')) probs.push('students: asked twice for the same plan in one tab');
+  await p.evaluate(() => { sessionStorage.clear(); localStorage.setItem('moneyReady.accountType.v1', 'organization'); });
+  await go('#/builder?topic=needs-vs-wants');
+  if (await p.$('#studentsInput')) probs.push('students: organizations should not be asked');
+  await p.evaluate(() => localStorage.setItem('moneyReady.accountType.v1', 'volunteer'));
 
   console.log('modules tested:', ids.length);
   console.log('PROBLEMS:', probs.length);

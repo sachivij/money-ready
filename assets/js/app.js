@@ -9,7 +9,6 @@
  *   #/modules        Module library (10 cards)
  *   #/module/:id     Lesson transformation
  *   #/challenge/:id  Student challenge + reveal
- *   #/facilitator    Facilitator dashboard
  *   #/prep           Teen volunteer prep
  *   #/builder        Toolkit builder (guided packet workflow)
  *   #/helper         Standards-grounded helper (retrieval only)
@@ -108,7 +107,7 @@
   // ================================================================
   // ACCOUNT TYPE (volunteer / school / organization)
   // Stored on this device only — it is a view preference, not a login.
-  // No password, no personal data, nothing sent anywhere.
+  // No password, no personal data, and the role itself is never sent.
   // ================================================================
   var ROLE_KEY = "moneyReady.accountType.v1";
   // In-memory fallback so the choice still sticks for the session when
@@ -177,6 +176,66 @@
   }
 
   // ================================================================
+  // STUDENTS REACHED (spec 09)
+  // Before a volunteer or teacher uses something — builds a plan or
+  // opens an on-screen game — ask how many students will
+  // take part. An answer is required to continue; "Go back" leaves without
+  // counting. Organizations aren't asked. reach.js sends the count.
+  // ================================================================
+  function askStudents(kind, item, onDone) {
+    var role = getRole();
+    // No role yet: the role picker is showing, and picking a role re-runs
+    // the page, which asks again.
+    if (!role) return;
+    if ((role !== "volunteer" && role !== "school") || Reach.alreadyCounted(kind, item)) return onDone();
+
+    var old = document.getElementById("studentsOverlay");
+    if (old) old.remove();
+    var el = document.createElement("div");
+    el.className = "role-overlay";
+    el.id = "studentsOverlay";
+    el.innerHTML =
+      '<form class="role-modal students-modal" role="dialog" aria-modal="true" aria-labelledby="studentsTitle" novalidate>' +
+        '<div class="eyebrow">Before you start</div>' +
+        '<h2 id="studentsTitle">How many students will be participating in this activity?</h2>' +
+        '<label class="students-field"><span class="sr-only">Number of students</span>' +
+          '<input id="studentsInput" type="number" inputmode="numeric" min="1" max="' + Reach.MAX_STUDENTS +
+            '" step="1" placeholder="e.g. 24" required aria-describedby="studentsHint"></label>' +
+        '<p id="studentsHint" class="students-hint" aria-live="polite">Enter a whole number from 1 to ' + Reach.MAX_STUDENTS + ".</p>" +
+        '<div class="students-actions">' +
+          '<button type="submit" class="btn btn-primary btn-lg" id="studentsGo" disabled>Continue →</button>' +
+          '<button type="button" class="btn btn-ghost" id="studentsBack">Go back</button>' +
+        "</div>" +
+        '<p class="role-note">🔒 We count how many students Money Ready reaches. Only this number and the activity are sent to ' +
+          "the project team — never names or anything about your students.</p>" +
+      "</form>";
+    document.body.appendChild(el);
+    var input = el.querySelector("#studentsInput");
+    var go = el.querySelector("#studentsGo");
+    var hint = el.querySelector("#studentsHint");
+    input.addEventListener("input", function () {
+      var ok = Reach.parseStudents(input.value) !== null;
+      go.disabled = !ok;
+      hint.classList.toggle("bad", !ok && input.value !== "");
+    });
+    el.querySelector("form").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var n = Reach.parseStudents(input.value);
+      if (n === null) { hint.classList.add("bad"); input.focus(); return; }
+      Reach.record(kind, item, n, role);
+      el.remove();
+      onDone();
+    });
+    function back() {
+      el.remove();
+      if (history.length > 1) history.back(); else location.hash = "#/";
+    }
+    el.querySelector("#studentsBack").addEventListener("click", back);
+    el.addEventListener("keydown", function (ev) { if (ev.key === "Escape") back(); });
+    input.focus();
+  }
+
+  // ================================================================
   // LANDING
   // ================================================================
   function renderHome() {
@@ -239,9 +298,6 @@
           navGuide("🎲", "Games", "#/games",
             "I need an activity, and there may be no screens",
             GAME_FORMATS.length + " games you can drop into any topic. " + unpluggedGames() + " of them need no technology at all.") +
-          navGuide("🎤", "Facilitator", "#/facilitator",
-            "The workshop is happening right now",
-            "Your live dashboard during the session — current step, class results, discussion prompts, and the exit-ticket summary.") +
           navGuide("📊", "Impact", "#/impact",
             "I need numbers to share with someone",
             "Privacy-safe metrics you can report. What you see depends on whether you're a volunteer, a school, or an organization.") +
@@ -271,7 +327,8 @@
           "<div><h3 style=\"margin-bottom:8px\">Privacy-safe by design</h3>" +
             '<p class="mb-0 muted">This prototype is built to protect students from the ground up. ' +
               "It collects <strong>no names, no logins, and no personal data</strong>. Impact numbers are " +
-              "aggregate counts only, and there is no backend server — nothing to leak.</p>" +
+              "aggregate counts only: when a volunteer or teacher starts an activity, the site sends just the number of " +
+              "students and which activity, so the team can count students reached.</p>" +
             '<a class="btn btn-ghost" style="padding-left:0" href="#/impact">See how impact is measured →</a>' +
           "</div>" +
         "</div>" +
@@ -337,7 +394,7 @@
         }).join("") +
       "</ol>" +
       '<div class="path-quick">' +
-        '<a href="#/facilitator">🎤 Workshop happening right now?</a>' +
+        '<a href="#/builder">🎤 Workshop happening right now?</a>' +
         '<a href="#/games">🎲 Just need a game?</a>' +
       "</div></nav>";
   }
@@ -598,7 +655,7 @@
           confidenceRow(m) +
           '<div class="flex gap wrap-flex mt-2 no-print">' +
             '<a class="btn btn-primary" href="#/take-home/' + m.id + '">Get the take-home card</a>' +
-            '<a class="btn btn-secondary" href="#/facilitator">Open facilitator dashboard</a>' +
+            '<a class="btn btn-secondary" href="#/builder?topic=' + m.id + '">Build a workshop on this</a>' +
             '<a class="btn btn-ghost" href="#/modules">Back to modules</a>' +
           "</div>" +
         "</div>" +
@@ -641,156 +698,6 @@
           "Thanks! Recorded anonymously on this device only.";
       });
     });
-  }
-
-  // ================================================================
-  // FACILITATOR DASHBOARD
-  // ================================================================
-  function renderFacilitator(query) {
-    query = query || {};
-    var topics = MODULES.concat(EXTRA_TOPICS);
-    var startTopic = findTopic(query.topic) ? query.topic : MODULES[0].id;
-    var startGrade = /^(k2|35|68|912)$/.test(query.grade || "") ? query.grade : "35";
-    var gradeIds = [["k2", "Grades K–2"], ["35", "Grades 3–5"], ["68", "Grades 6–8"], ["912", "Grades 9–12"]];
-    app.innerHTML =
-      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Facilitator dashboard</div>' +
-        '<div class="eyebrow">Facilitator dashboard</div>' +
-        "<h1>Run the game and count real votes</h1>" +
-        '<p class="muted" style="max-width:70ch">Put this on the room\'s screen (or keep it on your own phone). Read each round, let the class vote ' +
-          "with hands, corners or thumbs, and tap <strong>+1</strong> for every vote you count. The bars show your class's real answers. " +
-          "🔒 Nothing leaves this device and nothing is saved.</p>" +
-      "</div>" +
-      '<section class="section tight"><div class="wrap"><div class="dash-grid">' +
-        // Left column: the round and the tallies
-        "<div>" +
-          '<div class="card">' +
-            '<div class="grid grid-2">' +
-              '<div class="field" style="margin:0"><label for="modSelect">Topic</label><select id="modSelect">' +
-                '<optgroup label="Modules">' + MODULES.map(function (m) {
-                  return '<option value="' + m.id + '"' + (m.id === startTopic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>"; }).join("") + "</optgroup>" +
-                '<optgroup label="More topics (from trusted sources)">' + EXTRA_TOPICS.map(function (m) {
-                  return '<option value="' + m.id + '"' + (m.id === startTopic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>"; }).join("") + "</optgroup>" +
-              "</select></div>" +
-              '<div class="field" style="margin:0"><label for="facGrade">Age group</label><select id="facGrade">' +
-                gradeIds.map(function (g) { return '<option value="' + g[0] + '"' + (g[0] === startGrade ? " selected" : "") + ">" + g[1] + "</option>"; }).join("") +
-              "</select></div>" +
-            "</div>" +
-            '<div class="dash-stat mt-2"><span class="muted">Students in the room</span>' +
-              '<button class="btn btn-secondary tally-btn" id="kidsLess" aria-label="One fewer student">−</button>' +
-              '<span class="big" id="joined" aria-live="polite">0</span>' +
-              '<button class="btn btn-secondary tally-btn" id="kidsMore" aria-label="One more student">+</button></div>' +
-          "</div>" +
-          '<div class="card mt-3" id="roundCard"></div>' +
-        "</div>" +
-
-        // Right column: prompt, controls, play-along link
-        "<div>" +
-          '<div class="card" style="background:var(--green-soft);border-color:rgba(31,157,107,.25)">' +
-            '<div class="eyebrow">Suggested discussion prompt</div>' +
-            '<p id="prompt" style="font-size:1.15rem;font-weight:700;margin-bottom:0"></p>' +
-          "</div>" +
-          '<div class="card mt-3"><div class="eyebrow">Session controls</div>' +
-            '<p class="muted" style="font-size:.9rem">Round <strong id="stepName">—</strong></p>' +
-            '<button class="btn btn-primary btn-block" id="nextBtn">Next round →</button>' +
-            '<button class="btn btn-secondary btn-block mt-2" id="dlBtn">📋 Make exit-ticket summary</button>' +
-            '<p class="muted mt-2" style="font-size:.8rem;margin-bottom:0">Counts only. No names, no personal data.</p>' +
-          "</div>" +
-          '<div class="card mt-3"><div class="eyebrow">📱 Students have devices?</div>' +
-            '<p style="font-size:.92rem">They can play the same game on their own screens. Write this on the board:</p>' +
-            '<div class="play-link" id="playLink"></div>' +
-            '<p class="muted mt-1" style="font-size:.82rem;margin-bottom:0">Each device plays on its own; their taps don\'t reach this screen ' +
-              "(that would need an internet server). Ask for a show of hands and count the votes here.</p></div>" +
-          '<div id="exitOut" class="mt-3"></div>' +
-        "</div>" +
-      "</div></div></section>";
-
-    var game, round, tallies, revealed, kids = 0;
-    var kidsEl = document.getElementById("joined");
-    function setKids(n) { kids = Math.max(0, n); kidsEl.textContent = kids; }
-    document.getElementById("kidsLess").addEventListener("click", function () { setKids(kids - 1); });
-    document.getElementById("kidsMore").addEventListener("click", function () { setKids(kids + 1); });
-
-    function load() {
-      var id = document.getElementById("modSelect").value;
-      var grade = document.getElementById("facGrade").value;
-      game = buildTopicGame(id, grade);
-      round = 0;
-      tallies = game.rounds.map(function (r) { return r.opts.map(function () { return 0; }); });
-      revealed = game.rounds.map(function () { return false; });
-      var t = findTopic(id);
-      document.getElementById("prompt").textContent = (t.reveal && t.reveal.discussionPrompt) || "";
-      var link = location.href.split("#")[0] + "#/game?topic=" + id + "&grade=" + grade;
-      document.getElementById("playLink").textContent = link;
-      show();
-    }
-
-    function show() {
-      var r = game.rounds[round];
-      var votes = tallies[round];
-      var sum = votes.reduce(function (a, b) { return a + b; }, 0);
-      var open = revealed[round];
-      var src = roundSource(r, game.topic);
-      document.getElementById("stepName").textContent = (round + 1) + " of " + game.rounds.length;
-      document.getElementById("roundCard").innerHTML =
-        '<div class="eyebrow">Round ' + (round + 1) + " of " + game.rounds.length + " · " + sum + " vote" + (sum === 1 ? "" : "s") + " counted</div>" +
-        '<h2 style="margin:4px 0 12px">' + esc(r.q) + "</h2>" +
-        r.opts.map(function (o, k) {
-          var pct = sum ? Math.round((votes[k] / sum) * 100) : 0;
-          var best = open && k === r.best;
-          return '<div class="result-bar tally-row"><div class="rb-top"><span>' + (game.picture ? "" : "ABCD".charAt(k) + ". ") + o[0] + " " + esc(o[1]) +
-              (best ? " ✓" : "") + "</span><span>" + votes[k] + " · " + pct + "%</span></div>" +
-            '<div class="tally-line"><div class="rb-track"><div class="rb-fill ' + (open ? (k === r.best || r.best < 0 ? "best" : "other") : "other") +
-              '" style="width:' + Math.max(pct, 2) + '%"></div></div>' +
-            '<button class="btn btn-secondary tally-btn" data-minus="' + k + '" aria-label="Take away a vote for ' + esc(o[1]) + '">−</button>' +
-            '<button class="btn btn-primary tally-btn" data-plus="' + k + '" aria-label="Add a vote for ' + esc(o[1]) + '">+1</button></div></div>';
-        }).join("") +
-        (open
-          ? '<div class="ib-result ok mt-2"><strong>' + (r.best < 0 ? "Any answer is OK." : "Answer: " + r.opts[r.best][0] + " " + esc(r.opts[r.best][1])) +
-              "</strong><p>" + esc(r.why) + "</p>" +
-              (src ? '<p class="muted" style="font-size:.82rem">Source: ' + esc(src.name) + (src.url ? " · " + esc(src.url) : "") + "</p>" : "") + "</div>"
-          : '<button class="btn btn-primary mt-2" id="revealBtn">Reveal the answer</button>');
-      document.querySelectorAll("#roundCard [data-plus]").forEach(function (b) {
-        b.addEventListener("click", function () { tallies[round][Number(b.getAttribute("data-plus"))]++; show(); });
-      });
-      document.querySelectorAll("#roundCard [data-minus]").forEach(function (b) {
-        b.addEventListener("click", function () {
-          var k = Number(b.getAttribute("data-minus"));
-          if (tallies[round][k] > 0) tallies[round][k]--;
-          show();
-        });
-      });
-      var rb = document.getElementById("revealBtn");
-      if (rb) rb.addEventListener("click", function () { revealed[round] = true; show(); });
-    }
-
-    document.getElementById("modSelect").addEventListener("change", load);
-    document.getElementById("facGrade").addEventListener("change", load);
-    document.getElementById("nextBtn").addEventListener("click", function () {
-      round = (round + 1) % game.rounds.length;
-      show();
-    });
-    document.getElementById("dlBtn").addEventListener("click", function () {
-      var lines = [
-        "Money Ready — Exit Ticket Summary (aggregate only)",
-        "Topic: " + game.topic.title,
-        "Age group: " + document.getElementById("facGrade").selectedOptions[0].textContent,
-        "Students in the room: " + kids,
-        "",
-      ];
-      game.rounds.forEach(function (r, i) {
-        var v = tallies[i], sum = v.reduce(function (a, b) { return a + b; }, 0);
-        if (!sum) { lines.push("Round " + (i + 1) + ": not played"); return; }
-        var right = r.best < 0 ? sum : v[r.best];
-        lines.push("Round " + (i + 1) + ": " + r.q, "  " + sum + " votes, " + Math.round((right / sum) * 100) + "% picked the answer (" +
-          (r.best < 0 ? "any answer" : r.opts[r.best][1]) + ")");
-      });
-      var t = game.topic;
-      if (t.reveal) lines.push("", "Key concept: " + t.reveal.keyConcept, "Discussion prompt: " + t.reveal.discussionPrompt);
-      lines.push("", "Privacy note: counts only. No names, logins, or personal data.");
-      showExitSummary(lines.join("\n"), t.id);
-    });
-    load();
-    wireNav();
   }
 
   // ================================================================
@@ -1086,7 +993,9 @@
 
         '<div class="callout mt-3"><div class="ico">🔒</div><div><strong>Privacy-safe by design.</strong> ' +
           "Real metrics are aggregate counts only — no names, no logins, no personal data, no tracking. Everything a " +
-          "volunteer records stays on their own device unless they choose to copy a summary.</div></div>" +
+          "volunteer records stays on their own device unless they choose to copy a summary. The one exception: when a " +
+          "volunteer or teacher starts an activity, the site sends the number of students and which activity to the " +
+          "project team, so we can count how many students Money Ready reaches.</div></div>" +
       "</div></section>";
 
     var sw = document.getElementById("switchRole");
@@ -1343,10 +1252,12 @@
       "</div>" +
       '<section class="section tight"><div class="wrap">' +
         '<div id="playRoot" class="play-root"></div>' +
-        '<p class="muted center mt-3" style="font-size:.88rem">🔒 Nothing is saved or sent anywhere — the game runs only on this screen.</p>' +
+        '<p class="muted center mt-3" style="font-size:.88rem">🔒 Scores are never saved or sent — the game runs only on this screen.</p>' +
       "</div></section>";
-    PLAY_ENGINES[g.play.engine](document.getElementById("playRoot"), g);
     wireNav();
+    askStudents("game", g.id, function () {
+      PLAY_ENGINES[g.play.engine](document.getElementById("playRoot"), g);
+    });
   }
 
   // ================================================================
@@ -1360,7 +1271,8 @@
   // ================================================================
   function renderBuilderCombined(query) {
     query = query || {};
-    var dev = DEVICE_GUIDES[query.dev] ? query.dev : "none";
+    // Two choices. Old links with "shared" or "personal" open as devices.
+    var dev = query.dev === "devices" || query.dev === "shared" || query.dev === "personal" ? "devices" : "none";
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Workshop builder</div>' +
         '<div class="eyebrow">Workshop builder</div>' +
@@ -1395,7 +1307,7 @@
           "</select></div>" +
         "</div>" +
         '<div class="field"><label>What technology is actually in the room?</label><div class="chips-select" id="gDev">' +
-          [["none", "🙌 No devices at all"], ["shared", "📺 One shared screen"], ["personal", "📱 Students have devices"]].map(function (d) {
+          [["none", "🙌 No devices"], ["devices", "📺 Devices (a screen and/or students' devices)"]].map(function (d) {
             return '<button class="chip-toggle' + (d[0] === dev ? " on" : "") + '" data-dev="' + d[0] + '">' + d[1] + "</button>"; }).join("") +
         "</div></div>" +
         '<button class="btn btn-primary btn-lg" id="genLesson">✨ Build my workshop</button></div>' +
@@ -1449,6 +1361,9 @@
         dev: dev,
       };
       if (game) choices.game = game;
+      askStudents("builder", choices.topic, function () { showBuilt(choices); });
+    }
+    function showBuilt(choices) {
       var plan = buildLessonPlan(choices.topic, {
         minutes: Number(choices.min),
         grade: choices.grade,
@@ -1656,13 +1571,15 @@
         (srcNames.length ? "<div><span>Facts from</span><strong>" + esc(srcNames.join("; ")) + "</strong></div>" : "") +
       "</div>" +
       '<p class="muted" style="font-size:.92rem;margin:10px 0 0"><strong>Students practice:</strong> ' + esc(g.topic.objective) +
-        (noScreen ? " No screen needed: print the answer cards, hold them up (or tape one in each corner), and read each question from the script below. Students vote by pointing, moving, or raising hands." : "") + "</p>" +
+        (noScreen
+          ? " No screen needed: print the answer cards, hold them up (or tape one in each corner), and read each question from the script below. Students vote by pointing, moving, or raising hands."
+          : " Put the game on the room's screen. Students vote with hands or on their own devices (the game shows a play-along link). " +
+            "Tap an answer once for every vote you count, then Reveal: the screen shows the answer and how the class voted.") + "</p>" +
       '<div class="flex gap wrap-flex no-print mt-2">' +
         (noScreen
           ? '<a class="btn btn-primary" href="#/game-cards' + qs + '">🖨 Print the answer cards</a>'
-          : '<a class="btn btn-primary" href="#/game' + qs + '">▶ Play on screen</a>' +
-            '<a class="btn btn-secondary" href="#/game-cards' + qs + '">🖨 Print the answer cards</a>') +
-        '<a class="btn btn-secondary" href="#/facilitator' + qs + '">📊 Count votes on the dashboard</a>' +
+          : '<a class="btn btn-primary" href="#/game' + qs + '">▶ Start the game on screen</a>' +
+            '<a class="btn btn-secondary" href="#/game-cards' + qs + '">🖨 Print the answer cards (backup)</a>') +
         '<button class="btn btn-ghost" id="gameCards">⬇ Download the questions (text)</button>' +
       "</div>" +
       '<div class="eyebrow mt-3">What\'s in the game: every round, with the answer</div>' +
@@ -1725,8 +1642,8 @@
     var gradeName = Object.keys(GRADE_PROFILES).filter(function (k) { return GRADE_PROFILES[k].id === grade; })[0];
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · ' +
-        '<a href="#/builder?topic=' + encodeURIComponent(query.topic) + "&grade=" + encodeURIComponent(gradeName) + '">Workshop builder</a> · Game</div>' +
-        '<div class="eyebrow">' + g.topic.emoji + " Play on screen · " + esc(gradeName) + "</div>" +
+        '<a href="#/builder?topic=' + encodeURIComponent(query.topic) + "&grade=" + encodeURIComponent(gradeName) + '&dev=devices">Workshop builder</a> · Game</div>' +
+        '<div class="eyebrow">' + g.topic.emoji + (query.solo === "1" ? " Play along" : " Play on screen") + " · " + esc(gradeName) + "</div>" +
         "<h1>" + esc(g.title.replace(/^\S+ /, "")) + "</h1>" +
         (g.topic.extraTopic ? '<p class="muted" style="max-width:66ch">Every round shows where its facts come from.</p>' : "") +
       "</div>" +
@@ -1734,6 +1651,8 @@
         '<div id="playRoot" class="play-root"></div>' +
         '<p class="muted center mt-3" style="font-size:.88rem">🔒 Nothing is saved or sent anywhere. The game runs only on this screen.</p>' +
       "</div></section>";
+    g.solo = query.solo === "1";
+    if (!g.solo) g.playLink = location.href.split("#")[0] + "#/game?topic=" + encodeURIComponent(query.topic) + "&grade=" + grade + "&solo=1";
     PLAY_ENGINES.quiz(document.getElementById("playRoot"), g);
     wireNav();
   }
@@ -1790,6 +1709,8 @@
     clearTimers();
     // Stop a game reading aloud when the page changes.
     try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) { /* no voice */ }
+    var asking = document.getElementById("studentsOverlay");
+    if (asking) asking.remove();
     window.scrollTo(0, 0);
     var raw = (location.hash || "#/").slice(1); // remove '#'
     var parts = raw.split("?");
@@ -1808,7 +1729,8 @@
       case "game-cards": return renderGameCards(query);
       case "module": return renderModule(seg[1]);
       case "challenge": return renderChallenge(seg[1], query.practice === "1");
-      case "facilitator": return renderFacilitator(query);
+      // The Facilitator dashboard was folded into the builder's game.
+      case "facilitator": return renderBuilderCombined(query);
       case "prep": return renderPrep(query);
       // Toolkit builder and lesson generator are now one page.
       case "builder":
