@@ -256,6 +256,13 @@ Cooperative Extension office. Do not "fix" this back to a clover.
 in `FAQ_KNOWLEDGE` and shows a source label. With no match it says so and
 points to a trusted adult. Do not wire it to a model that free-forms
 answers to children — the no-match fallback is the safety property.
+Entries without a `tier` come from Jump$tart materials; `tier: "trusted"`
+entries answer questions Jump$tart doesn't cover from a named U.S.
+government consumer-education source (CFPB, FDIC, FTC, SEC, IRS, Federal
+Student Aid, Federal Reserve Education), shown as `source` + `url` under the
+answer. To cover a new question, add a pre-written entry; don't fetch.
+A question only matches an entry if it contains one of that entry's `tags`
+(whole word, plural allowed), so write tags in singular form.
 
 ---
 

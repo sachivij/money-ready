@@ -1006,21 +1006,27 @@ const IMPACT_EXAMPLE = {
 
 // Standards-grounded helper knowledge base.
 // SAFETY BY DESIGN: this helper does NOT freestyle answers. It only looks up
-// answers from this small, curated, EXAMPLE set of approved-style resources
-// and always shows a source label. Real deployment would replace these
-// entries with chapter-approved Virginia Jump$tart / National Standards
-// content. Everything here is illustrative and pending review.
+// answers from this small, curated, EXAMPLE set and always shows a source.
+// Two tiers:
+//   - no `tier`: written from Jump$tart materials (Teen Teach-In, Clearinghouse)
+//   - tier "trusted": a question Jump$tart materials don't cover, answered from
+//     a public U.S. government consumer-education source named in `source`
+//     and `url`. These are shown with a "not from Jump$tart" note.
+// Real deployment would replace these entries with chapter-approved Virginia
+// Jump$tart / National Standards content. Everything here is illustrative and
+// pending review. `tags` are the topic words a question must contain to match
+// (see renderHelper in app.js).
 const FAQ_KNOWLEDGE = [
   {
     q: "What is the difference between a need and a want?",
     a: "A need is something you must have to live and be safe, like food, water, or shelter. A want is something nice to have but not essential, like games or candy. The same item can be a need or a want depending on the situation.",
-    tags: ["needs", "wants", "tradeoff", "basics"],
+    tags: ["need", "want", "tradeoff", "basics"],
     source: "Jump$tart Teen Teach-In · Grade 1 Needs and Wants; Grade 3 Saving and Spending",
   },
   {
     q: "What is opportunity cost?",
     a: "Opportunity cost is the next-best thing you gave up when you made a choice. If you spend $5 on a book instead of ice cream, the opportunity cost is the ice cream — not the $5.",
-    tags: ["opportunity", "cost", "choice", "tradeoff", "give up"],
+    tags: ["opportunity cost", "opportunity", "trade-off", "tradeoff", "give up"],
     source: "Jump$tart Teen Teach-In · Grade 2 Making Financial Choices and Opportunity Costs",
   },
   {
@@ -1070,5 +1076,93 @@ const FAQ_KNOWLEDGE = [
     a: "No. This toolkit is an educational prototype for discussion, pending review by Virginia Jump$tart. It is not financial advice. For decisions, families should talk with trusted adults and qualified professionals.",
     tags: ["disclaimer", "advice", "safety", "about"],
     source: "Money Ready toolkit · Educational-only notice",
+  },
+  {
+    q: "What is a credit score?",
+    a: "A credit score is a three-digit number, usually between 300 and 850, that shows lenders how likely you are to pay back borrowed money on time. Paying bills on time and not borrowing close to your limit help build a good score.",
+    tags: ["credit score", "credit report", "fico"],
+    tier: "trusted",
+    source: "Consumer Financial Protection Bureau (CFPB)",
+    url: "consumerfinance.gov",
+  },
+  {
+    q: "What is the difference between a debit card and a credit card?",
+    a: "A debit card spends money that is already in your bank account. A credit card borrows money you have to pay back later, and if you don't pay the full bill each month you are charged interest.",
+    tags: ["debit", "credit card", "card"],
+    tier: "trusted",
+    source: "Consumer Financial Protection Bureau (CFPB)",
+    url: "consumerfinance.gov",
+  },
+  {
+    q: "What is an emergency fund?",
+    a: "An emergency fund is money set aside for surprises, like a car repair or a broken phone. Even a small amount saved a little at a time can keep a surprise from turning into debt.",
+    tags: ["emergency", "rainy day", "unexpected"],
+    tier: "trusted",
+    source: "Consumer Financial Protection Bureau (CFPB)",
+    url: "consumerfinance.gov",
+  },
+  {
+    q: "Is my money safe in a bank?",
+    a: "Money in an FDIC-insured bank is protected by the U.S. government up to $250,000 per depositor, per bank, for each account ownership type. If the bank fails, insured deposits are paid back. Credit unions have similar protection through the NCUA.",
+    tags: ["fdic", "insured", "insurance", "money safe", "safe in a bank", "safe in the bank", "bank fail", "credit union"],
+    tier: "trusted",
+    source: "Federal Deposit Insurance Corporation (FDIC)",
+    url: "fdic.gov",
+  },
+  {
+    q: "What is the difference between stocks and bonds?",
+    a: "A stock is a small piece of ownership in a company, so its value goes up and down with the company. A bond is a loan you make to a company or government, which pays you interest. Stocks usually carry more risk and more chance of growth than bonds.",
+    tags: ["stock", "bond", "shares", "mutual fund", "index fund"],
+    tier: "trusted",
+    source: "U.S. Securities and Exchange Commission (SEC), Investor.gov",
+    url: "investor.gov",
+  },
+  {
+    q: "Is cryptocurrency a safe investment?",
+    a: "Cryptocurrency like Bitcoin is very risky. Prices can swing wildly in a single day, it is not insured like money in a bank, and scammers often ask to be paid in crypto. Anyone thinking about it should talk with a trusted adult first.",
+    tags: ["crypto", "bitcoin", "cryptocurrency", "nft"],
+    tier: "trusted",
+    source: "U.S. Securities and Exchange Commission (Investor.gov) and Federal Trade Commission (FTC)",
+    url: "investor.gov · consumer.ftc.gov",
+  },
+  {
+    q: "What is identity theft?",
+    a: "Identity theft is when someone uses your personal information, like your Social Security number or passwords, to pretend to be you. Keep that information private, use strong passwords, and tell a trusted adult right away if something looks wrong. Victims can report it at IdentityTheft.gov.",
+    tags: ["identity", "social security", "password", "personal information", "hacked"],
+    tier: "trusted",
+    source: "Federal Trade Commission (FTC), IdentityTheft.gov",
+    url: "identitytheft.gov",
+  },
+  {
+    q: "Are payment apps like Venmo or Cash App safe?",
+    a: "Payment apps work like handing someone cash: once you send money it is often hard or impossible to get back. Only send money to people you know and trust, double-check the name before you send, and never pay a stranger who rushes you.",
+    tags: ["venmo", "cash app", "zelle", "paypal", "payment app"],
+    tier: "trusted",
+    source: "Federal Trade Commission (FTC)",
+    url: "consumer.ftc.gov",
+  },
+  {
+    q: "How do people pay for college?",
+    a: "Most students combine several ways: savings, scholarships and grants (which don't have to be paid back), work-study jobs, and student loans (which do). Filling out the free FAFSA form is the first step to getting federal aid.",
+    tags: ["college", "fafsa", "scholarship", "tuition", "student loan", "university"],
+    tier: "trusted",
+    source: "Federal Student Aid, U.S. Department of Education",
+    url: "studentaid.gov",
+  },
+  {
+    q: "What are taxes and what do they pay for?",
+    a: "Taxes are money people and businesses pay to the government. They pay for shared things like schools, roads, parks, firefighters, and the military. Income tax is taken from a paycheck, and sales tax is added when you buy things.",
+    tags: ["tax", "irs", "sales tax", "income tax"],
+    tier: "trusted",
+    source: "Internal Revenue Service (IRS), Understanding Taxes",
+    url: "irs.gov",
+  },
+  {
+    q: "What is inflation?",
+    a: "Inflation is when prices go up over time, so the same amount of money buys less than it used to. It's one reason saving money in an account that earns interest can help it keep up.",
+    tags: ["inflation", "prices go up", "prices rise", "cost of living"],
+    tier: "trusted",
+    source: "Federal Reserve Education",
+    url: "federalreserveeducation.org",
   },
 ];

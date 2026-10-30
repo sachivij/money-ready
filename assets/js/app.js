@@ -925,9 +925,10 @@
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Standards helper</div>' +
         '<div class="eyebrow">Standards-grounded helper</div>' +
-        "<h1>Quick answers — only from approved resources</h1>" +
+        "<h1>Quick answers — always with a source</h1>" +
         '<p class="muted" style="max-width:66ch">Ask a financial-literacy question and this helper looks up a plain-English ' +
-          "answer from a small set of approved-style resources, always with a source. " +
+          "answer from Jump$tart resources, or from trusted U.S. government consumer-education sources (CFPB, FDIC, FTC, SEC, IRS, " +
+          "Federal Student Aid) for questions Jump$tart doesn't cover. Every answer shows its source underneath. " +
           "<strong>It does not freestyle or make things up.</strong> " +
           "<span class=\"pill-note\">Prototype: example resource set, pending Jump$tart review</span></p>" +
       "</div>" +
@@ -942,19 +943,44 @@
         "</div>" +
         '<div id="ans" class="mt-3"></div>' +
         '<div class="callout mt-3"><div class="ico">🛡️</div><div><strong>How this stays safe.</strong> ' +
-          "The helper only retrieves from the approved list above — if it doesn't have a grounded answer, it says so and " +
-          "points you to a trusted adult or the Virginia Jump$tart / National Standards resources, rather than guessing.</div></div>" +
+          "Every answer is written ahead of time from Jump$tart materials or a named government source — nothing is made up on the spot. " +
+          "If it doesn't have a grounded answer, it says so and points you to a trusted adult rather than guessing.</div></div>" +
       "</div></section>";
 
+    // Words too common to say what a question is about. Without this list,
+    // "what" alone matched every stored question.
+    var STOP = ["what", "when", "where", "which", "while", "should", "would", "could", "about",
+      "does", "difference", "between", "there", "their", "they", "this", "that", "with", "have",
+      "your", "from", "work", "like", "much", "many", "some", "good", "best", "people", "really"];
+    function hasWord(text, word) {
+      // Whole-word match, allowing a plural ("stock" matches "stocks").
+      var w = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return new RegExp("(^|[^a-z])" + w + "(s|es)?([^a-z]|$)").test(text);
+    }
+    // A question only matches an entry when it contains one of the entry's
+    // topic tags. Other shared words only break ties between matches.
     function search(query) {
       var q = query.toLowerCase();
       var scored = FAQ_KNOWLEDGE.map(function (f) {
-        var score = 0;
-        f.tags.forEach(function (t) { if (q.indexOf(t) >= 0) score += 2; });
-        f.q.toLowerCase().split(/\W+/).forEach(function (w) { if (w.length > 3 && q.indexOf(w) >= 0) score += 1; });
+        var tagScore = 0, score = 0;
+        f.tags.forEach(function (t) { if (hasWord(q, t)) tagScore += 2 + t.split(" ").length; });
+        if (tagScore) {
+          score = tagScore;
+          f.q.toLowerCase().split(/\W+/).forEach(function (w) {
+            if (w.length > 3 && STOP.indexOf(w) < 0 && hasWord(q, w)) score += 1;
+          });
+        }
         return { f: f, score: score };
       }).filter(function (x) { return x.score > 0; }).sort(function (a, b) { return b.score - a.score; });
       return scored;
+    }
+    function sourceLine(f) {
+      if (f.tier === "trusted") {
+        return '<div class="helper-source">🏛️ <span>Source: ' + esc(f.source) + " · " + esc(f.url) + "</span></div>" +
+          '<p class="muted" style="font-size:.82rem;margin:4px 0 0">Jump$tart materials don\'t cover this question, ' +
+          "so this answer comes from a trusted U.S. government consumer-education source.</p>";
+      }
+      return '<div class="helper-source">📚 <span>Source: ' + esc(f.source) + "</span></div>";
     }
     function answer(query) {
       var results = search(query);
@@ -962,15 +988,15 @@
       if (!results.length) {
         out.innerHTML = '<div class="card"><h3>🤔 I don\'t have a grounded answer for that yet</h3>' +
           '<p class="muted">To stay safe, this helper only answers from its approved example resources — it won\'t guess. ' +
-          "Try one of the suggested questions above, or ask a teacher or trusted adult. A full version would draw on the " +
-          "National Standards and chapter-approved Virginia Jump$tart resources.</p></div>";
+          "Try one of the suggested questions above, or ask a teacher or trusted adult. For money questions, " +
+          "consumerfinance.gov (CFPB) is a good trusted place to look together.</p></div>";
         return;
       }
       var top = results[0].f;
       out.innerHTML =
         '<div class="card"><div class="eyebrow">Answer</div><h3>' + esc(top.q) + "</h3>" +
           '<div class="helper-answer">' + esc(top.a) + "</div>" +
-          '<div class="helper-source">📚 <span>Source: ' + esc(top.source) + "</span></div>" +
+          sourceLine(top) +
           '<p class="muted mt-2" style="font-size:.82rem;margin-bottom:0">Educational only · not financial advice · pending review.</p>' +
         "</div>" +
         (results.length > 1 ? '<div class="card mt-2"><div class="eyebrow">Related</div><div class="suggested-q">' +
