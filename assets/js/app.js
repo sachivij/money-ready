@@ -140,6 +140,7 @@
   // The picker. `force` shows it even if a role is already chosen.
   function showRolePicker(force) {
     if (!force && getRole()) return;
+    if (document.getElementById("roleOverlay")) return;
     var current = getRole();
     var el = document.createElement("div");
     el.className = "role-overlay";
@@ -185,8 +186,11 @@
     var official = officialModules();
     var elementary = official.length > 0;
     var featured = elementary ? official : MODULES.slice(0, 6);
+    // The page reads top to bottom as: where do I go (hero chart), how a
+    // workshop works, the lessons, every page explained, why it works, and
+    // the pilot plan for organizers.
     app.innerHTML =
-      // Hero
+      // Hero: what this is, and the "what do you want to do?" chart
       '<section class="hero"><div class="wrap hero-grid">' +
         "<div>" +
           '<div class="eyebrow">Money Ready · Virginia Interactive Toolkit</div>' +
@@ -200,49 +204,16 @@
               '<span class="badge amber">🙋 Taught by teen volunteers</span>' +
               '<span class="badge blue">🙌 Works without devices</span>' +
             "</div>" : "") +
-          '<div class="hero-cta">' +
-            '<a class="btn btn-primary btn-lg" href="#/modules">See Example Modules</a>' +
-            '<a class="btn btn-secondary btn-lg" href="#/facilitator">View Workshop Flow</a>' +
-          "</div>" +
           '<p class="muted" style="font-size:.85rem">Educational only · Privacy-safe by design · ' +
             "Pending review and approval by Virginia Jump$tart</p>" +
         "</div>" +
         '<div class="hero-art">' + pathChart() + "</div>" +
       "</div></section>" +
-      badgeStrip() +
 
-      // Why interactive learning
-      '<section class="section"><div class="wrap">' +
-        '<div class="center" style="max-width:680px;margin:0 auto 36px">' +
-          '<div class="eyebrow">Why interactive learning</div>' +
-          "<h2>" + (elementary
-            ? "Young students remember what they do — not what they sit through"
-            : "Students remember what they do — not what they sit through") + "</h2>" +
-          '<p class="muted">' + (elementary
-            ? "A first grader will not sit still for a lecture about money. This toolkit turns the same approved topics into decisions elementary students make, argue about, and take home to their families."
-            : "Traditional workshops ask students to listen. This toolkit turns the same approved topics into decisions students make, debate, and take home.") + "</p>" +
-        "</div>" +
-        '<div class="grid grid-3">' +
-          feature("green", "🙋", "Active, not passive", "Every module has a decision to make and a vote to cast, so students participate instead of just listening.") +
-          feature("amber", "💪", "Confidence for volunteers", "Say-this-out-loud scripts and a practice mode mean teen volunteers always know what comes next.") +
-          feature("blue", "🔁", "Repeatable by design", "A consistent flow — challenge, vote, reveal, discuss, take home — that works for any topic or grade.") +
-        "</div>" +
-        '<div class="grid grid-2 mt-3">' +
-          '<a class="card feature green" href="#/games" style="text-decoration:none;color:inherit">' +
-            '<div class="ico">🙌</div><h3>Games that need no devices</h3>' +
-            '<p class="muted mb-0">' + unpluggedGames() + " of our " + GAME_FORMATS.length + " games run with zero screens — just movement, cards, and conversation. " +
-            "A workshop should never fail because the wifi did.</p></a>" +
-          '<a class="card feature amber" href="#/builder" style="text-decoration:none;color:inherit">' +
-            '<div class="ico">🛠️</div><h3>Workshop builder</h3>' +
-            '<p class="muted mb-0">Pick a topic, age, length, and what technology you have — get a timed plan and the ' +
-            "whole packet. Choose K–2 and it turns picture-based.</p></a>" +
-        "</div>" +
-      "</div></section>" +
-
-      // How the toolkit works
+      // How a workshop works
       '<section class="section" style="background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">' +
-        '<div class="center" style="margin-bottom:34px"><div class="eyebrow">How the toolkit works</div>' +
-          "<h2>One simple flow, every session</h2></div>" +
+        '<div class="center" style="margin-bottom:34px"><div class="eyebrow">How it works</div>' +
+          "<h2>Every workshop follows the same four steps</h2></div>" +
         '<div class="steps">' +
           howStep(1, "Pick a module", elementary ? "Choose the official Grade 1–4 lesson you're teaching, or any module from the wider library." : "Choose a topic and grade band from the library of ready-made workshops.") +
           howStep(2, "Run the challenge", "Students face a real-life money scenario and vote — on a shared screen, or by walking to a corner of the room.") +
@@ -251,39 +222,10 @@
         "</div>" +
       "</div></section>" +
 
-      // Where do I go? — a plain-language map of the tabs
-      '<section class="section" style="background:var(--cream-2)"><div class="wrap">' +
-        '<div class="center" style="margin-bottom:30px"><div class="eyebrow">Every page, explained</div>' +
-          "<h2>Find the page you need</h2>" +
-          '<p class="muted" style="max-width:56ch;margin:0 auto">Not sure which tab to click? Find what you\'re trying to do.</p></div>' +
-        '<div class="grid grid-2">' +
-          navGuide("📚", "Modules", "#/modules",
-            "I want to see what topics are available",
-            "Browse every ready-made workshop. Each shows the grade band, how long it takes, and what's included.") +
-          navGuide("🛠️", "Workshop Builder", "#/builder",
-            "I'm teaching a workshop and need to prepare",
-            "Start here. Answer four questions and get a timed lesson plan plus the whole packet — parent letter, checklist, deck outline, everything.") +
-          navGuide("🎲", "Games", "#/games",
-            "I need an activity, and there may be no screens",
-            GAME_FORMATS.length + " games you can drop into any topic. " + unpluggedGames() + " of them need no technology at all.") +
-          navGuide("🎤", "Facilitator", "#/facilitator",
-            "The workshop is happening right now",
-            "Your live dashboard during the session — current step, class results, discussion prompts, and the exit-ticket summary.") +
-          navGuide("💪", "Volunteer Prep", "#/prep",
-            "I'm nervous and want to practice first",
-            "Opening scripts to say out loud, key vocabulary, timed steps, and a practice mode to rehearse before the real thing.") +
-          navGuide("📊", "Impact", "#/impact",
-            "I need numbers to share with someone",
-            "Privacy-safe metrics you can report. What you see depends on whether you're a volunteer, a school, or an organization.") +
-        "</div>" +
-        '<p class="center muted mt-3" style="font-size:.88rem">Also here: ' +
-          '<a href="#/helper">Standards Helper</a> for quick answers to financial-literacy questions.</p>' +
-      "</div></section>" +
-
       // Sample modules
       '<section class="section"><div class="wrap">' +
         '<div class="flex items-center wrap-flex" style="justify-content:space-between;margin-bottom:24px">' +
-          "<div><div class=\"eyebrow\">Sample modules</div>" +
+          "<div><div class=\"eyebrow\">The lessons</div>" +
             "<h2>" + (elementary ? "The Grades 1–4 Teen Teach-In sequence" : "Ready-made, standards-based topics") + "</h2>" +
             (elementary ? '<p class="muted mb-0" style="max-width:52ch">Every official lesson, with the interactive layer added. More modules cover older students.</p>' : "") +
             "</div>" +
@@ -294,31 +236,52 @@
         "</div>" +
       "</div></section>" +
 
-      // Built for teen volunteers
+      // Every page, explained
       '<section class="section" style="background:var(--cream-2)"><div class="wrap">' +
-        '<div class="grid grid-2" style="align-items:center;gap:40px">' +
-          "<div><div class=\"eyebrow\">Built for teen volunteers</div>" +
-            "<h2>" + (elementary ? "So a nervous first-timer can walk into a classroom of second graders and teach" : "So a nervous first-timer can teach with confidence") + "</h2>" +
-            '<ul class="privacy-list mt-2">' +
-              liOk("A friendly opening script for every module — never wonder what to say") +
-              liOk("Key vocabulary in plain, kid-ready language") +
-              liOk("Step-by-step activity timing so the session runs itself") +
-              liOk("Practice mode to rehearse before the real thing") +
-            "</ul>" +
-            '<a class="btn btn-primary mt-3" href="#/prep">Open volunteer prep</a>' +
-          "</div>" +
-          '<div class="card"><div class="eyebrow">Preview</div>' +
-            '<div class="script-box">"Hi everyone! I\'m a teen volunteer and today we\'re money ' +
-              "detectives. Our big question: what's the difference between something you NEED and " +
-              "something you just WANT?\"</div>" +
-            '<p class="muted mt-2" style="font-size:.85rem;margin-bottom:0">Opening script · Needs vs. Wants</p>' +
-          "</div>" +
+        '<div class="center" style="margin-bottom:30px"><div class="eyebrow">Every page, explained</div>' +
+          "<h2>Still not sure where to click?</h2>" +
+          '<p class="muted" style="max-width:56ch;margin:0 auto">Find what you\'re trying to do, and go straight there.</p></div>' +
+        '<div class="grid grid-2">' +
+          navGuide("🛠️", "Workshop Builder", "#/builder",
+            "I'm teaching a workshop and need to prepare",
+            "Start here. Answer four questions and get a timed lesson plan plus the whole packet — parent letter, checklist, deck outline, everything.") +
+          navGuide("📚", "Modules", "#/modules",
+            "I want to see what topics are available",
+            "Browse every ready-made workshop. Each shows the grade band, how long it takes, and what's included.") +
+          navGuide("💪", "Volunteer Prep", "#/prep",
+            "I'm nervous and want to practice first",
+            "Opening scripts to say out loud, key vocabulary, timed steps, and a practice mode to rehearse before the real thing.") +
+          navGuide("🎲", "Games", "#/games",
+            "I need an activity, and there may be no screens",
+            GAME_FORMATS.length + " games you can drop into any topic. " + unpluggedGames() + " of them need no technology at all.") +
+          navGuide("🎤", "Facilitator", "#/facilitator",
+            "The workshop is happening right now",
+            "Your live dashboard during the session — current step, class results, discussion prompts, and the exit-ticket summary.") +
+          navGuide("📊", "Impact", "#/impact",
+            "I need numbers to share with someone",
+            "Privacy-safe metrics you can report. What you see depends on whether you're a volunteer, a school, or an organization.") +
         "</div>" +
+        '<p class="center muted mt-3" style="font-size:.88rem">Also here: ' +
+          '<a href="#/helper">Standards Helper</a> for quick answers to financial-literacy questions.</p>' +
       "</div></section>" +
 
-      // Privacy-safe by design
+      // Why it works
       '<section class="section"><div class="wrap">' +
-        '<div class="callout">' +
+        '<div class="center" style="max-width:680px;margin:0 auto 36px">' +
+          '<div class="eyebrow">Why it works</div>' +
+          "<h2>" + (elementary
+            ? "Young students remember what they do — not what they sit through"
+            : "Students remember what they do — not what they sit through") + "</h2>" +
+          '<p class="muted">' + (elementary
+            ? "A first grader will not sit still for a lecture about money. This toolkit turns the same approved topics into decisions elementary students make, argue about, and take home to their families."
+            : "Traditional workshops ask students to listen. This toolkit turns the same approved topics into decisions students make, debate, and take home.") + "</p>" +
+        "</div>" +
+        '<div class="grid grid-3">' +
+          feature("green", "🙋", "Active, not passive", "Every module has a decision to make and a vote to cast, so students participate instead of just listening.") +
+          feature("amber", "💪", "Confidence for volunteers", "Say-this-out-loud scripts and a practice mode mean teen volunteers always know what comes next.") +
+          feature("blue", "🙌", "No screens needed", unpluggedGames() + " of our " + GAME_FORMATS.length + " games run with just movement, cards, and conversation. A workshop should never fail because the wifi did.") +
+        "</div>" +
+        '<div class="callout mt-3">' +
           '<div class="ico">🔒</div>' +
           "<div><h3 style=\"margin-bottom:8px\">Privacy-safe by design</h3>" +
             '<p class="mb-0 muted">This prototype is built to protect students from the ground up. ' +
@@ -329,8 +292,9 @@
         "</div>" +
       "</div></section>" +
 
-      // Pilot plan
-      '<section class="section" style="background:var(--white);border-top:1px solid var(--line)"><div class="wrap">' +
+      // Status, then the pilot plan for organizers
+      badgeStrip() +
+      '<section class="section" style="background:var(--white)"><div class="wrap">' +
         '<div class="center" style="margin-bottom:30px"><div class="eyebrow">Pilot plan</div>' +
           "<h2>A practical, repeatable model to test with real workshops</h2></div>" +
         '<div class="timeline" style="max-width:820px;margin:0 auto">' +
@@ -341,60 +305,56 @@
         "</div>" +
         '<p class="center muted mt-3" style="font-size:.85rem">This is a concept for discussion — a proposed pilot, ' +
           "pending review and approval by Virginia Jump$tart.</p>" +
-      "</div></section>" +
-
-      // Audiences
-      '<section class="section"><div class="wrap center">' +
-        '<div class="eyebrow">Designed to feel right for everyone in the room</div>' +
-        "<h2 style=\"margin-bottom:20px\">Warm, credible, and educator-friendly</h2>" +
-        '<div class="badge-row" style="justify-content:center;max-width:760px;margin:0 auto">' +
-          ["Virginia Jump$tart leadership", elementary ? "Elementary teachers" : "Teachers", "High school volunteers",
-           elementary ? "Grades 1–4 students" : "Elementary & middle students",
-           "Parents & families", "Libraries", "Community partners", "Potential sponsors"]
-            .map(function (a) { return '<span class="badge gray">' + esc(a) + "</span>"; }).join("") +
-        "</div>" +
-        '<div class="hero-cta" style="justify-content:center;margin-top:28px">' +
-          '<a class="btn btn-primary btn-lg" href="#/modules">Explore the modules</a>' +
-          '<a class="btn btn-secondary btn-lg" href="#/builder">Build a workshop</a>' +
-        "</div>" +
       "</div></section>";
-    // Picking a path in the "Where do I go?" chart also sets the role, so the
-    // Impact page already matches. The link itself does the navigating.
+    // Picking a path in the chart also sets the role, so the Impact page
+    // already matches. The link itself does the navigating.
     app.querySelectorAll(".path-chart [data-role]").forEach(function (a) {
       a.addEventListener("click", function () { setRole(a.getAttribute("data-role")); });
     });
     wireNav();
   }
 
-  // "Where do I go?" — one row per role in the role picker, each ending at
-  // a page. Top-down chart on desktop, stacked cards on phones.
+  // "What do you want to do?" — one row per role in the role picker. Each
+  // row has one main button that says what happens next, plus smaller
+  // links. Top-down chart on desktop, stacked cards on phones.
   var PATHS = [
-    { role: "volunteer", want: "I'm a teen volunteer and need a lesson",
-      links: [["📚", "Modules", "#/modules"], ["🛠️", "Workshop Builder", "#/builder"]] },
-    { role: "school", want: "I'm a teacher and want a workshop",
-      links: [["🤝", "Request / Partner", "#/portal"]] },
+    { role: "volunteer", want: "I'm teaching a lesson",
+      main: ["🛠️", "Build my lesson plan", "#/builder"],
+      more: [["📚", "Browse the lessons", "#/modules"], ["💪", "Practice first", "#/prep"]] },
+    { role: "school", want: "I want a workshop for my class",
+      main: ["🛠️", "Plan a class workshop", "#/builder"],
+      more: [["📚", "See the topics", "#/modules"]] },
     { role: "organization", want: "I run the program",
-      links: [["📊", "Impact", "#/impact"]] },
+      main: ["📊", "See impact numbers", "#/impact"],
+      more: [] },
   ];
   function pathChart() {
     var current = getRole();
-    return '<nav class="path-chart" aria-label="Where do I go?">' +
-      '<div class="path-start"><strong>Where do I go?</strong>' +
-        "<span>Pick the one that sounds like you.</span></div>" +
+    function link(l, role, cls) {
+      return '<a class="' + cls + '" href="' + l[2] + '" data-role="' + role + '">' +
+        '<span aria-hidden="true">' + l[0] + "</span> " + esc(l[1]) + " →</a>";
+    }
+    return '<nav class="path-chart" aria-label="What do you want to do?">' +
+      '<div class="path-start"><span class="path-eyebrow">Start here</span>' +
+        "<strong>What do you want to do?</strong></div>" +
       '<ol class="path-list">' +
         PATHS.map(function (p) {
           var r = roleDef(p.role);
           return '<li class="path-row' + (p.role === current ? " on" : "") + '">' +
             '<div class="path-who"><span class="emoji-badge" aria-hidden="true">' + (r ? r.emoji : "👤") + "</span>" +
-              "<strong>" + esc(p.want) + "</strong></div>" +
-            '<div class="path-go">' +
-              p.links.map(function (l) {
-                return '<a class="path-link" href="' + l[2] + '" data-role="' + p.role + '">' +
-                  '<span aria-hidden="true">' + l[0] + "</span> " + esc(l[1]) + " →</a>";
-              }).join("") +
+              "<span><span class=\"path-role\">" + esc(r ? r.label : "") + "</span>" +
+              "<strong>" + esc(p.want) + "</strong></span></div>" +
+            '<div class="path-go">' + link(p.main, p.role, "path-main") +
+              (p.more.length
+                ? '<span class="path-more">or ' + p.more.map(function (l) { return link(l, p.role, "path-link"); }).join(" · ") + "</span>"
+                : "") +
             "</div></li>";
         }).join("") +
-      "</ol></nav>";
+      "</ol>" +
+      '<div class="path-quick">' +
+        '<a href="#/facilitator">🎤 Workshop happening right now?</a>' +
+        '<a href="#/games">🎲 Just need a game?</a>' +
+      "</div></nav>";
   }
   function feature(color, ico, t, body) {
     return '<div class="card feature ' + color + '"><div class="ico">' + ico + "</div>" +
@@ -404,7 +364,6 @@
     return '<div class="step"><div class="num">' + n + "</div><h3>" + esc(t) +
       '</h3><p class="muted mb-0">' + esc(body) + "</p></div>";
   }
-  function liOk(t) { return '<li><span class="ok">✓</span><span>' + esc(t) + "</span></li>"; }
   // A card on the landing page that answers "which tab do I click?"
   function unpluggedGames() {
     return GAME_FORMATS.filter(function (g) { return g.devices === "none"; }).length;
@@ -1682,11 +1641,18 @@
   if (chipBtn) chipBtn.addEventListener("click", function () { showRolePicker(true); });
 
   // First visit: ask who's using the toolkit before anything else.
+  // The home page has its own role chart, so the picker waits until the
+  // visitor opens another page (or taps the header chip). It never shows
+  // once a role is set, whether by the picker or by the chart.
+  function onHome() { return !location.hash || location.hash === "#/"; }
   function start() {
     route();
-    showRolePicker(false);
+    if (!onHome()) showRolePicker(false);
   }
-  window.addEventListener("hashchange", route);
+  window.addEventListener("hashchange", function () {
+    route();
+    if (!onHome()) showRolePicker(false);
+  });
   window.addEventListener("DOMContentLoaded", start);
   // In case DOMContentLoaded already fired
   if (document.readyState !== "loading") start();
