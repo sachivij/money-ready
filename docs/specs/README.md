@@ -9,7 +9,7 @@ To claim a spec, put your name in Owner and push to `main` before you start. Eac
 | 03 | [Works on school computers](03-school-computers.md) | Not started | |
 | 04 | [4-H edition: remove the clover](04-4h-branding.md) | Done (💵 mark, confirmed on the 4-H site 2026-10-30) | Sumeet |
 | 05 | [K–2 picture mode](05-k2-picture-mode.md) | Not started | |
-| 06 | [More games](06-more-games.md) | In progress | Ridhi Poranki |
+| 06 | [More games](06-more-games.md) | Done | Ridhi Poranki |
 | 07 | [Volunteer and school matching](07-matching.md) | Needs decisions | |
 
 Ground rules for every spec: plain HTML/CSS/JS, no backend, no personal data, works offline, content stays editable in `assets/js/data.js` and `assets/js/lessons.js`.

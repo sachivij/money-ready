@@ -51,7 +51,7 @@ mostly through the GitHub web UI and the live site.
 | 03 | Works on school computers | Not started. Needs a real Chromebook test. |
 | 04 | 4-H edition, no clover | Already done earlier (💵 mark, see Decisions). Confirm on the 4-H site, then mark Done. |
 | 05 | K–2 picture mode across the whole site | Not started. The builder already has a K–2 picture mode; this extends it to modules and take-home cards. |
-| 06 | More games | Not started. |
+| 06 | More games | Done. Nine multi-round games (7 unplugged, 2 on-screen at `#/play/<id>`), each with topics, a version per age group, printable cards and debrief questions. Owner: Ridhi Poranki. |
 | 07 | Volunteer/school matching ("like a dating profile") | Blocked on owner decisions: who sees profiles, what is allowed, coordinator approval. Must stay no-personal-data. |
 
 **Workshop Builder phase 1 (PR #4, merged)**
@@ -132,8 +132,9 @@ assets/js/lessons.js    ACCOUNT_TYPES, IMPACT_METRICS, GAME_FORMATS,
                         GRADE_PROFILES, DEVICE_GUIDES, PICTURE_ACTIVITIES,
                         LESSON_PACKS, buildLessonPlan(), buildPacket().
 assets/js/metrics.js    Privacy-safe aggregate counters in localStorage.
-assets/js/app.js        Hash router + every screen. The only file with
-                        rendering logic.
+assets/js/play.js       Engines for the on-screen games (#/play/<game id>).
+                        Their words live in GAME_FORMATS, not here.
+assets/js/app.js        Hash router + every screen.
 scripts/audit.js        End-to-end browser check (see Testing).
 scripts/4h-build/       The two scripts that derive the 4-H edition.
 ```
@@ -167,7 +168,7 @@ The 4-H repo is **derived from this one**, not developed separately.
 
 ```bash
 # 1. copy the shared files into a working copy
-cp assets/js/app.js assets/js/data.js assets/js/lessons.js  <copy>/assets/js/
+cp assets/js/app.js assets/js/data.js assets/js/lessons.js assets/js/play.js  <copy>/assets/js/
 cp index.html <copy>/
 
 # 2. remove the Jump$tart-only content
@@ -233,10 +234,19 @@ personal data.
 - organization — 7 metrics, four of them tagged "program-wide total", plus
   the measurement layer and the value-of-volunteer-time figure
 
-**Games: ten of twelve need no devices.** This is a feature, not a
+**Games: 17 of 21 need no devices.** This is a feature, not a
 limitation. Elementary classrooms often have no student devices and
 unreliable wifi, so a workshop must never depend on a screen. Keep that
 ratio in mind when adding games.
+
+**Game details (spec 06).** Every game has `reinforces`, `levels` (one
+version per age group, keyed by the `GRADE_PROFILES` id), `debrief`,
+`access` and usually `cards`; the games page shows them as dropdowns and
+a downloadable game sheet. The nine newer games are also `multiRound`
+and list their own `topics`; the two on-screen ones add `play`. The
+builder gives a game a bonus for its `topics` (just below a pack's second
+`bestGames` pick) and uses its `levels` text in the main activity step. Topics that point at modules a
+build doesn't have (the 4-H edition drops some) are ignored.
 
 **Grades K–2 switches the generated plan to picture mode**: no reading,
 drawing and pointing instead of writing, two vocabulary words instead of
