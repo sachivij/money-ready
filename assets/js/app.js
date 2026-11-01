@@ -1223,6 +1223,9 @@
           [["none", "🙌 No devices"], ["devices", "📺 Devices (a screen and/or students' devices)"]].map(function (d) {
             return '<button class="chip-toggle' + (d[0] === dev ? " on" : "") + '" data-dev="' + d[0] + '">' + d[1] + "</button>"; }).join("") +
         "</div></div>" +
+        '<label class="field hidden" id="gOfficialWrap" style="display:flex;gap:8px;align-items:center;cursor:pointer">' +
+          '<input type="checkbox" id="gOfficial"' + (query.official === "0" ? "" : " checked") + ">" +
+          "<span>📘 Follow the official Teen Teach-In slides for this lesson</span></label>" +
         '<button class="btn btn-primary btn-lg" id="genLesson">✨ Build my workshop</button></div>' +
         '<div id="planOut" class="mt-3"></div>' +
       "</div></section>";
@@ -1249,6 +1252,7 @@
         b.addEventListener("click", function () {
           document.getElementById("gTopic").value = b.getAttribute("data-pick");
           out.innerHTML = "";
+          syncOfficial();
           build();
         });
       });
@@ -1256,6 +1260,14 @@
     document.getElementById("gFindBtn").addEventListener("click", findTopicByText);
     document.getElementById("gFind").addEventListener("keydown", function (e) { if (e.key === "Enter") findTopicByText(); });
 
+    // Show the official-lesson option only for topics that have one.
+    function syncOfficial() {
+      var m = moduleById(document.getElementById("gTopic").value);
+      var has = typeof OFFICIAL_LESSONS !== "undefined" && m && m.officialLesson && OFFICIAL_LESSONS[m.id];
+      document.getElementById("gOfficialWrap").classList.toggle("hidden", !has);
+    }
+    document.getElementById("gTopic").addEventListener("change", syncOfficial);
+    syncOfficial();
     document.getElementById("gDev").querySelectorAll(".chip-toggle").forEach(function (b) {
       b.addEventListener("click", function () {
         document.querySelectorAll("#gDev .chip-toggle").forEach(function (x) { x.classList.remove("on"); });
@@ -1276,6 +1288,7 @@
         setting: document.getElementById("gSetting").value,
         dev: dev,
       };
+      if (!document.getElementById("gOfficial").checked) choices.official = "0";
       if (game) choices.game = game;
       if (order && order.length) choices.order = order.join(".");
       askStudents("builder", choices.topic, function () { showBuilt(choices, order); });
@@ -1290,6 +1303,7 @@
         devices: choices.dev,
         game: choices.game,
         order: order,
+        official: choices.official !== "0",
       });
       var hash = "#/builder?" + Object.keys(choices).map(function (k) {
         return k + "=" + encodeURIComponent(choices[k]);
@@ -1336,6 +1350,12 @@
 
         '<div class="card mt-3" style="border-left:5px solid var(--green);box-shadow:none">' +
           "<strong>Learning objective:</strong> " + esc(m.objective) + "</div>" +
+        (plan.official
+          ? '<div class="callout mt-3"><div class="ico">📘</div><div><strong>Official Teen Teach-In lesson: ' + esc(plan.official.deck) + ".</strong> " +
+            "This plan follows the deck's own order, and each step names the slides it uses. Download the deck from Jump$tart's Teen Teach-In resources." +
+            (plan.official.book ? "<br><strong>Book:</strong> " + esc(plan.official.book.title) + (plan.official.book.author ? " by " + esc(plan.official.book.author) : "") : "") +
+            "<br><strong>Big idea:</strong> " + esc(plan.official.bigIdea) + "</div></div>"
+          : "") +
 
         (m.extraTopic && plan.topicGame
           ? '<div class="callout mt-3"><div class="ico">🏛️</div><div><strong>Not a Jump$tart module.</strong> ' +
@@ -1394,7 +1414,9 @@
               "</span>"
             : "";
           return '<div class="plan-step"><div class="plan-time">' + s.minutes + " min</div>" +
-            '<div><div class="step-head"><h4>' + esc(s.name) + "</h4>" + tools + '</div><p class="muted" style="font-size:.92rem">' + esc(s.what) + "</p>" +
+            '<div><div class="step-head"><h4>' + esc(s.name) +
+              (s.slides ? ' <span class="badge gray" style="font-size:.72rem;vertical-align:middle">' + esc(s.slides) + "</span>" : "") +
+              "</h4>" + tools + '</div><p class="muted" style="font-size:.92rem">' + esc(s.what) + "</p>" +
             (s.script ? '<div class="script-box mt-1" style="font-size:.9rem"><strong>Say this:</strong> ' + esc(s.script) + "</div>" : "") +
             (s.say && s.say.length ? '<div class="script-box mt-1 say-box"><strong>🗣 Say</strong>' +
               s.say.map(function (l) { return "<p>“" + esc(l) + "”</p>"; }).join("") + "</div>" : "") +
@@ -1413,7 +1435,9 @@
         // Swap the main activity for the next-best fits
         (plan.alternatives && plan.alternatives.length && rebuild
           ? '<div class="card mt-2 no-print" style="box-shadow:none"><div class="eyebrow">Try a different main activity</div>' +
-            '<div class="flex gap wrap-flex">' + plan.alternatives.map(function (g) {
+            '<div class="flex gap wrap-flex">' +
+            (plan.official && plan.mainGame ? '<button class="btn btn-secondary" data-swap="">📘 Use the deck\'s own activity</button>' : "") +
+            plan.alternatives.map(function (g) {
               return '<button class="btn btn-ghost" data-swap="' + g.id + '">' + g.emoji + " " + esc(g.name) +
                 ' <span class="muted" style="font-size:.85rem">· ' + g.minutes + " min</span></button>"; }).join("") +
             "</div></div>"
@@ -1468,7 +1492,7 @@
       });
     });
     out.querySelectorAll("[data-swap]").forEach(function (b) {
-      b.addEventListener("click", function () { rebuild(b.getAttribute("data-swap")); });
+      b.addEventListener("click", function () { rebuild(b.getAttribute("data-swap") || null); });
     });
     // Step edits rebuild the plan with a new order of step ids.
     out.querySelectorAll("[data-step]").forEach(function (b) {

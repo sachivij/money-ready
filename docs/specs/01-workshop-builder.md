@@ -50,6 +50,11 @@ A "Download plan" button saves one `.txt` file with the run of show, materials a
 - "How many students?" (up to 10, 11–20, 21–30, 31+) and "Where is it?" (school classroom, club or after-school program, library or community room). Class size sets take-home card counts, group and pair counts, and favors whole-class games in big rooms. Setting adds setup tips and materials, and quiet rooms lose points for loud games.
 - ↑ ↓ ✕ on each run-of-show step. Minutes from a removed step go to the main activity so the plan still fills the slot. Edits are saved in the link (`&order=…`), and "Undo my step changes" resets them.
 
+## Phase 3 (built): official Teen Teach-In lessons
+- `assets/js/official-lessons.js` holds the five official lessons step by step, from the October Teen Teach-In decks, with slide numbers, vocabulary, book and materials.
+- For those topics the builder offers "Follow the official Teen Teach-In slides" (on by default). The plan follows the deck's order and scales to the slot, the packet starts with a slide-by-slide guide, and the deck's activity can be swapped for a game and back.
+- Not yet done: rewriting the module cards, challenges and reveals in `data.js` to match the decks.
+
 ## Acceptance checks
 - For every topic × age group × length × technology × group size, the plan total equals the requested minutes.
 - Different topics produce different main activities (at least 5 distinct main games across the 13 topics at 30 minutes, no devices).
