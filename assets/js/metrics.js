@@ -3,7 +3,8 @@
  * -------------------------------------------------------------
  * PRIVACY PROMISE (privacy-safe by design):
  *   • No names, logins, emails, or any personal data are collected.
- *   • Nothing is sent to any server. There is no backend.
+ *   • Nothing in this file is sent to any server. (The only thing the site
+ *     sends is the students-reached count in reach.js — spec 09.)
  *   • Data lives ONLY in this browser's localStorage on the leader's
  *     own device, and can be cleared with one button.
  *   • We store COUNTS ONLY — e.g. "8 students answered", "5 felt
