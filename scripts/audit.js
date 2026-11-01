@@ -13,7 +13,8 @@
  *   cd <the repo>  &&  python3 -m http.server 8000 &
  *   BASE=http://localhost:8000/index.html node scripts/audit.js
  *
- * Needs Playwright. Exit code is 0 either way — read the PROBLEMS count.
+ * Needs Playwright. Exits 1 when it finds any problem, so the GitHub check
+ * (.github/workflows/audit.yml) goes red.
  */
 const PW = process.env.PLAYWRIGHT_PATH || 'playwright';
 const { chromium } = require(PW);
@@ -29,6 +30,9 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
 
   p.on('pageerror', e => probs.push('JS ERROR: ' + e.message));
   p.on('console', m => { if (m.type() === 'error') probs.push('CONSOLE: ' + m.text()); });
+  const origin = new URL(B).origin;
+  const external = [];
+  p.on('request', r => { if (r.url().indexOf(origin) !== 0) external.push(r.url()); });
 
   const go = async h => { await p.goto(B + h, { waitUntil: 'networkidle' }); await p.waitForTimeout(110); };
   // Volunteers and teachers are asked how many students before they build a
@@ -45,10 +49,16 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   }, s);
 
   await go('#/');
-  // Pick an account type so the role picker does not sit over the page.
+  // Pick an account type so the students question knows the role.
   await p.evaluate(() => localStorage.setItem('moneyReady.accountType.v1', 'volunteer'));
+  // The old Modules tab is gone (it redirects to Resources); the module
+  // list comes from the content itself.
+  const ids = await p.evaluate(() => MODULES.map(m => m.id));
+  if (ids.length < 10) probs.push('modules: only ' + ids.length + ' modules loaded');
   await go('#/modules');
-  const ids = await p.$$eval('.module-card', e => e.map(x => x.getAttribute('href').split('/').pop()));
+  if (!(await p.$('#app h1'))) probs.push('modules: old link does not open Resources');
+  await go('#/resources');
+  if (!(await p.$('#app h1'))) probs.push('resources: page did not render');
 
   // --- every module: detail, all four answers, reveal, take-home -------
   for (const id of ids) {
@@ -56,7 +66,7 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
     if (!(await p.$('#app h1'))) probs.push('module ' + id + ': no h1');
 
     for (let i = 0; i < 4; i++) {
-      await go('#/challenge/' + id);
+      await go('#/challenge/' + id + '?k2=0');
       await jsClick('#answers .answer-btn[data-i="' + i + '"]');
       const ok = await p.waitForSelector('#reveal', { timeout: 2500 }).then(() => 1).catch(() => 0);
       if (!ok) { probs.push('challenge ' + id + ' ans' + i + ': no reveal'); continue; }
@@ -66,8 +76,23 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
       await jsClick('#confidence .chip-toggle[data-n="3"]');
     }
 
-    await go('#/take-home/' + id);
+    await go('#/take-home/' + id + '?k2=0');
     if ((await p.$$eval('.th-box', e => e.length)) !== 3) probs.push('take-home ' + id + ': wrong box count');
+
+    // K-2 picture mode (spec 05): modules with picture rounds play them one
+    // at a time, two big pictures each; modules with a picture card print one.
+    const hasPics = await p.evaluate(x => !!(GAME_BANK[x] && GAME_BANK[x].picture && GAME_BANK[x].picture.length), id);
+    if (hasPics) {
+      await go('#/challenge/' + id + '?k2=1');
+      if ((await p.$$eval('.k2-opt', e => e.length)) !== 2) probs.push('challenge ' + id + ' k2: not two pictures');
+      await jsClick('.k2-opt');
+      if (!(await p.$('#k2Next'))) probs.push('challenge ' + id + ' k2: no next button after a pick');
+    }
+    const hasCard = await p.evaluate(x => !!MODULES.filter(m => m.id === x)[0].takeHomeK2, id);
+    if (hasCard) {
+      await go('#/take-home/' + id + '?k2=1');
+      if (!(await p.$('.k2-card-box'))) probs.push('take-home ' + id + ' k2: no picture boxes');
+    }
   }
 
   // --- the old Facilitator link opens the builder; the game counts votes ---
@@ -198,7 +223,7 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   if ((await p.$eval('#app', e => e.textContent)).indexOf('not found') < 0) probs.push('play: unknown game not handled');
 
   await go('#/impact');
-  if (!(await p.$('.metric-card'))) probs.push('impact: no metric cards');
+  if (!(await p.$('#app h1'))) probs.push('impact: old link does not open the home page');
   await go('#/no-such-page');
   if ((await p.$eval('#app', e => e.textContent)).indexOf('not found') < 0) {
     probs.push('router: unknown route not handled');
@@ -230,8 +255,14 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
   if (await p.$('#studentsInput')) probs.push('students: organizations should not be asked');
   await p.evaluate(() => localStorage.setItem('moneyReady.accountType.v1', 'volunteer'));
 
+  // No page may load anything from outside the site (privacy-safe by design).
+  // The one allowed request is the students-reached count, and only from the
+  // live site, so locally there must be none at all.
+  if (external.length) probs.push('external requests: ' + external.slice(0, 5).join(', '));
+
   console.log('modules tested:', ids.length);
   console.log('PROBLEMS:', probs.length);
   probs.forEach(x => console.log(' • ' + x));
   await br.close();
+  process.exit(probs.length ? 1 : 0);
 })().catch(e => { console.error('FATAL', e); process.exit(1); });
