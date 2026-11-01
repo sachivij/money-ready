@@ -16,6 +16,33 @@ Everything the Standards Helper says lives here as small text files, one per ans
 5. Wait about a minute. A check called **Content** runs. If it shows a red ✗, click **Details**. It names the file and says what to fix in plain English.
 6. When it's green, open the Vercel **Preview** link on the pull request, ask the helper your question, and merge when you're happy. Nothing goes live until you merge.
 
+## Example: bringing in a new Jump$tart resource
+
+Say Jump$tart adds a new deck, "Grade 2: Earning Income", to the [Teen Teach-In resources page](https://www.jumpstart.org/awareness/check-your-school/teen-teach-in/resources/).
+
+1. **You hear about it.** On Monday the **Jump$tart watch** opens a GitHub issue that lists the new file with a link.
+2. **Download it.** Claude's cloud sessions can't reach jumpstart.org, so download the deck yourself and attach it in the Money Ready project with a note like "add this".
+3. **Claude writes the content files** on a new branch and opens a pull request. For example, `content/helper/103-what-is-income.md`:
+
+   ```
+   ---
+   question: What is income?
+   tags: income, earn money, earning money, paycheck
+   source: jumpstart-teen-teach-in
+   cites: Grade 2 Earning Income
+   approved_by: Sumeet
+   approved_on: 2026-11-08
+   ---
+   Income is money you receive, usually for doing work. Kids might earn it from chores or small jobs; adults usually earn a paycheck from a job.
+   ```
+
+   The deck itself never goes in the repo; only our own short summary and where it came from.
+4. **The Content check runs.** Green means every file names an approved source and an approver.
+5. **You review.** Open the Vercel Preview link on the pull request, ask the helper "what is income?", and read the answer.
+6. **You merge.** Within a minute or two the live site answers the new question.
+
+Until spec 11 moves them, the official lessons (`assets/js/official-lessons.js`), games and modules are still edited in the JS files. Step 3 is the same for them: Claude makes the change in a pull request, and you review and merge it.
+
 ## The header, line by line
 
 ```
