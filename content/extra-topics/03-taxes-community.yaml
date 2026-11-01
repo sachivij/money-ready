@@ -1,0 +1,112 @@
+# Extra topic: Taxes and Our Community
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: taxes-community
+title: Taxes and Our Community
+emoji: 🏛️
+sources: ["irs"]
+tags:
+  - tax
+  - taxes
+  - sales tax
+  - income tax
+  - tax return
+  - government
+  - public service
+summary: What taxes are and the shared things they pay for, like schools, roads and parks.
+objective: Students can explain what taxes pay for and name two kinds of tax.
+reveal:
+  keyConcept: Taxes pay for things we all share
+  discussionPrompt: What is one thing in our town that taxes help pay for?
+takeHome:
+  title: Tax Detectives
+  familyQuestion: What is one public place we use that taxes help pay for?
+prep:
+  openingScript: Who rode on a road today? Who has been to a park or library? Guess what: you helped pay for those. Let's find out how.
+  vocab:
+    - term: Tax
+      def: Money people pay to fund government services.
+    - term: Sales tax
+      def: Tax added when you buy something.
+    - term: Income tax
+      def: Tax on money people earn.
+    - term: Public service
+      def: Something the government provides for everyone.
+pack:
+  bestGames: ["four-corners", "card-sort"]
+  hook: Ask who used a road, school or park today. Every hand goes up. Tell them they all share the cost.
+  miniLesson: Taxes are money people and businesses pay so the government can provide shared services like schools, roads and fire departments.
+game_rounds:
+  picture:
+    - q: Taxes help pay for…
+      opts:
+        - ["🚒", "Fire trucks"]
+        - ["🧸", "Your toys"]
+      best: 0
+      why: Taxes pay for things we all share.
+      src: irs
+    - q: Which is paid for by taxes?
+      opts:
+        - ["🛝", "Public park"]
+        - ["🍦", "Your ice cream"]
+      best: 0
+      why: Public parks are paid for with taxes.
+      src: irs
+    - q: Who uses roads?
+      opts:
+        - ["👨‍👩‍👧‍👦", "Everyone"]
+        - ["🙋", "Only me"]
+      best: 0
+      why: We all use roads, so we all help pay.
+      src: irs
+    - q: The library is for…
+      opts:
+        - ["👫", "Everyone"]
+        - ["🔐", "Nobody"]
+      best: 0
+      why: Libraries are shared and paid for by taxes.
+      src: irs
+  rounds:
+    - q: What are taxes?
+      opts:
+        - - 🏛️
+          - Money people pay to fund government services
+        - ["🎁", "Gifts to friends"]
+        - ["🧾", "Store coupons"]
+      best: 0
+      why: Taxes pay for things like schools, roads and public safety.
+      src: irs
+    - q: A toy costs $10, but you pay a bit more at the register. Why?
+      opts:
+        - ["🧾", "Sales tax"]
+        - ["🎲", "Random price"]
+        - ["🤑", "A tip"]
+      best: 0
+      why: Many states and cities add sales tax at checkout.
+      src: irs
+    - q: How is income tax usually paid by workers?
+      opts:
+        - ["💼", "Taken out of each paycheck"]
+        - ["🪙", "Paid in coins at the bank"]
+        - ["🙅", "Workers never pay it"]
+      best: 0
+      why: Employers withhold income tax from each paycheck.
+      src: irs
+    - q: Which is NOT usually paid for with taxes?
+      opts:
+        - ["🎮", "Your personal video games"]
+        - ["🏫", "Public schools"]
+        - ["🛣️", "Highways"]
+      best: 0
+      why: Taxes fund shared public services, not personal purchases.
+      src: irs
+    - q: What is a tax return?
+      opts:
+        - - 📄
+          - A yearly form that reports income and taxes
+        - ["↩️", "Returning something to a store"]
+        - ["🎾", "A tennis shot"]
+      best: 0
+      why: Filing a return figures out if you paid the right amount; you may get a refund.
+      src: irs

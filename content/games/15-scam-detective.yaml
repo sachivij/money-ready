@@ -1,0 +1,46 @@
+# Game: Scam Detective Agency
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: scam-detective
+multiRound: true
+name: Scam Detective Agency
+emoji: 🔍
+devices: none
+minutes: 15
+group: Teams of 3–4
+energy: Medium
+materials:
+  - "One case file per team: the messages below, printed and cut apart"
+  - "Verdict cards: ✔ Safe and ✖ Scam (a shape and a word, not just a color)"
+  - Pencils for circling clues
+summary: Each team is a detective agency with a case file of messages. They decide which are scams, circle the clues, and defend their verdict — other agencies can object.
+howToPlay:
+  - "Teach the four clues first, each with a hand signal: Hurry (tap your wrist), Secret (finger to lips), Strange payment like gift cards or passwords (pinch your fingers), Too good to be true (arms wide)."
+  - Give every agency the same case file of six messages.
+  - Agencies have 6 minutes. For each message they place a Safe or Scam card and circle every clue they find.
+  - Go through the messages one at a time. One agency gives its verdict and clues; any agency that disagrees says 'Objection!' and explains.
+  - Score 1 point for the right verdict and 1 for each clue named, up to 3 per message.
+  - "Bonus round: each agency rewrites one scam so it would be safe. What had to change?"
+teenTip: Include real, safe messages. Once students get suspicious they call everything a scam — the goal is good judgment, not panic.
+topics: ["fraud-red-flags", "banking-basics", "smart-shopping", "credit-climb"]
+reinforces: The common signs of a scam — pressure, secrecy, strange payment, too good to be true — and the one move that always helps: stop and ask a trusted adult.
+levels:
+  35: Use the game and prize messages (1, 2 and 3). Teams name one clue per message.
+  68: Use all six, and add your own social-media examples: fake giveaways and a friend's hacked account asking for money.
+  912: Add a fake check that 'overpays' you and a bank text with a lookalike link. Close with what to do: don't click, contact the company yourself, report it, turn on two-step login.
+  k2: No reading. Act out each message as a tiny play ('Psst! Tell me your secret password and I'll give you a puppy!'). Students give a thumbs up for safe, or cover their mouth for 'that's a trick — tell a grown-up'. Use three messages.
+debrief:
+  - Which clue showed up most often?
+  - Which message was hardest to judge? What made it tricky?
+  - If you're ever not sure, what is the one thing you should always do?
+access: Verdict cards use a shape and a word, never color alone. One team member can read each message aloud, and the hand signals let everyone take part without reading.
+cards:
+  title: Case file messages (answers in brackets — cut them off before handing out)
+  items:
+    - "\"CONGRATS!! You won 10,000 free game coins! Enter your password in the next 5 minutes to claim them!\" [Scam: hurry, asks for a password, too good to be true]"
+    - "\"Reminder from City Library: your book is due Friday. You can renew it at the front desk.\" [Safe: no hurry, no payment, nothing secret]"
+    - "\"Hi it's Sam, I'm stuck!! Can you buy a $50 gift card and text me the code? Don't tell anyone.\" [Scam: gift card, secret, hurry]"
+    - "\"Your account will be DELETED today unless you click here and confirm your bank details.\" [Scam: hurry, asks for bank details, unknown link]"
+    - "\"Thanks for your order! It ships Tuesday. You can track it in the store's app.\" [Safe if you really ordered something — check in the real app, not a link]"
+    - "\"Work from home and earn $500 a day! Just pay a $40 starter fee.\" [Scam: you never pay to get a job; too good to be true]"

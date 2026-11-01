@@ -1,0 +1,109 @@
+# Extra topic: Why Prices Go Up (Inflation)
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: rising-prices
+title: Why Prices Go Up (Inflation)
+emoji: 📈
+sources: ["fed"]
+tags:
+  - inflation
+  - price
+  - prices
+  - price going up
+  - cost of living
+  - federal reserve
+summary: Why things cost more over time, and what that means for saving and budgets.
+objective: Students can explain that rising prices mean money buys less, and one way people adjust.
+reveal:
+  keyConcept: When prices rise, the same money buys less
+  discussionPrompt: Why might saving in a bank account help when prices go up?
+takeHome:
+  title: Then and Now Prices
+  familyQuestion: What is something that cost less when a grown-up at home was a kid?
+prep:
+  openingScript: Does anyone know what a candy bar cost when your grown-ups were kids? Let's find out why prices change.
+  vocab:
+    - term: Price
+      def: How much something costs.
+    - term: Inflation
+      def: Prices in general going up over time.
+    - term: Interest
+      def: Extra money a bank pays savers.
+    - term: Federal Reserve
+      def: The U.S. central bank, which works to keep prices stable.
+pack:
+  bestGames: ["silent-lineup", "four-corners"]
+  hook: Show two price tags for the same snack, 'long ago' and 'today'. Ask what changed.
+  miniLesson: Over time most prices go up a little. That is inflation. It means the same money buys a little less each year.
+game_rounds:
+  picture:
+    - q: Long ago, ice cream cost…
+      opts:
+        - ["⬇️", "Less"]
+        - ["⬆️", "More"]
+      best: 0
+      why: Prices usually go up over time.
+      src: fed
+    - q: Prices go up. Your coins buy…
+      opts:
+        - ["🍪", "Fewer things"]
+        - ["🍪🍪🍪", "More things"]
+      best: 0
+      why: When prices go up, money buys less.
+      src: fed
+    - q: It cost 4. Now it costs 5. It went…
+      opts:
+        - ["⬆️", "Up"]
+        - ["⬇️", "Down"]
+      best: 0
+      why: 5 is more than 4. The price went up.
+      src: fed
+    - q: Saving in a bank can earn…
+      opts:
+        - ["➕", "A little extra"]
+        - ["➖", "Nothing ever"]
+      best: 0
+      why: Interest helps savings keep up.
+      src: fdic
+  rounds:
+    - q: What is inflation?
+      opts:
+        - ["📈", "Prices in general rising over time"]
+        - ["🎈", "Blowing up a balloon"]
+        - ["📉", "Prices falling"]
+      best: 0
+      why: With inflation, the same money buys less than before.
+      src: fed
+    - q: If prices rise 3% and your savings earn 1%, what happens to what your savings can buy?
+      opts:
+        - ["📉", "It goes down"]
+        - ["📈", "It goes up"]
+        - ["🟰", "It stays the same"]
+      best: 0
+      why: Your money grows more slowly than prices, so it buys a bit less.
+      src: fed
+    - q: Who in the U.S. works to keep prices stable?
+      opts:
+        - ["🏛️", "The Federal Reserve"]
+        - ["🛒", "Grocery stores"]
+        - ["🏫", "Schools"]
+      best: 0
+      why: Keeping prices stable is one of the Federal Reserve's main jobs.
+      src: fed
+    - q: About what inflation rate does the Federal Reserve aim for over the long run?
+      opts:
+        - ["2️⃣", "About 2% a year"]
+        - ["0️⃣", "0%"]
+        - ["🔟", "10% a year"]
+      best: 0
+      why: The Fed's longer-run goal is 2% inflation.
+      src: fed
+    - q: Prices go up but your pay doesn't. What could you do?
+      opts:
+        - ["📝", "Update your budget and compare prices"]
+        - ["🙈", "Ignore it"]
+        - ["💳", "Put everything on credit"]
+      best: 0
+      why: Rechecking your budget helps you adjust when costs rise.
+      src: cfpb

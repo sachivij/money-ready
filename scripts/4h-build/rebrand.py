@@ -22,6 +22,7 @@ FILES = [
     "README.md",
     "assets/css/styles.css",
     "assets/js/app.js",
+    "assets/js/content.js",
     "assets/js/data.js",
     "assets/js/helper-kb.js",
     "assets/js/lessons.js",

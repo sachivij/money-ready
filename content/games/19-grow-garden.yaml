@@ -1,0 +1,54 @@
+# Game: Grow Your Money Garden
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: grow-garden
+multiRound: true
+name: Grow Your Money Garden
+emoji: 🌱
+devices: none
+minutes: 15
+group: Small groups of 3–4
+energy: Medium
+materials:
+  - 12 seed tokens per group, plus a pile of extras
+  - "A garden mat per group with three beds: Piggy Bank, Savings Account, Mixed Garden"
+  - Weather cards (below)
+summary: Groups plant money 'seeds' in three beds that grow differently over ten years of weather — including a scary storm. It shows growth, risk, and why patience pays.
+howToPlay:
+  - Each group spreads its 12 seeds across three beds. Piggy Bank never grows or shrinks. Savings Account grows slowly. Mixed Garden (lots of different plants) grows faster but has bad years.
+  - Each year, read a weather card for the Mixed Garden. Every second year, the Savings Account gets 1 new seed for every 6 in it.
+  - "In year 5 the scary storm hits. Ask: does anyone want to dig up their garden and move it to the Piggy Bank? Let them decide."
+  - Groups that dug up miss the comeback in year 6.
+  - After year 10, groups count each bed and compare.
+  - "Discuss: which bed grew most? Which felt safest? Who panicked at the storm, and what happened?"
+teenTip: The storm-then-comeback moment is the lesson about patience. Don't hint that the comeback is coming.
+topics:
+  - investing-tomorrow
+  - investing-mythbusters
+  - save-or-spend
+  - banking-basics
+reinforces: Money can grow over time, more growth usually means more risk, spreading money out lowers risk, and pulling out during a drop locks in the loss.
+levels:
+  35: Two beds only, Piggy Bank and Mixed Garden. Make a simple bar chart of seeds after each year.
+  68: All three beds. Graph each bed year by year and compare the shapes of the lines.
+  912: Add a fourth bed, One Giant Plant (a single company): roll a die each year — 1–2 halves it, 5–6 doubles it. Charge a 1-seed fee every third year to show what high fees do. Talk about compounding and diversification.
+  k2: Use one paper plant and a piggy bank. Each year, add a paper leaf to the plant and nothing to the piggy bank. A storm takes one leaf away; the next sunny year brings two back. Ask 'Should we dig it up?' with thumbs.
+debrief:
+  - Which bed grew the most? Which felt the safest?
+  - What happened to the groups that dug up their garden after the storm?
+  - Why might someone put money in more than one bed?
+access: Seeds are counted by moving them on the mat — no writing needed. Read each weather card aloud and show a picture: sun, cloud, rain, or storm.
+cards:
+  title: Weather cards for the Mixed Garden
+  items:
+    - "Year 1 — Sunny ☀: add 1 seed for every 4 in the bed."
+    - "Year 2 — Cloudy ☁: no change."
+    - "Year 3 — Sunny ☀: add 1 seed for every 4."
+    - "Year 4 — Gentle rain 🌧: add 1 seed."
+    - "Year 5 — Scary storm ⛈: lose a third of your seeds (round down)."
+    - "Year 6 — Sunny comeback ☀: add 1 seed for every 3."
+    - "Year 7 — Sunny ☀: add 1 seed for every 4."
+    - "Year 8 — Cloudy ☁: no change."
+    - "Year 9 — Sunny ☀: add 1 seed for every 4."
+    - "Year 10 — Harvest 🧺: count everything."

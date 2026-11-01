@@ -6,10 +6,10 @@ name: Content
 
 on:
   pull_request:
-    paths: ["content/**", "scripts/build-content.js", "assets/js/helper-kb.js", ".github/workflows/content.yml"]
+    paths: ["content/**", "scripts/build-content.js", "scripts/lib/**", "assets/js/helper-kb.js", "assets/js/content.js", ".github/workflows/content.yml"]
   push:
     branches: [main]
-    paths: ["content/**", "scripts/build-content.js", "assets/js/helper-kb.js", ".github/workflows/content.yml"]
+    paths: ["content/**", "scripts/build-content.js", "scripts/lib/**", "assets/js/helper-kb.js", "assets/js/content.js", ".github/workflows/content.yml"]
   workflow_dispatch:
 
 permissions:
@@ -46,7 +46,7 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add assets/js/helper-kb.js
+          git add assets/js/helper-kb.js assets/js/content.js
           git commit -m "Rebuild site content from content/ files"
           git push
 
@@ -54,7 +54,7 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
         run: |
           if ! git diff --quiet; then
-            echo "assets/js/helper-kb.js is out of date. Run: node scripts/build-content.js and commit the result."
+            echo "The generated files are out of date. Run: node scripts/build-content.js and commit the result."
             git diff --stat
             exit 1
           fi

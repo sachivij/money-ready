@@ -1,0 +1,112 @@
+# Extra topic: Identity and Online Safety
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: identity-safety
+title: Identity and Online Safety
+emoji: 🔐
+sources: ["ftc"]
+tags:
+  - identity
+  - identity theft
+  - password
+  - online safety
+  - privacy
+  - personal information
+  - social security number
+  - hacker
+summary: Keeping personal information private and spotting tricks online.
+objective: Students can name information to keep private and what to do if something online feels wrong.
+reveal:
+  keyConcept: Private information stays private; when unsure, ask a trusted adult
+  discussionPrompt: What is one thing you would never share with a stranger online?
+takeHome:
+  title: Our Safety Rules
+  familyQuestion: What are our family's rules for passwords and sharing online?
+prep:
+  openingScript: What do you think a password is for? Today we'll learn how to keep the keys to our stuff safe.
+  vocab:
+    - term: Password
+      def: A secret code that protects an account.
+    - term: Private
+      def: Only for you and your trusted grown-ups.
+    - term: Identity theft
+      def: Someone pretending to be you using your information.
+    - term: Phishing
+      def: Fake messages that try to steal information.
+pack:
+  bestGames: ["red-flag-green-flag", "scam-or-safe", "scam-detective"]
+  hook: Ask: would you hand your house key to a stranger? A password is a key.
+  miniLesson: Your name, address, passwords and numbers are keys to your identity. Keep them private and ask a trusted adult when something feels off.
+game_rounds:
+  picture:
+    - q: Who can know your password?
+      opts:
+        - ["👨‍👩‍👧", "My grown-up"]
+        - ["👾", "Online stranger"]
+      best: 0
+      why: Only share passwords with your grown-up.
+      src: ftc
+    - q: A pop-up says click here! What do you do?
+      opts:
+        - ["🙋", "Ask a grown-up"]
+        - ["👆", "Click it"]
+      best: 0
+      why: Ask first. Pop-ups can be tricks.
+      src: ftc
+    - q: Your home address is…
+      opts:
+        - ["🔒", "Private"]
+        - ["📢", "For everyone"]
+      best: 0
+      why: Keep where you live private online.
+      src: ftc
+    - q: Which password is stronger?
+      opts:
+        - ["🦒🌮🚲", "Giraffe-Taco-Bike"]
+        - ["1️⃣2️⃣3️⃣", "123"]
+      best: 0
+      why: Long, silly passwords are hard to guess.
+      src: ftc
+  rounds:
+    - q: What is identity theft?
+      opts:
+        - - 🕵️
+          - Someone using your personal info to pretend to be you
+        - ["🎭", "Wearing a costume"]
+        - ["🔑", "Losing your keys"]
+      best: 0
+      why: Thieves use names, birthdays and numbers to open accounts or take money.
+      src: ftc
+    - q: Which should you keep private?
+      opts:
+        - ["🔢", "Your Social Security number"]
+        - ["⚽", "Your favorite sport"]
+        - ["🎨", "Your favorite color"]
+      best: 0
+      why: Your SSN is a key to your identity. Share it only when truly required.
+      src: ftc
+    - q: What makes a strong password?
+      opts:
+        - ["🔐", "Long and different for each account"]
+        - ["🎂", "Your birthday"]
+        - ["🔁", "The same one everywhere"]
+      best: 0
+      why: Long, unique passwords (or passphrases) are hardest to crack.
+      src: ftc
+    - q: A website offers a free game if you enter your parent's card number. What do you do?
+      opts:
+        - ["🛑", "Stop and ask a trusted adult"]
+        - ["⌨️", "Type it in"]
+        - ["📸", "Send a photo of the card"]
+      best: 0
+      why: "'Free' offers that ask for payment info are a common trick."
+      src: ftc
+    - q: Where can someone report identity theft and get a recovery plan?
+      opts:
+        - ["🏛️", "IdentityTheft.gov (FTC)"]
+        - ["📱", "A social media post"]
+        - ["🛒", "A store"]
+      best: 0
+      why: The FTC's IdentityTheft.gov gives step-by-step recovery plans.
+      src: ftc

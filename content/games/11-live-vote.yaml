@@ -1,0 +1,31 @@
+# Game: Live Vote Challenge
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: live-vote
+name: Live Vote Challenge
+emoji: ⚡
+devices: shared
+minutes: 12
+group: Whole class
+energy: High
+materials: ["Projector or large screen"]
+summary: The built-in scenario challenge with a timer, class vote, and reveal.
+howToPlay:
+  - Open the module's student challenge on the shared screen.
+  - Read the scenario aloud while the timer runs.
+  - Take the class vote by show of hands or on their own devices.
+  - Tap the answer and let the reveal screen do the teaching.
+  - Use the discussion prompt on the reveal to keep the conversation going.
+teenTip: The reveal screen has your script built in — best answer, why, the trap, and a discussion question. You can lean on it.
+reinforces: Committing to an answer before the reveal, then learning from the explanation — including the common trap.
+levels:
+  35: Take a show of hands for each option; a student counts and taps the winner.
+  68: Partners talk for 30 seconds before anyone votes.
+  912: Before the reveal, ask students to guess what the common trap will be.
+  k2: Read the scenario and the options aloud. Students vote with thumbs or by pointing at the screen, and you tap the class's choice.
+debrief:
+  - Why did the best answer work?
+  - What was the trap, and why do people fall for it?
+  - How would you explain this to a younger student?
+access: Read everything on the screen aloud. Students vote with hands or cards, so nobody needs their own device, and you can ignore the timer if your class needs more time.

@@ -1,0 +1,38 @@
+# Game: Human Bar Graph
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: human-bar-graph
+name: Human Bar Graph
+emoji: 📊
+devices: none
+minutes: 8
+group: Whole class
+energy: Medium
+materials: ["Open floor space"]
+summary: Students line up by their answer to build a living bar chart of the room.
+howToPlay:
+  - Mark a starting line for each answer choice.
+  - Students line up single file behind the choice they picked.
+  - Everyone looks around — the longest line is the class's most popular answer.
+  - Count each line out loud and write the numbers on the board.
+  - "Ask: 'Why do you think this line is longest?'"
+teenTip: This is the no-device version of the live class results screen. Kids love seeing the graph made of themselves.
+reinforces: Reading what a group chose, and noticing that the most popular answer isn't always the best one.
+levels:
+  35: Students predict which line will be longest before they move, then compare with the real graph.
+  68: Draw the graph on the board afterwards and turn the counts into percentages. Ask: does the most popular answer have to be the best one?
+  912: Run it twice, before and after the mini-lesson, and compare the two graphs. What changed, and why?
+  k2: Two lines only, each marked with a picture on the floor. Count each line out loud together, clapping once per person.
+debrief:
+  - Which line was longest? Were you surprised?
+  - Is the most popular answer always the right one?
+  - If we did this again after today's lesson, would the graph change?
+access: Students who can't stand in line place a marker or sticky note on their line instead. Count out loud so nobody has to see the whole room to follow along.
+cards:
+  title: Sample questions that make good graphs
+  items:
+    - "What would you do with $5: save it, spend it, or share it?"
+    - "Which is a need: water, a video game, or a new hat?"
+    - "How long would you wait for something you really want: a day, a week, or a month?"
+    - "Where is the safest place to keep money: a jar, a bank, or your pocket?"

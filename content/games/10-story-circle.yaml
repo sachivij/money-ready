@@ -1,0 +1,39 @@
+# Game: Real-Life Story Circle
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: story-circle
+name: Real-Life Story Circle
+emoji: 💬
+devices: none
+minutes: 10
+group: Circle of 8–12
+energy: Calm
+materials: ["None"]
+summary: Students share a real (small) money decision they made and what they'd change.
+howToPlay:
+  - Sit in a circle. You go first with your own short story.
+  - Going around, anyone may share a small money decision they made recently.
+  - Passing is always allowed — nobody is required to share.
+  - After each story, the group names which concept it connects to.
+  - Close by asking what everyone will try differently this week.
+teenTip: Never ask about family income or how much money anyone has. Keep it about decisions, not amounts. Model a small, ordinary story so nobody feels they must impress.
+reinforces: Connecting money ideas to real, everyday decisions — and learning from small mistakes.
+levels:
+  35: Use the prompt cards so students talk about a choice, not about money they have.
+  68: Partners share with each other first, then volunteers share with the circle.
+  912: Invite stories about a purchase they regret or one they're proud of, and connect each to a concept such as impulse buying or opportunity cost.
+  k2: Use a puppet or a storybook character instead of students' own stories ('Bear spent all his coins on candy — what should he do next time?'). Students answer with thumbs or one word.
+debrief:
+  - Which story reminded you of something you've done?
+  - Which idea from today did the stories show?
+  - What will you try differently this week?
+access: Passing is always allowed, and students can draw their story instead of telling it. Keep it about decisions, not amounts.
+cards:
+  title: Story prompts (never about family money)
+  items:
+    - Tell about a time you had to choose between two things you wanted.
+    - Tell about something you saved up for, or would like to.
+    - Tell about a time you bought something and then changed your mind.
+    - Tell about a time you shared or gave something away.
+    - Tell about a time you waited for something and were glad you did.

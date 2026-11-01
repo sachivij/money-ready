@@ -1,0 +1,148 @@
+# Module: Needs vs. Wants
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: needs-vs-wants
+title: Needs vs. Wants
+emoji: 🧺
+gradeBand: Grade 1
+officialLesson: Grade 1 — Needs and Wants
+officialMaterials: ["Presentation", "Toolkit"]
+minutes: 30
+keyConcept: Needs, wants & tradeoffs
+activityType: Scenario + group vote
+color: green
+materials: ["Slides", "Group-vote screen", "Exit ticket", "Take-home card"]
+summary: The building block of every money decision — telling needs from wants, and noticing the tradeoffs in between.
+objective: Students can distinguish needs, wants, and tradeoffs.
+interactive:
+  - Scenario challenge
+  - Group vote
+  - Reveal screen
+  - Discussion prompt
+  - Take-home reflection
+  - Exit ticket
+challenge:
+  scenario: You have $25. You need lunch tomorrow, want a new game skin, and promised to save $5. What do you do?
+  options:
+    - Buy the game skin now
+    - Save $5 first, then plan lunch
+    - Spend all $25 and figure it out later
+    - Ask a friend to pay for lunch
+  best: 1
+  timerSeconds: 30
+  round: 1
+reveal:
+  bestAnswer: B. Save $5 first, then plan lunch
+  why: Paying yourself first protects your promise to save, and lunch is a real need that comes before a want like a game skin. Whatever's left can still go toward fun.
+  keyConcept: Tradeoff — every yes is a no to something else
+  commonTrap: Spending before planning
+  discussionPrompt: What made this decision hard?
+  applyIt: Name one thing you bought recently that was a want, not a need.
+takeHome:
+  title: Money Talk at Home
+  prompt: Pick one family purchase this week. Was it a need, a want, or both?
+  boxes: ["Need", "Want", "Tradeoff"]
+  familyQuestion: What is one thing we want to save for?
+prep:
+  openingScript: Hi everyone! I'm a teen volunteer and today we're money detectives. Our big question: what's the difference between something you NEED to live and something you just WANT? Let's find out together — there are no wrong answers here.
+  vocab:
+    - term: Need
+      def: Something you must have to live and be safe (food, water, a home).
+    - term: Want
+      def: Something nice to have, but you'd be okay without it (games, candy).
+    - term: Tradeoff
+      def: What you give up when you choose one thing over another.
+  steps:
+    - Welcome & the big question (4 min)
+    - "Turn & talk: name one need, one want (4 min)"
+    - Scenario challenge + group vote (12 min)
+    - "Reveal & discussion: the tricky ones (4 min)"
+    - Exit ticket + confidence check (6 min)
+  discussionPrompts:
+    - Can the same thing be a need for one person and a want for another?
+    - What made the $25 choice hard?
+  printables: ["Needs vs. Wants sorting cards", "Take-home card", "Exit ticket"]
+lesson_pack:
+  bestGames: ["card-sort", "four-corners"]
+  hook: Hold up two things from your bag — say a water bottle and headphones. Ask the room: if you could only keep one forever, which one, and why?
+  miniLesson: Needs keep you alive, safe, and healthy: food, water, a place to live, clothes for the weather. Wants make life more fun. The tricky part is that the same object can be either one depending on who you are and what your life looks like.
+  guidedPractice: As a class, sort ten everyday items into needs and wants. Every time someone disagrees, stop and ask what situation would make it a need.
+  checkUnderstanding: Each student names one need and one want out loud, and explains one item that could be both.
+  extension: Students draw a picture of a want they'd give up for a week and what they'd do with the money saved.
+  unpluggedSwap: Instead of the on-screen sorting game, use paper item cards and two hoops or bins on the floor.
+  commonQuestions:
+    - q: Is my phone a need?
+      a: It depends. For an adult whose job requires it, closer to a need. For most students, it's a want that feels like a need — and noticing that difference is the skill.
+    - q: Is dessert a need? I need food!
+      a: Food is a need; dessert specifically is a want. Great chance to show that a category can split.
+game_rounds:
+  picture:
+    - q: Which one do we need?
+      opts:
+        - ["💧", "Water"]
+        - ["🍭", "Candy"]
+      best: 0
+      why: We need water to live. Candy is a want.
+    - q: Which one is a want?
+      opts:
+        - ["🎮", "Video game"]
+        - ["🧥", "Warm coat"]
+      best: 0
+      why: A game is fun, but we can live without it.
+    - q: Which one do we need?
+      opts:
+        - ["🏠", "A home"]
+        - ["🎈", "Balloons"]
+      best: 0
+      why: A home keeps us safe and warm.
+    - q: Which one is a want?
+      opts:
+        - ["🥦", "Healthy food"]
+        - ["🧸", "New toy"]
+      best: 1
+      why: A toy is nice to have. Food is a need.
+    - q: We only have a little money. What first?
+      opts:
+        - ["🍎", "Food"]
+        - ["🪀", "Toy"]
+      best: 0
+      why: Needs come first. Wants come after.
+  rounds:
+    - q: Which of these is a need?
+      opts:
+        - ["🥪", "Lunch"]
+        - ["🎧", "New headphones"]
+        - ["🍿", "Movie snacks"]
+        - ["🧢", "A fifth hat"]
+      best: 0
+      why: Food is a need. The others are nice to have but you can live without them.
+    - q: Tyya's dad buys healthy food, not just treats. Why?
+      opts:
+        - ["🥕", "Healthy food is a need"]
+        - ["😠", "He doesn't like treats"]
+        - ["💸", "Treats are free"]
+      best: 0
+      why: Grown-ups spend on needs first. Treats are wants that come after.
+    - q: You need new shoes. Which is the need, and which part is a want?
+      opts:
+        - - 👟
+          - Shoes are the need; the fancy brand is the want
+        - ["✨", "The fancy brand is the need"]
+        - ["🤷", "Shoes are always a want"]
+      best: 0
+      why: The same thing can have a need part (shoes that fit) and a want part (the brand).
+    - q: Why can't we have everything we want?
+      opts:
+        - ["💵", "Our resources, like money, run out"]
+        - ["🚫", "Wants are bad"]
+        - ["🏪", "Stores don't sell wants"]
+      best: 0
+      why: Money is a resource, and there is never enough of it for everything, so we choose.
+    - q: Can something be a need for one person and a want for another?
+      opts:
+        - ["👓", "Yes, like glasses"]
+        - ["❌", "No, never"]
+        - ["🎲", "Only toys"]
+      best: 0
+      why: Glasses are a need for someone who can't see well and a want for someone who wears them for style.

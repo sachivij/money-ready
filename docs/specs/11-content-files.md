@@ -1,6 +1,6 @@
 # Spec 11: Content lives in plain files, not in the code
 
-**Status:** In progress. Helper answers, sources and the weekly Jump$tart watch are done; lessons, games and modules next (Owner: Sumeet)
+**Status:** Done (Owner: Sumeet)
 
 ## The problem
 Every lesson, official Teen Teach-In step, game round and Standards Helper answer is typed straight into JavaScript files (`data.js`, `lessons.js`, `official-lessons.js`, `game-bank.js`, `helper-kb.js`, about 300 KB of content mixed in with code). To add or fix one answer you have to edit code, and one missing comma can break the whole site. It is also hard to see where each piece came from and who approved it.
@@ -70,11 +70,15 @@ Each step: convert, check the generated file matches the old data exactly (same 
 - 2026-11-01, Sumeet: go ahead with Markdown files and the GitHub Action, migrating in the order above, **plus** the weekly Jump$tart alert.
 - Still open: who approves content. Just Sumeet for now; a Jump$tart contact could be added later as a required reviewer on `content/`.
 
-## What's built (step 1)
+## What's built
 - `content/sources/` (22 sources) and `content/helper/` (102 answers), with templates (`_template.md`) and a plain-English guide in `content/README.md`. The existing answers are marked `approved_by: Sumeet`, `approved_on: 2026-10-30`, the day PR #8 that added them was merged.
 - `scripts/build-content.js` checks the files and writes `assets/js/helper-kb.js`. The result was checked to be identical to the old hand-written file: same answers, tags, sources and order.
 - `.github/workflows/content.yml` ("Content") runs it on every pull request and every change to `main` that touches content, and commits the rebuilt file back to the branch.
 - `.github/workflows/jumpstart-watch.yml` ("Jump$tart watch") runs `scripts/watch-jumpstart.js` every Monday (or from the Actions tab). It saves the list of linked files to `content/watch/jumpstart-teen-teach-in.txt` and opens an issue when the list changes, or one issue if the page can't be read. The first run opens an issue listing today's resources.
+- Step 2 (owner OK 2026-11-01, "do this for lessons, games and modules"): `content/modules/` (13, each with its `lesson_pack` and `game_rounds`), `content/extra-topics/` (8), `content/games/` (21) and `content/official-lessons/` (5), as YAML because they are nested. `scripts/lib/yaml-lite.js` reads them (a small YAML subset, no packages). The build writes `assets/js/content.js` (`MODULES`, `LESSON_PACKS`, `GAME_BANK`, `EXTRA_TOPICS`, `GAME_FORMATS`, `OFFICIAL_LESSONS`), loaded first in `index.html`. `official-lessons.js` is gone; `data.js`, `lessons.js` and `game-bank.js` now hold only code and settings. The files are marked `approved_by: Sumeet`, `approved_on: 2026-11-01`, the day he approved the move.
+- Checks beyond required fields: unknown fields, duplicate ids, `best` in range, round `src` and extra-topic `sources` on the approved list, `bestGames` naming real games, official lessons pointing at a real module.
+- Proof: the generated data equals the old JS data exactly (including order), and 441 screens (every module, challenge, take-home, prep page, game, topic game per grade, game cards, and builder plans for every topic, grade, length and device setting) render identical text on `main` and on the branch, over http and opened from disk, with no JS errors.
+- The 4-H build (`scripts/4h-build/strip.py`) now edits the copy's `content/` and rebuilds; tested: 10 modules, no official lessons, no "Jump$tart" text on the main screens.
 
 ## Done when
 All content above lives in `content/`; the old JS files hold only code; a non-engineer can add a Standards Helper answer through the GitHub website and see it on the Vercel preview, with no code edits; a file missing its source or approval fails the check; the site still works offline from disk; `scripts/audit.js` passes; the 4-H build still works.

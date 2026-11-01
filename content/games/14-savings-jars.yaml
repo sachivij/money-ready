@@ -1,0 +1,56 @@
+# Game: Life Happens Savings Jars
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: savings-jars
+multiRound: true
+name: Life Happens Savings Jars
+emoji: 🫙
+devices: none
+minutes: 15
+group: Small groups of 3–4
+energy: Medium
+materials:
+  - 3 cups per group labeled Spend, Save, Share (with a picture on each)
+  - 20 counters per group (cubes or paper coins)
+  - A goal card per group
+  - Life Happens cards (below)
+  - One die per group (optional)
+summary: Groups split their pay into Spend, Save, and Share jars over five 'weeks' while Life Happens cards throw surprises at them. Who reaches their savings goal — and who had to raid it?
+howToPlay:
+  - "Each group picks a goal: a bike (12 counters), a video game (8), or a gift for a friend (6). Put the goal card in front of the Save jar."
+  - "Each week the group earns 4 counters (or roll the die: 1–2 earns 3, 3–4 earns 4, 5–6 earns 5)."
+  - The group agrees how to split the counters between the three jars. Spend counters are used up at the end of each week.
+  - Draw a Life Happens card and do what it says. If a cost is bigger than the Spend jar, the rest comes out of Save.
+  - Every second week, a Save jar holding 4 or more earns 1 bonus counter. That is interest.
+  - After five weeks, each group counts its Save jar against its goal and tells the class its best and worst decision.
+teenTip: Groups that put everything in Spend early will get hit by a card and have to raid Save. Let it happen, then ask what they'd do differently next time.
+topics:
+  - save-or-spend
+  - budget-battle
+  - banking-basics
+  - investing-tomorrow
+  - paycheck-puzzle
+  - money-tales
+reinforces: Pay yourself first, save toward a goal, keep a cushion for surprises, and (for older students) see how interest rewards money you leave alone.
+levels:
+  35: All three jars. Groups keep a tally each week: earned, spent, saved, shared.
+  68: Add a fourth jar, 'Under the mattress' (no bonus, and one card makes it vanish). Ask which they trust more and why banks pay interest.
+  912: Track it as a table: income, a fixed cost of 1 counter per week for 'phone', savings rate as a percentage. Discuss emergency funds of 3–6 months of expenses.
+  k2: Two jars only, Spend and Save, with big pictures. The goal is a picture of a ball that costs 5. You read each card and act it out; the class shows thumbs up or down to decide which jar to use. Three weeks is plenty.
+debrief:
+  - Did you reach your goal? What helped the most?
+  - Which Life Happens card hurt the most? What would have made it hurt less?
+  - Why do people say 'save first, then spend'?
+access: Jars carry a picture as well as a word. Use counters that are easy to pick up (cubes beat beans for small hands). One student can be the group's banker and move counters for anyone who prefers not to.
+cards:
+  title: Life Happens cards
+  items:
+    - A neighbor pays you 3 for helping walk their dog. Put them in any jar.
+    - Your headphones broke. Pay 3.
+    - You lent a friend 2 last week and they paid you back. Get 2.
+    - The school trip costs 2. Pay it.
+    - You did extra chores. Earn 2 more this week.
+    - A hole in your pocket! Lose 1 from Spend.
+    - Ice cream truck! Spend 1 if you want to — or skip it.
+    - Your goal item went on sale. It now costs 2 less.

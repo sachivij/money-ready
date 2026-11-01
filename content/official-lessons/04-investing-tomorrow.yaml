@@ -1,0 +1,75 @@
+# Official Teen Teach-In lesson: Grade 4: Investing in Tomorrow
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+module: investing-tomorrow
+deck: Grade 4: Investing in Tomorrow
+book:
+  title: "\"The Ant and the Grasshopper\" (a modern money version of Aesop's fable, in the slides)"
+  author: ""
+bigIdea: Every choice has an opportunity cost. Saving now, in a bank that pays interest, and investing over time with compound interest can build what you need for the future.
+vocab:
+  - term: Opportunity cost
+    def: What you give up when you make a choice.
+  - term: Saving
+    def: Keeping money for later instead of spending it now.
+  - term: ATM
+    def: Automated teller machine: a machine for depositing or taking out money from your bank account.
+  - term: Investing
+    def: Leaving money alone in a plan so it can grow over a long time.
+  - term: Compound interest
+    def: Earning interest on your interest, so money grows faster and faster, like a rolling snowball.
+materials:
+  - Grade 4 worksheet (one per student)
+  - Grade 4 vocabulary check
+  - List of local banks and credit unions near your school
+steps:
+  - name: Question of the Day
+    minutes: 4
+    slides: Slides 2–3
+    what: Would you rather have $1 million, or a penny that doubles every day for 30 days? Take a vote, then reveal: the doubling penny grows to over $5 million.
+    script: Would you rather we give you a million dollars, or a penny that doubles every day for 30 days?
+    how: Have students stand on one side of the room for each choice. Come back to this when you teach compound interest.
+  - name: Welcome & introductions
+    minutes: 3
+    slides: Slide 4
+    what: Introduce each presenter. Today's lesson uses a modern version of an old Aesop's fable to show why saving matters, plus where to save locally and how to build wealth over time.
+    script: We're high school students taking a class about money. Today we'll use a story to show why saving matters.
+    how: Replace the deck's local bank names with banks and credit unions near your school.
+  - name: Vocabulary
+    minutes: 3
+    slides: Slide 5
+    what: Introduce opportunity cost, saving, ATM, investing, and compound interest.
+    script: Here are five words you'll hear in today's story. Listen for them!
+    how: Hand out the vocabulary check now and have students fill it in at the end.
+  - name: Opportunity cost: every choice has consequences
+    minutes: 5
+    slides: Slides 6–7
+    activity: true
+    what: Go through the examples: soccer at recess means no basketball; watching TV means no studying; buying a video game means no snack with that money; spending everything now means less for college or a house later. Then students do the worksheet activity.
+    script: Every choice you make has a consequence. If you play soccer at recess, what do you give up?
+    how: Ask students for one choice of their own and its opportunity cost before they start the worksheet.
+  - name: Fable: The Ant and the Grasshopper
+    minutes: 9
+    slides: Slides 8–19
+    what: Explain what a fable is and read the classic moral. Then read the modern money version: Sam the grasshopper spends every quarter on the claw machine, while Sandra the ant saves at the bank and earns interest. Months later, Sam can't afford anything and asks Sandra to teach him.
+    script: A fable is a short story, often with animals, that teaches a lesson. Listen for the moral at the end!
+    how: Two presenters can read it as Sam and Sandra. The moral: if you do nothing but play today, you may have nothing left for tomorrow.
+  - name: Plan your future: save in a bank
+    minutes: 4
+    slides: Slides 20–22
+    what: Three steps to plan your financial future. #1 Make smart decisions, because every choice has an opportunity cost. #2 Open a savings account: it's safe and earns interest. You need a parent or guardian with you, and birthday money, allowance, or job money can all go in.
+    script: How can you plan for your future? First, make smart choices. Second, open a savings account at a local bank with a grown-up.
+    how: Show the list of local banks and credit unions you prepared.
+  - name: Compound interest
+    minutes: 5
+    slides: Slides 23–25
+    what: "#3 Invest to build wealth over time. There's no getting rich quick. The key is compound interest, which works like rolling a snowball. Show the chart: saving $5 a month from birth grows to about $2,158 by age 18 and $4,333 by 25 (hypothetical, at 8% a year). Long-term options are shared with parents."
+    script: Remember the doubling penny? Compound interest works like rolling a snowball: the bigger it gets, the faster it grows.
+    how: Point out that the numbers are examples, not promises. The deck lists Wisconsin options. In Virginia, the state's college savings plan is Virginia529.
+  - name: Thank you & wrap-up
+    minutes: 2
+    slides: Slide 26
+    what: Thank the class. Choices come with opportunity costs, so plan to save for the short term and invest for the long term. Talk with your parents about which plan works for you.
+    script: Thanks for having us! Remember: save for the short term, invest for the long term, and every choice has an opportunity cost.
+    how: Collect the vocabulary check and hand out the take-home card.

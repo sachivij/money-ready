@@ -1,0 +1,53 @@
+# Game: Market Day
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: market-day
+multiRound: true
+name: Market Day
+emoji: 🏪
+devices: none
+minutes: 20
+group: Teams of 4 (shops and shoppers)
+energy: High
+materials:
+  - 10 tokens per shopper (paper squares, buttons, or play coins)
+  - "4 shop signs with pictures: Food, Clothes, Fun, Bank"
+  - Item cards with price tags
+  - Town news cards (below)
+summary: The room becomes a tiny town. Shoppers must cover their needs before their wants, prices change mid-game, and anyone who saved at the Bank earns a bonus.
+howToPlay:
+  - "Set up four shops around the room: Food, Clothes, Fun, and the Bank. Two students run each shop; everyone else is a shopper."
+  - "Each shopper gets 10 tokens and a must-have list: one Food item and one Clothes item. Everything else is a want. Prices: Food 2–3, Clothes 2–4, Fun 1–4."
+  - "Round 1 (3 minutes): shoppers buy. Shopkeepers take tokens and hand over item cards. Shoppers may deposit leftover tokens at the Bank, which writes it on a sticky note."
+  - "Round 2: read a Town news card. Shoppers adjust and buy again with whatever they have left."
+  - "Round 3: the Bank pays 1 bonus token for every 3 deposited. Read one more Town news card, then a last buying round."
+  - Swap shopkeepers and shoppers and play one quick round so everyone gets to shop.
+  - "Debrief: who got both needs? What did you give up? Who spent everything in round 1 and wished they hadn't?"
+teenTip: The 'aha' moment is when savers get the Bank bonus and the surprise in round 2 doesn't wipe them out. Don't warn anyone — let them find out.
+topics:
+  - needs-vs-wants
+  - opportunity-costs
+  - smart-shopping
+  - budget-battle
+  - save-or-spend
+reinforces: Needs come before wants, every purchase with a fixed budget is a trade-off, and keeping some money back pays off when prices change.
+levels:
+  35: 10 tokens, prices from 1 to 5. Each shopper keeps a mini receipt: spent, left, saved.
+  68: Add a sale that isn't really a deal (3-for-2 on something nobody needs) and two sizes of the same food at different prices, so shoppers compare value, not just price.
+  912: Add 10% sales tax (round up), rent of 2 tokens due in round 2, and a 'buy now, pay later' offer that costs 2 extra next round. Debrief on how fixed costs squeeze every other choice.
+  k2: Use 5 tokens and picture price tags with dots (1–3 dots, no numbers). The must-have list is two pictures: a lunch and a coat. Skip the bonus math — just say 'savers get one extra'. You run the Bank yourself.
+debrief:
+  - What was on your must-have list, and did you get both?
+  - What did you give up to buy something you wanted? That is the opportunity cost.
+  - When the Town news hit, who was glad they still had tokens? Why?
+access: Price tags show dots and numbers, so non-readers can play. Read every Town news card aloud. A shopper who can't move easily stays seated and sends a partner as their runner, or the shopkeepers come to them.
+cards:
+  title: Town news cards — read one each round
+  items:
+    - Big sale at Clothes! Everything there costs 1 less this round.
+    - Food prices went up. Every Food item costs 1 more.
+    - Your shoe broke. Pay 2 tokens to fix it before you buy anything else.
+    - You found a lost wallet and returned it. The owner thanks you with 1 token.
+    - The Fun shop has a new toy everyone wants. It costs 4.
+    - Rainy day — the park is closed, so Fun items are half price (round up).

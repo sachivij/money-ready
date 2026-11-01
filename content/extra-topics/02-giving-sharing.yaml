@@ -1,0 +1,113 @@
+# Extra topic: Giving and Sharing
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: giving-sharing
+title: Giving and Sharing
+emoji: 💝
+sources: ["cfpbKids", "ftc"]
+tags:
+  - giving
+  - give
+  - sharing
+  - share
+  - charity
+  - donate
+  - donation
+  - volunteer
+summary: Spend, save and share: how giving fits a money plan, and how to give safely.
+objective: Students can name ways to give (money, time, help) and one way to check a charity is real.
+reveal:
+  keyConcept: Giving is part of a money plan, and it's smart to check before you give
+  discussionPrompt: What is one way you could help someone without spending money?
+takeHome:
+  title: Our Share Jar
+  familyQuestion: What is one cause or group we'd like to help, with money or time?
+prep:
+  openingScript: Have you ever shared something and felt good afterward? Today we'll talk about giving: what we can give and how to give smart.
+  vocab:
+    - term: Share
+      def: Giving some of what you have to others.
+    - term: Charity
+      def: A group that helps people, animals or places.
+    - term: Volunteer
+      def: Helping without being paid.
+    - term: Donation
+      def: A gift of money or things.
+pack:
+  bestGames: ["savings-jars", "four-corners"]
+  hook: Show three jars labeled Spend, Save and Share. Ask what the third one could be for.
+  miniLesson: Money can be spent, saved, or shared. We can also give time and help. Before giving money, check the group is real.
+game_rounds:
+  picture:
+    - q: Which one is sharing?
+      opts:
+        - ["🤲", "Give a friend half"]
+        - ["🙈", "Hide it all"]
+      best: 0
+      why: Sharing means giving some to others.
+      src: cfpbKids
+    - q: We can give money, or we can give…
+      opts:
+        - ["⏰", "Our time and help"]
+        - ["🗑️", "Trash"]
+      best: 0
+      why: Helping is a way to give too.
+      src: cfpbKids
+    - q: Three jars: spend, save, and…
+      opts:
+        - ["💝", "Share"]
+        - ["🍬", "Candy"]
+      best: 0
+      why: Spend, save, share!
+      src: cfpbKids
+    - q: Giving makes others feel…
+      opts:
+        - ["😊", "Happy"]
+        - ["😢", "Sad"]
+      best: 0
+      why: Giving helps others and feels good too.
+      src: cfpbKids
+  rounds:
+    - q: What is a charity?
+      opts:
+        - ["🤝", "A group that helps people or causes"]
+        - ["🏪", "A store"]
+        - ["🏦", "A bank"]
+      best: 0
+      why: Charities use donations to help people, animals or places.
+      src: ftc
+    - q: A caller pressures you to donate right now with a gift card. What should you do?
+      opts:
+        - - 🛑
+          - Say no; real charities don't ask for gift cards
+        - ["🎁", "Buy the card"]
+        - ["🔁", "Call back later with the card number"]
+      best: 0
+      why: Rushing and gift-card payment are signs of a charity scam.
+      src: ftc
+    - q: Before giving to a charity, it's smart to…
+      opts:
+        - ["🔍", "Look up its exact name and what it does"]
+        - ["🎲", "Pick any name that sounds nice"]
+        - ["🙈", "Never check"]
+      best: 0
+      why: Scammers use names that sound like real charities.
+      src: ftc
+    - q: Which is a way to give without money?
+      opts:
+        - ["🧹", "Volunteering your time"]
+        - ["💳", "Using a credit card"]
+        - ["🛍️", "Shopping"]
+      best: 0
+      why: Time and skills are valuable gifts too.
+      src: cfpbKids
+    - q: Why plan how much to give?
+      opts:
+        - - 📝
+          - So giving fits your budget with needs and saving
+        - ["😬", "You shouldn't give"]
+        - ["💯", "Give everything always"]
+      best: 0
+      why: A plan helps you give regularly without missing needs.
+      src: cfpbKids

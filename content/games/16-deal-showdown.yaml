@@ -1,0 +1,51 @@
+# Game: Best Deal Showdown
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: deal-showdown
+multiRound: true
+name: Best Deal Showdown
+emoji: 🏷️
+devices: none
+minutes: 15
+group: Teams of 3–4
+energy: Medium
+materials:
+  - Showdown cards (below)
+  - Scrap paper or mini whiteboards per team
+  - A and B cards for each team
+summary: Two products, one question: which is the better deal? Teams guess, do the math — and then a hidden twist may flip the answer.
+howToPlay:
+  - Read a showdown card aloud and draw both options on the board. Teams get 60 seconds to pick the better deal.
+  - On 'show me', every team holds up A or B at the same time.
+  - "Teams now work it out properly: price per item, per ounce, or the total over time. They may switch."
+  - Before you reveal the twist, any team may ask you one question about the products. A question that uncovers the twist earns a bonus point.
+  - Reveal the twist (in brackets on the card). Score 1 point for the right answer after the twist.
+  - "After four or five cards, ask: what questions should you always ask before deciding something is a deal?"
+teenTip: Reward good questions — 'How long does it last?' 'Do I even need two?' That habit matters more than the arithmetic.
+topics:
+  - smart-shopping
+  - needs-vs-wants
+  - opportunity-costs
+  - budget-battle
+  - paycheck-puzzle
+reinforces: Compare value, not just price: price per item, how long something lasts, hidden extra costs, and whether a 'deal' helps if you didn't need it.
+levels:
+  35: Whole-dollar prices and price per item (6 pencils for $3, or 1 for $1). Allow counting on fingers or with coins.
+  68: Unit price per ounce, store brand vs name brand, and 'buy one, get one 50% off'.
+  912: Total cost over time: a $200 phone on a $60/month plan vs a $600 phone on $30/month over two years, and a free trial that turns into a paid plan.
+  k2: Use real objects or pictures and play coins. Ask 'Which costs more?' and let students line up coins beside each picture to see. One twist only: 'This one breaks the first day — is it still a good deal?'
+debrief:
+  - Which twist surprised you the most?
+  - Is the cheapest thing always the best deal? Give an example.
+  - What's one question you'll ask the next time something is 'on sale'?
+access: Read every card aloud and draw both options. Calculators are fine for anyone who wants one — the lesson is the comparison, not the long division.
+cards:
+  title: Showdown cards (twist in brackets)
+  items:
+    - "A: a box of 6 granola bars for $3. B: a box of 12 for $5. [B is cheaper per bar — but they go stale in two weeks and you eat one a week.]"
+    - "A: sneakers for $25. B: sneakers for $45. [A wears out in 3 months; B lasts a year.]"
+    - "A: a toy car for $8. B: a toy car for $6. [B needs batteries that cost $4.]"
+    - "A: name-brand cereal, $4. B: store-brand cereal, same size, $2.50. [Same ingredients list.]"
+    - "A: one T-shirt for $10. B: 'Buy 2, get 1 free' at $10 each. [You only needed one shirt.]"
+    - "A: a streaming app at $8 a month. B: $80 for a whole year. [You only watch it in summer.]"

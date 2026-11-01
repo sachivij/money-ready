@@ -1,0 +1,113 @@
+# Extra topic: Starting a Small Business
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: start-business
+title: Starting a Small Business
+emoji: 🍋
+sources: ["sba"]
+tags:
+  - business
+  - entrepreneur
+  - lemonade stand
+  - profit
+  - customer
+  - sell
+  - selling
+  - startup
+summary: Ideas, customers, costs and profit, using a lemonade stand as the example.
+objective: Students can explain profit as money in minus costs and name parts of a business plan.
+reveal:
+  keyConcept: Profit is what's left after paying your costs
+  discussionPrompt: What business would you start, and who would your customers be?
+takeHome:
+  title: My Business Idea
+  familyQuestion: If our family ran a small business, what would we sell?
+prep:
+  openingScript: Who has ever sold something, like lemonade or cookies? Today you're all business owners.
+  vocab:
+    - term: Business
+      def: Selling things or services to make money.
+    - term: Customer
+      def: Someone who buys from you.
+    - term: Cost
+      def: Money you spend to make what you sell.
+    - term: Profit
+      def: Money left after paying costs.
+pack:
+  bestGames: ["market-day", "budget-relay"]
+  hook: Set up a pretend lemonade stand. Ask what you need to buy before you can sell anything.
+  miniLesson: A business sells something people want. Money in minus costs is profit. Planning helps you know if your idea will work.
+game_rounds:
+  picture:
+    - q: Lemonade stand! What do you need?
+      opts:
+        - ["🍋", "Lemons"]
+        - ["🧦", "Socks"]
+      best: 0
+      why: You need lemons to make lemonade.
+      src: sba
+    - q: People who buy from you are…
+      opts:
+        - ["🧍", "Customers"]
+        - ["🦖", "Dinosaurs"]
+      best: 0
+      why: Customers buy what you sell.
+      src: sba
+    - q: Lemons cost 2. We sold for 5. We…
+      opts:
+        - ["😀", "Made money"]
+        - ["😟", "Lost money"]
+      best: 0
+      why: 5 is more than 2. That extra is profit!
+      src: sba
+    - q: A business needs a good…
+      opts:
+        - ["💡", "Idea"]
+        - ["😴", "Nap"]
+      best: 0
+      why: Every business starts with an idea.
+      src: sba
+  rounds:
+    - q: What is profit?
+      opts:
+        - ["➕", "Money left after paying costs"]
+        - ["💵", "All the money customers pay"]
+        - ["🧾", "What you spend on supplies"]
+      best: 0
+      why: Profit = money coming in minus costs.
+      src: sba
+    - q: You sell 10 cups at $1. Lemons and cups cost $4. What's your profit?
+      opts:
+        - ["6️⃣", "$6"]
+        - ["🔟", "$10"]
+        - ["4️⃣", "$4"]
+      best: 0
+      why: $10 in − $4 costs = $6 profit.
+      src: sba
+    - q: What is a business plan?
+      opts:
+        - - 🗺️
+          - A written plan for what you'll sell, to whom, and how you'll make money
+        - ["✈️", "A plane ticket"]
+        - ["🎉", "A party invite"]
+      best: 0
+      why: Planning helps you spot problems before spending money.
+      src: sba
+    - q: Who is your target market?
+      opts:
+        - ["🎯", "The people most likely to buy"]
+        - ["🏪", "The store next door"]
+        - ["🌍", "Literally everyone"]
+      best: 0
+      why: Knowing your customers helps you set prices and spread the word.
+      src: sba
+    - q: Why do businesses research competitors?
+      opts:
+        - - 🔍
+          - To see prices and find what makes them different
+        - ["🕵️", "To copy them exactly"]
+        - ["🙈", "They shouldn't"]
+      best: 0
+      why: Knowing the competition helps you stand out.
+      src: sba

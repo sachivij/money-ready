@@ -1,0 +1,143 @@
+# Module: Making Financial Choices & Opportunity Costs
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: opportunity-costs
+title: Making Financial Choices & Opportunity Costs
+emoji: ⚖️
+gradeBand: Grade 2
+minutes: 30
+keyConcept: Choices & opportunity cost
+activityType: Choice scenario + vote
+color: amber
+officialLesson: Grade 2 — Making Financial Choices and Opportunity Costs
+officialMaterials: ["Presentation", "Toolkit", "Worksheet"]
+materials: ["Slides", "Choice cards", "Reveal screen", "Take-home card"]
+summary: Every choice means giving something up. Students meet opportunity cost — the thing you didn't pick.
+objective: Students can explain that choosing one thing means giving up another, and name the opportunity cost of a choice.
+interactive:
+  - Scenario challenge
+  - Group vote
+  - Reveal screen
+  - Discussion prompt
+  - Take-home reflection
+  - Exit ticket
+challenge:
+  scenario: You have $5 and only enough time to pick one thing: a book you've wanted, or ice cream with a friend. You choose the book. What is the opportunity cost?
+  options:
+    - The $5 you spent
+    - The ice cream with your friend that you gave up
+    - Nothing — you got what you wanted
+    - The book you bought
+  best: 1
+  timerSeconds: 30
+  round: 1
+reveal:
+  bestAnswer: B. The ice cream with your friend that you gave up
+  why: Opportunity cost is the next-best thing you gave up when you chose. You didn't lose the $5 — you traded it for the book. What you gave up was the ice cream.
+  keyConcept: Opportunity cost — what you give up when you choose
+  commonTrap: Thinking the cost is only the money spent
+  discussionPrompt: What did you give up the last time you picked one thing over another?
+  applyIt: Name a choice you made today and what you gave up to make it.
+takeHome:
+  title: What Did We Give Up?
+  prompt: Talk about one choice your family made this week.
+  boxes: ["We chose", "We gave up", "Worth it?"]
+  familyQuestion: What is something we'd choose again?
+prep:
+  openingScript: Hi everyone! Quick question: have you ever wanted two things but could only pick one? That feeling has a name — it's called opportunity cost, and today we're going to become experts on it.
+  vocab:
+    - term: Choice
+      def: Picking one thing when you can't have everything.
+    - term: Opportunity cost
+      def: The next-best thing you gave up when you chose.
+    - term: Trade-off
+      def: Giving up a little of one thing to get more of another.
+  steps:
+    - Welcome & the two-things question (4 min)
+    - What is opportunity cost? (6 min)
+    - Choice scenarios + class vote (12 min)
+    - Reveal & discussion (4 min)
+    - Exit ticket + take-home (4 min)
+  discussionPrompts:
+    - Is the opportunity cost always about money?
+    - Can two people give up different things making the same choice?
+  printables: ["Choice cards", "Take-home card", "Exit ticket"]
+lesson_pack:
+  bestGames: ["would-you-rather", "tradeoff-auction"]
+  hook: Hold up two treats and tell the class only one can be chosen. Let them feel the tension before naming what's happening.
+  miniLesson: When you choose one thing, you give up another. The thing you gave up is called the opportunity cost. It isn't the money — it's the option you didn't pick.
+  guidedPractice: Walk through three choices as a class. For each, students name what was chosen AND what was given up.
+  checkUnderstanding: Students name one choice from their own day and the opportunity cost of it.
+  extension: Students draw a fork in the road with their choice on one path and what they gave up on the other.
+  unpluggedSwap: Use Would-You-Rather and paper choice cards instead of the on-screen scenario.
+  commonQuestions:
+    - q: Is the opportunity cost the money?
+      a: No — the money is the price. The opportunity cost is the next-best thing you gave up. This is the key distinction for the whole lesson.
+    - q: What if I didn't want the other thing anyway?
+      a: Then the opportunity cost is low, and that's a great sign it was an easy choice.
+game_rounds:
+  picture:
+    - q: You pick the book. What did you give up?
+      opts:
+        - ["🍦", "Ice cream"]
+        - ["📚", "Book"]
+      best: 0
+      why: You gave up the ice cream. That is the opportunity cost.
+    - q: You can play one game. Pick one!
+      opts:
+        - ["⚽", "Soccer"]
+        - ["🧩", "Puzzle"]
+      best: -1
+      why: Any choice is OK! What you did NOT pick is what you gave up.
+    - q: You pick the park. What did you give up?
+      opts:
+        - ["🛝", "Park"]
+        - ["📺", "TV show"]
+      best: 1
+      why: You gave up the TV show to go to the park.
+    - q: Can we pick everything?
+      opts:
+        - ["🙅", "No"]
+        - ["🙆", "Yes"]
+      best: 0
+      why: We have to choose. Picking one means giving up another.
+  rounds:
+    - q: You spend $5 on a book instead of ice cream with a friend. What is the opportunity cost?
+      opts:
+        - ["🍦", "The ice cream with your friend"]
+        - ["💵", "The $5"]
+        - ["📚", "The book"]
+        - ["0️⃣", "Nothing"]
+      best: 0
+      why: Opportunity cost is the next-best thing you gave up, not the money you spent.
+    - q: Saturday: soccer game or a birthday party, both at noon. You pick soccer. What is the opportunity cost?
+      opts:
+        - ["🎂", "The birthday party"]
+        - ["⚽", "The soccer game"]
+        - ["⏰", "Noon"]
+      best: 0
+      why: The party is what you gave up by choosing soccer.
+    - q: Is opportunity cost always about money?
+      opts:
+        - ["⏳", "No, it can be time or fun"]
+        - ["💲", "Yes, always money"]
+        - ["🤔", "Only for grown-ups"]
+      best: 0
+      why: Giving up an hour of play or time with a friend is an opportunity cost too.
+    - q: Two friends make the same choice. Do they give up the same thing?
+      opts:
+        - - 👯
+          - Not always, it depends what each wanted next
+        - ["✅", "Yes, always"]
+        - ["❌", "Nobody gives anything up"]
+      best: 0
+      why: Opportunity cost depends on each person's next-best choice.
+    - q: What is a trade-off?
+      opts:
+        - - ⚖️
+          - Giving up some of one thing to get more of another
+        - ["🛒", "A kind of store"]
+        - ["🎁", "Getting something free"]
+      best: 0
+      why: Every choice is a trade-off: more of one thing, less of another.
