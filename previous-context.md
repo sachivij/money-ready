@@ -4,8 +4,8 @@ Written at the end of a long build session, for whoever (or whatever) picks
 this up next. It covers what this project is, how it is put together, the
 decisions that are easy to accidentally undo, and what is still open.
 
-Last updated 2026-10-04, after the PRD, specs and Workshop Builder phase 1
-landed on `main`.
+Last updated 2026-11-01, after the game cleanup (one game model) and the
+content files (spec 11) landed on `main`.
 
 **Two people now build this app at the same time**, each with their own
 Claude. Read the "Current state" and "Working together" sections first.
@@ -77,7 +77,7 @@ Jump$tart's October slide decks, which the owner supplied
 Each step names the deck slides it uses. In the builder, these topics show
 "Follow the official Teen Teach-In slides" (on by default): the run of show
 follows the deck, the packet's first item becomes a slide-by-slide guide,
-and "Try a different main activity" swaps only the deck's hands-on step.
+and "Change the game" swaps only the deck's hands-on step.
 Only used for modules carrying an `officialLesson` tag, so the 4-H edition
 never shows them. The module cards, challenges and reveals (`content/modules/`)
 were not rewritten from the decks; that is still open.
@@ -144,15 +144,16 @@ assets/js/content.js    GENERATED from content/: MODULES, LESSON_PACKS,
                         GAME_BANK, EXTRA_TOPICS, GAME_FORMATS,
                         OFFICIAL_LESSONS. Never edit by hand.
 assets/js/helper-kb.js  GENERATED from content/: FAQ_KNOWLEDGE, KB_SRC.
-assets/js/data.js       STATUS_BADGES, IMPACT_EXAMPLE.
-assets/js/lessons.js    ACCOUNT_TYPES, IMPACT_METRICS, GRADE_PROFILES,
+assets/js/data.js       STATUS_BADGES.
+assets/js/lessons.js    ACCOUNT_TYPES, GRADE_PROFILES,
                         DEVICE_GUIDES, PICTURE_ACTIVITIES, SETTINGS,
                         buildLessonPlan(), buildPacket().
 assets/js/reach.js      Sends the students-reached count (spec 09). Holds
                         the Google Sheet address; see docs/impact-sheet/.
 assets/js/game-bank.js  buildTopicGame(): turns a topic's rounds into a game.
-assets/js/play.js       Engines for the on-screen games (#/play/<game id>).
-                        Their words live in GAME_FORMATS, not here.
+assets/js/play.js       The game engines: "quiz" plays any topic's rounds
+                        (#/game, #/challenge, the builder), plus the two
+                        special on-screen games (#/play/<game id>).
 assets/js/app.js        Hash router + every screen.
 scripts/audit.js        End-to-end browser check (see Testing).
 scripts/build-content.js  Checks content/ and writes the GENERATED files.
@@ -237,11 +238,12 @@ python3 -m http.server 8000 &
 BASE=http://localhost:8000/index.html node scripts/audit.js
 ```
 
-It should print `PROBLEMS: 0`. Run it against **both** editions after any
-change to `app.js`, `data.js`, or `lessons.js`.
+It should print `PROBLEMS: 0` (it exits 1 otherwise). The **Site check**
+GitHub Action (`.github/workflows/audit.yml`) runs it on every pull
+request and push to `main`, so a red check means a page broke. Run it
+against **both** editions after any change to `app.js` or `lessons.js`.
 
 Worth also checking by hand when relevant, since the audit does not:
-- the three account types each show the right impact metrics
 - the builder with **Grades K–2** selected (picture mode) and each device option
 - generated plans do not exceed the requested length
 - mobile width — no horizontal scrolling
@@ -277,6 +279,28 @@ and list their own `topics`; the two on-screen ones add `play`. The
 builder gives a game a bonus for its `topics` (just below a pack's second
 `bestGames` pick) and uses its `levels` text in the main activity step. Topics that point at modules a
 build doesn't have (the 4-H edition drops some) are ignored.
+
+**One game model (2026-11-01, Sumeet).** There used to be three game
+systems (a module "challenge" with its own A–D screen, the 21 game formats,
+and the builder's topic games). Now there is one: a topic's **rounds**
+(`game_rounds` in `content/modules/` and `content/extra-topics/`: `picture`
+for K–2, `rounds` for Grades 3–12), one **engine** that plays them
+(`PLAY_ENGINES.quiz` in play.js), and the 21 **formats** in `content/games/`,
+which are ways to run those rounds in a room (Four Corners, Human Bar
+Graph...). The nine `multiRound` formats bring their own rounds; the two
+with a `play` engine (Savings Quest, Scam or Safe) are the only other
+on-screen games. Consequences:
+- `#/challenge/<id>` (module page, "Run the student challenge") is the
+  module's rounds in the quiz engine: Grades 3+ count the room's votes,
+  K–2 picture mode and `?practice=1` answer with one tap. The end screen
+  shows the module's `reveal` (key idea, common trap, discussion prompt)
+  and the take-home link. There is no module `challenge` field any more;
+  each old scenario became a round.
+- A plan has **one game**: the topic's rounds played as the best-fitting
+  format. "Change the game" swaps the format; picking a `multiRound` game
+  swaps in that game's card instead. No "second activity".
+- The old room code, timer, team score and confidence taps (metrics.js)
+  are gone; nothing read them.
 
 **Builder games (spec 08).** `buildTopicGame()` (game-bank.js) makes a
 game for any module or extra topic: K–2 gets the `picture` rounds (two big

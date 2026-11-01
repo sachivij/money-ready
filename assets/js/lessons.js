@@ -8,7 +8,7 @@
  * Designed to support Teen Teach-In–style workshops.
  *
  * What lives here:
- *   ACCOUNT_TYPES  — who is viewing, and which impact metrics they see
+ *   ACCOUNT_TYPES  — who is viewing (volunteer, school, organization)
  *   the lesson generator (buildLessonPlan) and its helpers
  * Games (GAME_FORMATS) and lesson packs (LESSON_PACKS) are content now: edit
  * them in content/games/ and content/modules/ (see content/README.md).
@@ -16,81 +16,14 @@
 
 /* ===================================================================
    ACCOUNT TYPES
-   Everything in the app is the same for each type EXCEPT which impact
-   metrics they see. Metric keys match the ids in IMPACT_METRICS below.
+   Who is using the site. Only the students-reached count (reach.js)
+   reads this, to send "volunteer" or "school" with the count.
    =================================================================== */
 const ACCOUNT_TYPES = [
-  {
-    id: "volunteer",
-    label: "Teen volunteer",
-    emoji: "🙋",
-    blurb: "I teach workshops as a student volunteer.",
-    // Volunteers see how their own teaching landed.
-    metrics: [
-      "workshopsDelivered",
-      "studentsReached",
-      "participationRate",
-      "confidenceImprovement",
-      "facilitatorFeedback",
-      "repeatabilityScore",
-      "knowledgeGain",
-    ],
-  },
-  {
-    id: "school",
-    label: "School or teacher",
-    emoji: "🍎",
-    blurb: "We host workshops for our students.",
-    // Schools see what their own students got out of it.
-    metrics: [
-      "workshopsReceived",
-      "studentsReached",
-      "participationRate",
-      "confidenceImprovement",
-      "knowledgeGain",
-    ],
-  },
-  {
-    id: "organization",
-    label: "Nonprofit organization",
-    emoji: "🏛️",
-    blurb: "We run or sponsor the program.",
-    // Organizations see the whole program. `programWide` marks the two
-    // measures reported as overall figures across every teen lesson
-    // delivered, rather than for a single volunteer or school.
-    //
-    // NOTE: if organizations should NOT see confidence improvement,
-    // simply delete "confidenceImprovement" from this list.
-    metrics: [
-      "workshopsDelivered",
-      "studentsReached",
-      "participationRate",
-      "confidenceImprovement",
-      "facilitatorFeedback",
-      "repeatabilityScore",
-      "knowledgeGain",
-    ],
-    programWide: [
-      "confidenceImprovement",
-      "facilitatorFeedback",
-      "repeatabilityScore",
-      "knowledgeGain",
-    ],
-    showMeasurementLayer: true,
-  },
+  { id: "volunteer", label: "Teen volunteer", emoji: "🙋", blurb: "I teach workshops as a student volunteer." },
+  { id: "school", label: "School or teacher", emoji: "🍎", blurb: "We host workshops for our students." },
+  { id: "organization", label: "Nonprofit organization", emoji: "🏛️", blurb: "We run or sponsor the program." },
 ];
-
-/* Metric definitions. `value` reads from IMPACT_EXAMPLE in data.js. */
-const IMPACT_METRICS = {
-  workshopsDelivered: { label: "Workshops delivered", key: "workshopsDelivered" },
-  workshopsReceived: { label: "Lessons completed", key: "workshopsDelivered" },
-  studentsReached: { label: "Students reached", key: "studentsReached" },
-  participationRate: { label: "Student participation rate", key: "participationRate", suffix: "%" },
-  confidenceImprovement: { label: "Avg. confidence improvement", key: "confidenceImprovement", prefix: "+", suffix: " pts" },
-  facilitatorFeedback: { label: "Teacher / facilitator feedback", key: "facilitatorFeedback", suffix: "/5" },
-  repeatabilityScore: { label: "Repeatability score", key: "repeatabilityScore", suffix: "%" },
-  knowledgeGain: { label: "Pre/post knowledge gain", key: "knowledgeCheckGain", prefix: "+", suffix: " pts" },
-};
 
 /* GAME_FORMATS (the games) now live in content/games/, one file per game;
    scripts/build-content.js turns them into assets/js/content.js. */
