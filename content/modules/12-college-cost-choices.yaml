@@ -1,0 +1,142 @@
+# Module: College Cost Choices
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: college-cost-choices
+title: College Cost Choices
+emoji: 🎓
+gradeBand: Grades 9–12
+minutes: 45
+keyConcept: Paying for education & debt tradeoffs
+activityType: Choice scenario
+color: teal
+materials: ["Slides", "Choice board", "Reveal screen", "Take-home card"]
+summary: Big-ticket decisions with lifelong impact. Students weigh cost, aid, and debt across realistic education paths.
+objective: Students can compare education paths by cost and explain how debt affects future choices.
+interactive:
+  - Choice scenario
+  - Cost comparison
+  - Debt reveal
+  - Discussion prompt
+  - Exit ticket
+challenge:
+  scenario: Two paths to the same career: School A costs $10k/year with a scholarship; School B costs $40k/year with a loan. Both get you there. What's the wise first question?
+  options:
+    - Which has the nicer campus?
+    - Which will I owe the least on after graduation?
+    - Which do my friends pick?
+    - Which has the cooler mascot?
+  best: 1
+  timerSeconds: 45
+  round: 1
+reveal:
+  bestAnswer: B. Which will I owe the least on after graduation?
+  why: When two paths lead to the same goal, cost and debt matter a lot. Big loans shape your choices for years. Scholarships, community college, and aid can reach the same destination for far less.
+  keyConcept: Return on investment — weighing cost against what you gain
+  commonTrap: Choosing on prestige or vibes and ignoring the debt
+  discussionPrompt: How could a big loan limit choices after graduation?
+  applyIt: Name one free or low-cost way to reduce college costs (scholarships, aid, community college).
+takeHome:
+  title: Future Plans Chat
+  prompt: Talk with family about one goal after high school and what it might cost.
+  boxes: ["Cost", "Aid ideas", "Questions"]
+  familyQuestion: What's one way we could lower the cost of that goal?
+prep:
+  openingScript: Some money choices are small; this one's huge. Today we look at College Cost Choices — how the same goal can cost wildly different amounts, and why smart planning now saves years of debt later.
+  vocab:
+    - term: Tuition
+      def: The price of attending a school.
+    - term: Financial aid
+      def: Grants, scholarships, or loans that help pay for school.
+    - term: Student loan
+      def: Borrowed money for school you repay later, with interest.
+  steps:
+    - The big-ticket decision (7 min)
+    - Compare two realistic paths (14 min)
+    - "Debt reveal: what you'd owe (8 min)"
+    - "Discussion: cost vs. prestige (8 min)"
+    - Exit ticket + take-home (8 min)
+  discussionPrompts:
+    - Does more expensive always mean better?
+    - How do scholarships change the math?
+  printables: ["Path comparison sheet", "Aid vocabulary card", "Take-home card"]
+lesson_pack:
+  bestGames: ["tradeoff-auction", "live-vote"]
+  hook: Put two schools on the board with wildly different price tags and the same career at the end, and ask which they'd choose before knowing anything else.
+  miniLesson: The same goal can cost very different amounts. Scholarships, grants, community college, and in-state options all change the math. Loans are real money you repay later with interest, and they shape choices for years.
+  guidedPractice: Compare two realistic paths side by side, adding up four years of cost and what would be owed at the end.
+  checkUnderstanding: Students name two ways to lower the cost of education after high school.
+  extension: Students look up one scholarship they'd actually be eligible for.
+  unpluggedSwap: Use printed path-comparison sheets and Would-You-Rather between two funding choices.
+  commonQuestions:
+    - q: Is an expensive school always better?
+      a: No. Fit, program, and cost matter more than price. Push back gently on prestige as the deciding factor.
+    - q: Is college the only option?
+      a: Absolutely not — trades, certifications, apprenticeships, and military paths are all legitimate. Say so plainly.
+game_rounds:
+  picture:
+    - q: What do you want to be?
+      opts:
+        - ["🧑‍🚒", "Firefighter"]
+        - ["🧑‍⚕️", "Doctor"]
+      best: -1
+      why: Any dream is great! Learning helps you get there.
+    - q: Learning more can help you…
+      opts:
+        - ["🚀", "Do more jobs"]
+        - ["😴", "Sleep"]
+      best: 0
+      why: School opens doors to more jobs.
+    - q: Saving for school starts…
+      opts:
+        - ["🌱", "Early"]
+        - ["⏰", "Never"]
+      best: 0
+      why: Saving early helps a lot.
+    - q: Free money for school is called…
+      opts:
+        - ["🏆", "Scholarship"]
+        - ["🍕", "Pizza"]
+      best: 0
+      why: Scholarships are money you don't pay back.
+  rounds:
+    - q: What is the FAFSA?
+      opts:
+        - - 📄
+          - The form to apply for federal student aid
+        - ["🎓", "A college"]
+        - ["💳", "A credit card"]
+      best: 0
+      why: Filling out the FAFSA is how students apply for federal grants, work-study and loans.
+      src: fsa
+    - q: Which kind of aid usually does NOT have to be paid back?
+      opts:
+        - ["🎁", "Grants and scholarships"]
+        - ["🏦", "Loans"]
+        - ["💳", "Credit cards"]
+      best: 0
+      why: Grants and scholarships are gift aid; loans are borrowed.
+      src: fsa
+    - q: Community college first, then transfer. Why might someone do that?
+      opts:
+        - ["💵", "Lower cost for the first years"]
+        - ["🚫", "You can't transfer"]
+        - ["🎲", "No reason"]
+      best: 0
+      why: Starting at a community college can lower the total cost of a degree.
+    - q: What is a 529 plan?
+      opts:
+        - ["🎓", "A savings account for education"]
+        - ["📱", "A phone plan"]
+        - ["🏠", "A mortgage"]
+      best: 0
+      why: 529 plans help families save for education costs.
+      src: va529
+    - q: When comparing colleges, which number matters most?
+      opts:
+        - ["🧮", "Net price after aid"]
+        - ["🏷️", "Sticker price only"]
+        - ["🏈", "Stadium size"]
+      best: 0
+      why: Net price is what you'd actually pay after grants and scholarships.
+      src: fsa

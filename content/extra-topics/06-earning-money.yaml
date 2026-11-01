@@ -1,0 +1,113 @@
+# Extra topic: Earning Money and First Jobs
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: earning-money
+title: Earning Money and First Jobs
+emoji: 🧑‍🍳
+sources: ["dol", "bls", "sba"]
+tags:
+  - earn
+  - earning
+  - job
+  - jobs
+  - first job
+  - wage
+  - career
+  - allowance
+  - chore
+summary: Where money comes from: jobs, wages, small businesses, and the rules for teen workers.
+objective: Students can name ways people earn money and explain why there are rules for young workers.
+reveal:
+  keyConcept: People earn money by working or by selling something people want
+  discussionPrompt: What job would you like to try one day, and why?
+takeHome:
+  title: Jobs Around Us
+  familyQuestion: What is one job someone we know does, and what do they like about it?
+prep:
+  openingScript: If money doesn't grow on trees, where does it come from? Let's find out how people earn it.
+  vocab:
+    - term: Earn
+      def: To get money for working.
+    - term: Job
+      def: Work someone is paid to do.
+    - term: Wage
+      def: Money paid for each hour of work.
+    - term: Career
+      def: The kind of work someone does over many years.
+pack:
+  bestGames: ["market-day", "four-corners"]
+  hook: Ask students to act out a job without words; the class guesses it.
+  miniLesson: People earn money by working at a job or by selling things or services. There are rules to keep young workers safe and in school.
+game_rounds:
+  picture:
+    - q: How do grown-ups earn money?
+      opts:
+        - ["🧑‍🍳", "A job"]
+        - ["🌳", "Money tree"]
+      best: 0
+      why: People earn money by working.
+      src: dol
+    - q: Which one is a job?
+      opts:
+        - ["🧑‍🏫", "Teacher"]
+        - ["😴", "Napping"]
+      best: 0
+      why: Teachers work and get paid.
+      src: bls
+    - q: Helping at home is called…
+      opts:
+        - ["🧹", "Chores"]
+        - ["🎠", "Rides"]
+      best: 0
+      why: Chores help the family.
+      src: cfpbKids
+    - q: Can kids sell lemonade to earn?
+      opts:
+        - ["🍋", "Yes"]
+        - ["🙅", "No"]
+      best: 0
+      why: Selling something is one way to earn.
+      src: sba
+  rounds:
+    - q: Under federal rules, what is the usual youngest age for most non-farm jobs?
+      opts:
+        - ["1️⃣4️⃣", "14"]
+        - ["1️⃣0️⃣", "10"]
+        - ["1️⃣8️⃣", "18"]
+      best: 0
+      why: Federal law generally sets 14 as the minimum age, with limits on hours for 14- and 15-year-olds.
+      src: dol
+    - q: Why do 14- and 15-year-olds have limits on work hours on school days?
+      opts:
+        - ["🏫", "So work doesn't get in the way of school"]
+        - ["😴", "Because they nap"]
+        - ["🎲", "No reason"]
+      best: 0
+      why: Federal rules limit hours so school comes first.
+      src: dol
+    - q: What is a wage?
+      opts:
+        - ["⏱️", "Money paid for each hour you work"]
+        - ["🎁", "A gift"]
+        - ["🧾", "A bill"]
+      best: 0
+      why: Hourly jobs pay a wage for each hour worked.
+      src: dol
+    - q: On average, how does more education relate to earnings?
+      opts:
+        - - 📈
+          - More education tends to mean higher earnings
+        - ["📉", "Lower earnings"]
+        - ["🟰", "No difference"]
+      best: 0
+      why: Government data show earnings tend to rise with more education, on average.
+      src: bls
+    - q: Which is a way teens earn money besides a job?
+      opts:
+        - ["🐕", "Pet sitting or yard work for neighbors"]
+        - ["🎰", "Gambling"]
+        - ["💳", "Using a credit card"]
+      best: 0
+      why: Small services for people you know are a common first business.
+      src: sba

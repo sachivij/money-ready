@@ -1,0 +1,40 @@
+# Game: Red Flag / Green Flag
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: red-flag-green-flag
+name: Red Flag / Green Flag
+emoji: 🚩
+devices: none
+minutes: 10
+group: Whole class
+energy: Medium
+materials: ["A red card and a green card per student"]
+summary: Read a situation aloud; students hold up red for warning sign, green for safe.
+howToPlay:
+  - Give every student one red card and one green card.
+  - Read a short scenario out loud.
+  - On the count of three, everyone holds up a card at once.
+  - Scan the room — call on one red and one green to explain.
+  - Name the specific red flag before moving to the next scenario.
+teenTip: Simultaneous reveal on 'three' stops students copying whoever answers first.
+reinforces: Spotting warning signs quickly, and naming exactly what made something risky.
+levels:
+  35: Use game, app and shopping stories. Ask for the exact words in the story that were the red flag.
+  68: Add a yellow card for 'not sure — check first', and talk about how you would check.
+  912: Use realistic phishing texts, job offers and loan ads. Students name the red flag and the safe next step.
+  k2: Use simple stories ('Someone online asks for your password'). Everyone shows a card on 'three'. If the answer is a red flag, the class says together: 'Stop and tell a grown-up!'
+debrief:
+  - Which story was hardest to judge?
+  - Which red flag showed up most?
+  - What should you do when you see a red flag?
+access: Draw a ✖ on the red card and a ✔ on the green one so students who can't tell red from green can play. Read every scenario twice.
+cards:
+  title: Sample scenarios (answers in brackets)
+  items:
+    - A website says 'Only 2 minutes left to claim your prize!' [red]
+    - Your bank's real app reminds you to set up a PIN. [green]
+    - Someone in a game offers free coins for your password. [red]
+    - A store gives you a receipt after you pay. [green]
+    - A message says 'Don't tell your parents about this deal.' [red]
+    - Your teacher sends home a note about the school book fair. [green]

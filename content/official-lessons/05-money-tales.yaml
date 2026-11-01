@@ -1,0 +1,54 @@
+# Official Teen Teach-In lesson: Planet Zeee and the Money Tree (Ally's partner lesson, Grades 1–4)
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+module: money-tales
+deck: Planet Zeee and the Money Tree (Ally's partner lesson, Grades 1–4)
+book:
+  title: Planet Zeee and the Money Tree
+  author: Ally Adventures with Money (allyadventureswithmoney.com)
+bigIdea: Money is earned, not grown on trees. Spend it wisely, and save some for later.
+vocab:
+  - term: Earn
+    def: Get money by doing work.
+  - term: Spend wisely
+    def: Think before you buy, and choose what matters most.
+  - term: Save
+    def: Keep some money for later.
+  - term: Give back
+    def: Use some money or time to help others.
+materials:
+  - The book Planet Zeee and the Money Tree
+  - Materials for the Planet Zeee game
+steps:
+  - name: Welcome & introductions
+    minutes: 3
+    slides: Slides 2–5
+    what: Introduce each presenter. Explain you're high school students taking a financial literacy course, with an important lesson for younger students too.
+    script: We're high school students, and we brought a story about kids from another planet who've never seen money!
+    how: Keep it short and excited. The story is the hook.
+  - name: Story: Planet Zeee and the Money Tree
+    minutes: 10
+    slides: Slides 6–7
+    what: Three children from another planet come to Earth confused about money. Earth kids explain how money is earned, why it's important to save, and why to give back. Listen for three ideas: where money comes from, how to spend wisely, and why to save.
+    script: Listen for three big ideas in this story: where money comes from, how to spend it wisely, and why saving matters.
+    how: Hold up three fingers and count off the ideas when they appear in the story.
+  - name: Planet Zeee game
+    minutes: 8
+    slides: Slide 8
+    activity: true
+    what: Play the Planet Zeee game from the deck to practice the story's ideas.
+    script: Now let's see if you could teach the kids from Planet Zeee about money!
+    how: Follow the game slide in the deck. Keep everyone answering at once, with thumbs or by moving, so nobody waits.
+  - name: What did we learn?
+    minutes: 5
+    slides: Slide 9
+    what: Discuss the three ideas: Where does money come from? How can we spend our money wisely? Why is it important to save?
+    script: So, where does money come from? Does it grow on trees?
+    how: Take an answer for each question from a different student.
+  - name: Thank you & wrap-up
+    minutes: 2
+    slides: Slide 10
+    what: Thank the class. Every want has a cost, so make good choices and save some for the big things.
+    script: It's easy to spend money right away, but making good choices and saving is a great habit to learn!
+    how: Hand out the parent toolkit or take-home card.

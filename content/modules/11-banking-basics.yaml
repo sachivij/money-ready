@@ -1,0 +1,141 @@
+# Module: Banking Basics
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: banking-basics
+title: Banking Basics
+emoji: 🏦
+gradeBand: Grades 4–8
+minutes: 35
+keyConcept: How banks & accounts work
+activityType: Sort & quiz
+color: blue
+materials: ["Slides", "Sort screen", "Reveal screen", "Take-home card"]
+summary: What actually happens when money goes 'in the bank'? Students learn accounts, deposits, and why banks are safer than a piggy bank.
+objective: Students can describe the difference between checking and savings and why banks keep money safe.
+interactive:
+  - "Sort: checking vs. savings"
+  - Group vote
+  - Deposit/withdraw reveal
+  - Discussion prompt
+  - Exit ticket
+challenge:
+  scenario: You get $50 for your birthday. You'll spend some soon but want to keep most safe and growing. Where should most of it go?
+  options:
+    - Under your mattress
+    - A checking account you swipe daily
+    - A savings account
+    - Spend it so it can't be lost
+  best: 2
+  timerSeconds: 30
+  round: 1
+reveal:
+  bestAnswer: C. A savings account
+  why: Savings keeps money safe, out of easy-spend reach, and can even earn a little interest. Checking is for everyday spending; a mattress can be lost or stolen and grows nothing.
+  keyConcept: Savings vs. checking — one grows and protects, one spends
+  commonTrap: Keeping everything where it's easiest to spend
+  discussionPrompt: Why might a bank be safer than keeping cash at home?
+  applyIt: Name one thing you'd keep in savings and one thing you'd keep in checking.
+takeHome:
+  title: Bank Explorer
+  prompt: Ask a grown-up what a checking and a savings account are used for.
+  boxes: ["Checking", "Savings", "Both"]
+  familyQuestion: What's one goal a savings account could help our family reach?
+prep:
+  openingScript: Ever wonder what really happens when money goes 'in the bank'? Today we open up Banking Basics — accounts, deposits, and why a bank keeps your money safer (and growing) compared to a piggy bank.
+  vocab:
+    - term: Checking account
+      def: For everyday spending — money you use often.
+    - term: Savings account
+      def: For keeping money safe and growing toward goals.
+    - term: Deposit
+      def: Putting money into an account.
+  steps:
+    - What a bank actually does (6 min)
+    - "Sort: checking vs. savings (12 min)"
+    - Deposit & withdraw reveal (7 min)
+    - "Discussion: safe & growing (6 min)"
+    - Exit ticket + take-home (4 min)
+  discussionPrompts:
+    - Why do banks pay a little interest on savings?
+    - When would you use checking instead of savings?
+  printables: ["Account sort cards", "Deposit slip demo", "Take-home card"]
+lesson_pack:
+  bestGames: ["speed-round", "card-sort"]
+  hook: Ask where money goes when it's 'in the bank' — take the wildest answers seriously before explaining.
+  miniLesson: A bank keeps your money safe and tracks it for you. Checking is for everyday spending. Savings is for money you're growing toward a goal, kept a little out of reach on purpose.
+  guidedPractice: Sort a list of transactions into 'checking' or 'savings' as a class and discuss the close calls.
+  checkUnderstanding: Students name one thing they'd keep in checking and one in savings, with a reason for each.
+  extension: Students write three questions they'd ask before opening their first account.
+  unpluggedSwap: Use the Sort It Out card game with checking and savings mats.
+  commonQuestions:
+    - q: Is my money safe if the bank closes?
+      a: Insured accounts protect deposits up to a limit — keep it reassuring and simple.
+    - q: Why does the bank pay me interest?
+      a: Because they put deposits to work, and they share a little of that with you.
+game_rounds:
+  picture:
+    - q: Where is money safe?
+      opts:
+        - ["🏦", "Bank"]
+        - ["🌳", "Under a tree"]
+      best: 0
+      why: A bank keeps money safe.
+    - q: Put money in the bank. That's called…
+      opts:
+        - ["⬇️", "Deposit"]
+        - ["🎉", "Party"]
+      best: 0
+      why: Putting money in is a deposit.
+    - q: The bank pays you a little for saving. Yes?
+      opts:
+        - ["🙆", "Yes"]
+        - ["🙅", "No"]
+      best: 0
+      why: Banks pay interest to savers.
+    - q: Which one is a bank card?
+      opts:
+        - ["💳", "Card"]
+        - ["🃏", "Game card"]
+      best: 0
+      why: A bank card lets you use money from your account.
+  rounds:
+    - q: What is a deposit?
+      opts:
+        - ["⬇️", "Putting money into your account"]
+        - ["⬆️", "Taking money out"]
+        - ["🧾", "A fee"]
+      best: 0
+      why: Deposit in, withdrawal out.
+    - q: What does FDIC insurance do?
+      opts:
+        - - 🛡️
+          - Protects your money if an insured bank fails
+        - ["🚗", "Covers your car"]
+        - ["📈", "Makes stocks go up"]
+      best: 0
+      why: Deposits at FDIC-insured banks are protected up to the legal limit.
+      src: fdic
+    - q: Debit card or credit card: which uses money already in your account?
+      opts:
+        - ["💳", "Debit card"]
+        - ["🪪", "Credit card"]
+        - ["🟰", "Both"]
+      best: 0
+      why: Debit takes money from your account; credit is borrowed.
+      src: cfpb
+    - q: What is a checking account mostly for?
+      opts:
+        - ["🔁", "Everyday spending and paying bills"]
+        - ["🔒", "Long-term saving only"]
+        - ["🎟️", "Buying lottery tickets"]
+      best: 0
+      why: Checking is for money in and out; savings is for keeping money.
+    - q: A credit union is…
+      opts:
+        - ["🤝", "A member-owned place to bank"]
+        - ["🎓", "A school club"]
+        - ["🏪", "A store"]
+      best: 0
+      why: Credit unions offer accounts like banks, and members own them.
+      src: ncua

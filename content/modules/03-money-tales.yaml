@@ -1,0 +1,141 @@
+# Module: Money Tales: Planet Zeee & the Cosmo Phone
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: money-tales
+title: Money Tales: Planet Zeee & the Cosmo Phone
+emoji: 🚀
+gradeBand: Grades 1–4
+minutes: 30
+keyConcept: Money lessons through stories
+activityType: Read-aloud + discussion
+color: purple
+officialLesson: Ally's "Planet Zeee and the Money Tree" and "Emma and the Cosmo Phone" (Grades 1–4)
+officialMaterials: ["Presentation", "Toolkit", "Website Link"]
+materials: ["Storybook or read-aloud", "Discussion cards", "Take-home card"]
+summary: Story-based lessons where characters face money choices — perfect for younger students and read-alouds.
+objective: Students can retell a character's money decision and explain what they would have done.
+interactive:
+  - Read-aloud
+  - Predict-what-happens vote
+  - Character discussion
+  - Reveal screen
+  - Take-home reflection
+challenge:
+  scenario: In the story, a character finds a tree that grows money — but only if it's cared for patiently. They want to shake all the money off right now. What would you tell them?
+  options:
+    - Shake it — take everything today
+    - Care for it and take a little at a time so it keeps growing
+    - Chop it down and sell the wood
+    - Ignore the tree completely
+  best: 1
+  timerSeconds: 30
+  round: 1
+reveal:
+  bestAnswer: B. Care for it and take a little at a time so it keeps growing
+  why: Taking everything at once ends the story. Caring for something and taking a little at a time keeps it going — which is exactly how saving and growing money works in real life.
+  keyConcept: Patience and care make good things last
+  commonTrap: Grabbing everything at once and having nothing left
+  discussionPrompt: Which character made the choice you would have made?
+  applyIt: Tell someone at home what happened in the story and what you'd do differently.
+takeHome:
+  title: Our Story at Home
+  prompt: Tell a grown-up about the story and the choice the character made.
+  boxes: ["What happened", "Their choice", "My choice"]
+  familyQuestion: What would our family have done?
+# K–2 picture take-home card (spec 05): one sentence, two boxes to draw in.
+takeHomeK2:
+  title: "My Story"
+  say: Draw the story. Draw what you would pick.
+  boxes:
+    - ["📖", "The story"]
+    - ["⭐", "My pick"]
+  grownUp: Ask your child: What did the character choose? What would you choose?
+prep:
+  openingScript: Today we get to hear a story! Stories are sneaky — while you're having fun, you're also learning something real. Listen for the moment the character has to make a money choice.
+  vocab:
+    - term: Choice
+      def: Picking what to do when there's more than one option.
+    - term: Patience
+      def: Waiting calmly for something good.
+    - term: Consequence
+      def: What happens because of a choice you made.
+  steps:
+    - Introduce the story (4 min)
+    - Read aloud, pausing at the choice (12 min)
+    - Predict what happens + vote (6 min)
+    - Discuss the character's choice (5 min)
+    - Take-home card (3 min)
+  discussionPrompts:
+    - What would you have done in the character's place?
+    - How did the character feel after their choice?
+  printables: ["Discussion cards", "Story map", "Take-home card"]
+lesson_pack:
+  bestGames: ["story-circle", "would-you-rather"]
+  hook: Show the cover and ask what students think the story will be about. Take a few guesses before opening it.
+  miniLesson: Stories let us watch someone else make a money choice and see what happens — so we can learn without having to make the mistake ourselves.
+  guidedPractice: Pause at the moment of the character's choice. Take a class vote on what they should do before reading on.
+  checkUnderstanding: Students retell the character's choice and say what they would have done.
+  extension: Students draw an alternate ending where the character chooses differently.
+  unpluggedSwap: This lesson is already unplugged — a read-aloud plus Four Corners for the prediction vote works perfectly.
+  commonQuestions:
+    - q: Is this a real story?
+      a: It's made up, but the money choices in it are very real. That's what makes stories useful.
+    - q: Why did the character do that?
+      a: Wonderful question to turn back to the class — let them argue the character's reasoning.
+game_rounds:
+  picture:
+    - q: Where does money come from?
+      opts:
+        - ["👷", "Work"]
+        - ["🌳", "A tree"]
+      best: 0
+      why: People earn money by working.
+    - q: The tree grows money slowly. What do we do?
+      opts:
+        - ["🫶", "Take care of it"]
+        - ["🪓", "Chop it"]
+      best: 0
+      why: Caring and waiting keeps good things growing.
+    - q: Which is a way to give back?
+      opts:
+        - ["🎁", "Share with others"]
+        - ["🔒", "Keep it all"]
+      best: 0
+      why: Sharing helps other people.
+    - q: Emma wants a phone now. What is smart?
+      opts:
+        - ["🫙", "Save for it"]
+        - ["😤", "Grab it"]
+      best: 0
+      why: Saving lets you buy it the right way.
+  rounds:
+    - q: In Planet Zeee, the visitors don't understand money. Where does money really come from?
+      opts:
+        - ["👷", "People earn it by working"]
+        - ["🌳", "It grows on trees"]
+        - ["🖨️", "Anyone can print it"]
+      best: 0
+      why: Money is earned by working or making something people want.
+    - q: What are the three big ideas from Planet Zeee?
+      opts:
+        - - 💡
+          - Where money comes from, spend wisely, save
+        - ["🚀", "Rockets, planets, stars"]
+        - ["🎲", "Win, lose, tie"]
+      best: 0
+      why: Earn, spend wisely, and save (and give back) are the story's lessons.
+    - q: A character wants to take all the money off the tree today. What's the problem?
+      opts:
+        - ["🍂", "Nothing will be left to grow later"]
+        - ["🙂", "No problem at all"]
+        - ["🌧️", "It might rain"]
+      best: 0
+      why: Taking everything now leaves nothing for later. Patience keeps it going.
+    - q: Why do we read money stories?
+      opts:
+        - ["📖", "To learn from a character's choices"]
+        - ["😴", "To fall asleep"]
+        - ["🎨", "Only for the pictures"]
+      best: 0
+      why: Stories let us see what happens without making the mistake ourselves.

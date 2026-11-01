@@ -1,0 +1,144 @@
+# Module: Investing Mythbusters
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: investing-mythbusters
+title: Investing Mythbusters
+emoji: 📈
+gradeBand: Grades 8–12
+minutes: 40
+keyConcept: Risk, return & compound growth
+activityType: Myth vs. fact vote
+color: purple
+materials:
+  - Slides
+  - Myth-vs-fact screen
+  - Compound-growth demo
+  - Take-home card
+summary: Investing isn't gambling and it isn't only for the rich. Students bust common myths and meet the magic of compound growth.
+objective: Students can explain risk vs. return and why starting early helps money grow.
+interactive:
+  - Myth vs. fact vote
+  - Compound-growth demo
+  - Reveal screen
+  - Discussion prompt
+  - Exit ticket
+challenge:
+  scenario: Two people invest the same total. Ana starts at 16 and stops at 26. Ben starts at 26 and invests twice as long. Who usually ends up with more?
+  options:
+    - Ben — he invested longer
+    - Ana — she started earlier (compound growth)
+    - Exactly the same
+    - Neither — investing is just luck
+  best: 1
+  timerSeconds: 40
+  round: 1
+reveal:
+  bestAnswer: B. Ana — she started earlier
+  why: Because of compound growth, money earns returns, and those returns earn more returns. Starting early often beats investing more later. Time is an investor's biggest advantage.
+  keyConcept: Compound growth — earnings that earn their own earnings
+  commonTrap: Believing it's too early to start or that it's all luck
+  discussionPrompt: Why is time such a powerful ingredient in investing?
+  applyIt: Explain compound growth to someone at home in one sentence.
+takeHome:
+  title: Myth or Fact?
+  prompt: Share one investing 'fact' you heard. Is it a myth or true?
+  boxes: ["Myth", "Fact", "Not sure"]
+  familyQuestion: What's one long-term goal our family could invest toward?
+prep:
+  openingScript: Time to be Investing Mythbusters! You've probably heard investing is gambling, or only for rich adults. Today we bust those myths and meet the coolest idea in money: compound growth, where your money makes money.
+  vocab:
+    - term: Invest
+      def: Put money to work so it can grow over time.
+    - term: Risk & return
+      def: Higher possible reward usually means higher possible loss.
+    - term: Compound growth
+      def: Earnings that themselves earn more earnings.
+  steps:
+    - Bust 3 investing myths (8 min)
+    - Myth-vs-fact voting rounds (12 min)
+    - Compound-growth demo (8 min)
+    - "Discussion: why start early? (6 min)"
+    - Exit ticket + take-home (6 min)
+  discussionPrompts:
+    - What's the difference between investing and gambling?
+    - Why does starting early matter so much?
+  printables: ["Myth-vs-fact cards", "Compound-growth chart", "Take-home card"]
+lesson_pack:
+  bestGames: ["two-truths-myth", "speed-round"]
+  hook: Ask who thinks investing is basically gambling. Take the temperature of the room honestly before correcting anything.
+  miniLesson: Investing puts money to work over time. Risk and return travel together. Compound growth means your earnings start earning too — which is why starting early often beats investing more later.
+  guidedPractice: Compare two savers on the board: one who starts early and stops, one who starts later and continues. Work out who ends up ahead.
+  checkUnderstanding: Students explain compound growth in one sentence, in their own words.
+  extension: Students explain compound growth to someone at home and report back what that person said.
+  unpluggedSwap: Run Two Truths and a Myth with investing myths, and do the compounding math on the board.
+  commonQuestions:
+    - q: Can I lose everything?
+      a: Any single investment can lose value, which is why spreading money out matters. Keep it honest without being scary.
+    - q: Do I need a lot of money to start?
+      a: No — the myth that it's only for rich adults is exactly what this module busts.
+game_rounds:
+  picture:
+    - q: Put all eggs in one basket?
+      opts:
+        - ["🧺🧺", "Use many baskets"]
+        - ["🧺", "One basket"]
+      best: 0
+      why: If one basket drops, the rest are safe.
+    - q: Money grows best with…
+      opts:
+        - ["⏳", "Lots of time"]
+        - ["⚡", "One day"]
+      best: 0
+      why: Growing takes time.
+    - q: "'Get rich fast!' True?"
+      opts:
+        - ["🚩", "Probably a trick"]
+        - ["🤑", "True"]
+      best: 0
+      why: Fast and easy money is usually a trick.
+    - q: Over many years, invested money usually…
+      opts:
+        - ["🌳", "Grows"]
+        - ["🥀", "Disappears"]
+      best: 0
+      why: Over a long time, it usually grows.
+  rounds:
+    - q: Myth or fact: 'You need to be rich to start investing.'
+      opts:
+        - ["❌", "Myth"]
+        - ["✅", "Fact"]
+      best: 0
+      why: Many accounts let you start with small amounts.
+      src: sec
+    - q: What does diversification mean?
+      opts:
+        - ["🧺", "Spreading money across many investments"]
+        - ["🎯", "Putting it all in one stock"]
+        - ["🗄️", "Keeping cash in a drawer"]
+      best: 0
+      why: Spreading out lowers the risk that one bad pick hurts you a lot.
+      src: sec
+    - q: Someone promises 'guaranteed high returns, no risk'. What is it?
+      opts:
+        - ["🚩", "A big red flag for fraud"]
+        - ["💎", "A great deal"]
+        - ["🏦", "A savings account"]
+      best: 0
+      why: Higher returns come with higher risk. 'Guaranteed' big returns is a classic fraud sign.
+      src: sec
+    - q: What is a stock?
+      opts:
+        - ["🧩", "A small piece of ownership in a company"]
+        - ["🍲", "Soup"]
+        - ["📃", "A loan to the government"]
+      best: 0
+      why: Owning stock means owning part of a company.
+      src: sec
+    - q: Myth or fact: 'Time in the market usually beats timing the market.'
+      opts:
+        - ["✅", "Fact"]
+        - ["❌", "Myth"]
+      best: 0
+      why: Trying to guess the perfect day to buy or sell is very hard. Staying invested longer usually works better.
+      src: sec

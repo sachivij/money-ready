@@ -1,0 +1,80 @@
+# Game: Savings Quest (on screen)
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: savings-quest
+multiRound: true
+name: Savings Quest (on screen)
+emoji: 🎯
+devices: shared
+minutes: 15
+group: Whole class or teams
+energy: Medium
+materials:
+  - Projector or large screen
+  - "This page open: Games → Savings Quest → Play on screen"
+summary: An on-screen game for the whole room. Each week the class votes on how much of their pay to save, then the screen draws a Life Happens card. Can they reach the goal — and how does it compare with a steady saver?
+howToPlay:
+  - Open Savings Quest on the shared screen and let the class vote on a goal.
+  - "Each week the class earns 5 coins. Take a quick vote: how many go into the Save jar? Tap + and − to set it."
+  - Tap 'Lock it in'. The screen draws a Life Happens card. Costs come out of the wallet first, then out of Save.
+  - Every second week the Save jar earns a bank bonus. Read it out — that is interest.
+  - After six weeks the screen shows whether the class reached its goal, and how a steady 'save 3 a week' plan would have done with the same cards.
+  - Play again with a different strategy and compare.
+teenTip: Let a different student tap the buttons each week, and read each card out in a dramatic voice. Scores are never saved or sent — it all runs in the browser.
+topics:
+  - save-or-spend
+  - budget-battle
+  - banking-basics
+  - investing-tomorrow
+  - paycheck-puzzle
+reinforces: Saving a little every time adds up, surprises are easier to handle with a cushion, and interest rewards money left in the bank.
+levels:
+  35: Let students tap the buttons and keep a tally on paper of what the class saved each week.
+  68: Before each week, ask a student to predict the jar total. At the end, compare with the steady-saver line and explain the gap.
+  912: Ask what percentage of pay the class saved overall, and how the bank bonus compares with real savings account rates.
+  k2: You tap the buttons and read every card. The class votes with thumbs: 'Save more, or spend more?' Talk about the jar filling up rather than the numbers.
+debrief:
+  - Did we reach the goal? Which week made the biggest difference?
+  - How did our plan compare with saving 3 every week?
+  - Which Life Happens card would have hurt less with more in the Save jar?
+access: Big buttons that work with a keyboard, and every card is read aloud. Nothing moves on a timer, so the class can take as long as it needs.
+play:
+  engine: savings-quest
+  weeks: 6
+  pay: 5
+  goals:
+    - emoji: 🚲
+      name: A bike
+      cost: 24
+    - emoji: 🎮
+      name: A video game
+      cost: 16
+    - emoji: 🎁
+      name: A gift for a friend
+      cost: 10
+  events:
+    - emoji: 🐕
+      text: A neighbor pays you 3 coins for walking their dog.
+      amount: 3
+    - emoji: 🎧
+      text: Your headphones broke. Replacing them costs 3 coins.
+      amount: -3
+    - emoji: 🚌
+      text: The class trip costs 2 coins.
+      amount: -2
+    - emoji: 🧹
+      text: You did extra chores and earned 2 coins.
+      amount: 2
+    - emoji: 🍦
+      text: Ice cream truck! It costs 1 coin — the class already said yes.
+      amount: -1
+    - emoji: ☀️
+      text: A quiet week. Nothing surprising happened.
+      amount: 0
+    - emoji: 🩹
+      text: Your bike tire went flat. The fix costs 4 coins.
+      amount: -4
+    - emoji: 🎂
+      text: Birthday card from a friend with 2 coins inside!
+      amount: 2

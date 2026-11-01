@@ -1,0 +1,141 @@
+# Module: Smart Shopping Challenge
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: smart-shopping
+title: Smart Shopping Challenge
+emoji: 🛒
+gradeBand: Grades 4–8
+minutes: 35
+keyConcept: Value vs. price
+activityType: Compare & vote
+color: coral
+materials: ["Slides", "Compare screen", "Reveal screen", "Take-home card"]
+summary: Cheaper isn't always better and fancier isn't always worth it. Students learn to compare value, not just price.
+objective: Students can compare options by value and use unit price to make smarter choices.
+interactive:
+  - Compare-two-options vote
+  - Unit-price reveal
+  - Ad-trick spotting
+  - Discussion prompt
+  - Exit ticket
+challenge:
+  scenario: Two snack packs: a 4-pack for $2 or a 12-pack for $5. You'll definitely eat them all. Which is the better value?
+  options:
+    - The 4-pack — smaller price
+    - The 12-pack — lower cost per snack
+    - They're exactly the same
+    - Whichever has cooler packaging
+  best: 1
+  timerSeconds: 30
+  round: 1
+reveal:
+  bestAnswer: B. The 12-pack — lower cost per snack
+  why: 4-pack = 50¢ each; 12-pack ≈ 42¢ each. Unit price (cost per item) shows the real deal. But value also means you'll actually use them — buying more only wins if you'd finish it.
+  keyConcept: Value — what you get for the money, not just the price
+  commonTrap: Grabbing the lowest sticker price without checking unit price
+  discussionPrompt: When is buying more NOT the better deal?
+  applyIt: Next store trip, compare unit prices on two sizes of the same item.
+takeHome:
+  title: Deal Detective
+  prompt: Find two sizes of the same product at home or a store. Which is the better value?
+  boxes: ["Cheaper total", "Better per-unit", "Best for us"]
+  familyQuestion: What's one thing worth spending a little more on because it lasts?
+prep:
+  openingScript: Welcome, Deal Detectives! Stores are great at making things look like a bargain. Today we learn the difference between a low price and real value — and how one number, the unit price, cuts through the tricks.
+  vocab:
+    - term: Price
+      def: How much a thing costs to buy.
+    - term: Value
+      def: What you actually get for the money.
+    - term: Unit price
+      def: The cost per one item, ounce, or serving.
+  steps:
+    - Price vs. value warm-up (6 min)
+    - Compare-two-options votes (12 min)
+    - Unit-price reveal (7 min)
+    - Spot the ad trick (6 min)
+    - Exit ticket + take-home (4 min)
+  discussionPrompts:
+    - Has a 'deal' ever cost you more in the end?
+    - How can packaging fool us?
+  printables: ["Compare cards", "Unit-price worksheet", "Take-home card"]
+lesson_pack:
+  bestGames: ["silent-lineup", "tradeoff-auction"]
+  hook: Hold up two sizes of the same snack and ask which is the better deal — then ask how they'd actually prove it.
+  miniLesson: Price is what it costs. Value is what you get for that cost. Unit price — the cost per item, ounce, or serving — cuts straight through packaging and marketing.
+  guidedPractice: Compare three pairs of products as a class, computing unit price for each pair before voting.
+  checkUnderstanding: Students compute the unit price for one pair on their own and say which they'd buy and why.
+  extension: Students find the unit price label on a real shelf tag at a store and bring back what they noticed.
+  unpluggedSwap: Bring empty packages or printed shelf tags and run Silent Line-Up by value.
+  commonQuestions:
+    - q: Is the bigger size always better?
+      a: Only if you'll use it all. Waste turns a 'deal' into a loss — that's the nuance worth landing.
+    - q: What if the cheap one breaks?
+      a: Perfect example of value over price: durability is part of what you're buying.
+game_rounds:
+  picture:
+    - q: Same toy. Which is the better deal?
+      opts:
+        - ["🏷️", "$3"]
+        - ["💰", "$5"]
+      best: 0
+      why: Same toy, lower price. That's the deal!
+    - q: Before buying, what should we do?
+      opts:
+        - ["🤔", "Stop and think"]
+        - ["🏃", "Grab it fast"]
+      best: 0
+      why: Stop and think: do I need it?
+    - q: An ad says WOW! Do you need it?
+      opts:
+        - ["🤔", "Maybe not"]
+        - ["🤩", "Yes, buy!"]
+      best: 0
+      why: Ads want you to buy. Think first.
+    - q: Which is more?
+      opts:
+        - ["🍪🍪🍪", "3 cookies"]
+        - ["🍪", "1 cookie"]
+      best: 0
+      why: Three is more than one.
+  rounds:
+    - q: A 12-pack of juice is $6. A 6-pack is $4. Which is the better price per can?
+      opts:
+        - ["📦", "The 12-pack ($0.50 each)"]
+        - ["🧃", "The 6-pack (about $0.67 each)"]
+        - ["🟰", "They're the same"]
+      best: 0
+      why: Divide the price by how many you get to compare unit price.
+    - q: What is comparison shopping?
+      opts:
+        - - 🔍
+          - Checking prices in different places before buying
+        - ["🏃", "Buying the first one you see"]
+        - ["🧮", "Counting your coins"]
+      best: 0
+      why: Comparing helps you find the best value.
+    - q: An ad says 'Only 2 left! Buy now!' Why?
+      opts:
+        - ["⏳", "To rush you into buying"]
+        - ["🎁", "To be nice"]
+        - ["📦", "It's always true"]
+      best: 0
+      why: Pressure to hurry is a sales trick. Slow down and think.
+      src: ftc
+    - q: A cheaper shirt falls apart in a month. A pricier one lasts years. Which is better value?
+      opts:
+        - ["⏳", "The one that lasts"]
+        - ["🏷️", "Always the cheapest"]
+        - ["🤷", "Doesn't matter"]
+      best: 0
+      why: Value means what you get for your money, not just the price tag.
+    - q: What should you check before buying something online?
+      opts:
+        - - ⭐
+          - Reviews, the return policy and the total with shipping
+        - ["🎨", "Just the color"]
+        - ["🙈", "Nothing"]
+      best: 0
+      why: Shipping, returns and reviews change whether it is a good deal.
+      src: ftc

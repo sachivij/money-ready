@@ -1,0 +1,142 @@
+# Module: Investing in Tomorrow
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: investing-tomorrow
+title: Investing in Tomorrow
+emoji: 🌱
+gradeBand: Grade 4
+minutes: 35
+keyConcept: Growing money over time
+activityType: Grow-it scenario + vote
+color: teal
+officialLesson: Grade 4 — Investing in Tomorrow
+officialMaterials: ["Presentation", "Worksheet", "Vocab Check"]
+materials: ["Slides", "Growth demo", "Vocab check", "Take-home card"]
+summary: Money can grow if you give it time. A gentle first look at investing, planting seeds, and patience.
+objective: Students can explain that invested money can grow over time, and that growing takes patience.
+interactive:
+  - Grow-it scenario
+  - Group vote
+  - Growth reveal
+  - Vocabulary check
+  - Take-home reflection
+challenge:
+  scenario: You plant a money seed today. A friend says 'dig it up tomorrow to see if it worked!' What should you do to help it grow the most?
+  options:
+    - Dig it up tomorrow to check
+    - Leave it planted and wait, adding a little more over time
+    - Move it somewhere new every day
+    - Forget about it completely
+  best: 1
+  timerSeconds: 30
+  round: 1
+reveal:
+  bestAnswer: B. Leave it planted and wait, adding a little more over time
+  why: Investing is like planting. Money needs time to grow, and digging it up early stops the growing. Adding a little more along the way helps it grow even bigger.
+  keyConcept: Growth over time — patience helps money grow
+  commonTrap: Wanting results right away and pulling money out too soon
+  discussionPrompt: What's something else that only works if you wait for it?
+  applyIt: Name one thing you're willing to wait a long time for.
+takeHome:
+  title: Planting for Later
+  prompt: Draw or name something your family is growing or saving toward.
+  boxes: ["Plant now", "Wait", "Grows into"]
+  familyQuestion: What is something worth waiting for?
+prep:
+  openingScript: Today we're planting money seeds! Not real ones — but here's the amazing part: when you invest money and give it time, it can actually grow all by itself. Let's find out how.
+  vocab:
+    - term: Invest
+      def: Putting money somewhere so it can grow over time.
+    - term: Grow
+      def: Getting bigger little by little, with time.
+    - term: Patience
+      def: Waiting for something good instead of rushing.
+  steps:
+    - Money seeds hook (5 min)
+    - What does investing mean? (7 min)
+    - Growth demo on the board (10 min)
+    - Scenario + class vote (8 min)
+    - Vocab check + take-home (5 min)
+  discussionPrompts:
+    - Why does waiting help things grow?
+    - What happens if you dig up the seed too early?
+  printables: ["Growth chart", "Vocab check sheet", "Take-home card"]
+lesson_pack:
+  bestGames: ["silent-lineup", "two-truths-myth"]
+  hook: Ask who has ever planted a seed. Then ask what would happen if you dug it up the next morning to check on it.
+  miniLesson: Investing means putting money somewhere it can grow over time. Like a plant, it needs time and patience. Digging it up early stops the growing.
+  guidedPractice: Draw a simple growth chart on the board and add a little each 'year' so students can watch it climb.
+  checkUnderstanding: Students explain why waiting helps invested money grow.
+  extension: Students draw what their money seed could grow into over five years.
+  unpluggedSwap: Do the growth chart on paper or the whiteboard and use Four Corners for the vote.
+  commonQuestions:
+    - q: Where does the extra money come from?
+      a: Keep it simple at this age: money that's invested gets put to work, and a little of what it earns comes back to you.
+    - q: Can it ever shrink?
+      a: Yes, sometimes — which is why we wait and don't panic. Honest but reassuring is the right tone here.
+game_rounds:
+  picture:
+    - q: A seed needs time. What happens if we wait?
+      opts:
+        - ["🌳", "It grows"]
+        - ["🪨", "Nothing"]
+      best: 0
+      why: With time and care, a seed grows. Money can grow too.
+    - q: Should we dig up the seed every day?
+      opts:
+        - ["🙅", "No, wait"]
+        - ["⛏️", "Yes, dig"]
+      best: 0
+      why: Digging it up stops the growing. Be patient.
+    - q: Which one grows bigger?
+      opts:
+        - ["🌳", "Planted long ago"]
+        - ["🌱", "Planted today"]
+      best: 0
+      why: More time means more growing.
+    - q: What helps money grow?
+      opts:
+        - ["⏳", "Time"]
+        - ["🎈", "Balloons"]
+      best: 0
+      why: Saving or investing for a long time helps money grow.
+  rounds:
+    - q: What does investing mean?
+      opts:
+        - - 🌱
+          - Putting money somewhere it can grow over time
+        - ["🛍️", "Spending money fast"]
+        - ["🗄️", "Hiding money in a drawer"]
+      best: 0
+      why: Investing puts money to work so it can grow, like planting a seed.
+    - q: Who will have more: someone who starts saving at 15 or at 35 (same amount each year)?
+      opts:
+        - ["🧒", "The one who starts at 15"]
+        - ["🧑", "The one who starts at 35"]
+        - ["🟰", "They end up the same"]
+      best: 0
+      why: Starting early gives the money more years to grow.
+    - q: What is interest?
+      opts:
+        - - ➕
+          - Extra money paid for letting someone use your money
+        - ["😴", "Being bored"]
+        - ["🧾", "A kind of bill"]
+      best: 0
+      why: Banks pay savers interest, and money that earns interest grows.
+    - q: Can an investment lose value?
+      opts:
+        - - 📉
+          - Yes, sometimes, which is why we're patient
+        - ["🚫", "No, never"]
+        - ["💥", "Only if you look at it"]
+      best: 0
+      why: Investments can go down as well as up. Waiting through the dips is part of investing.
+    - q: What does 'compound' growth mean?
+      opts:
+        - ["🔁", "Your earnings start earning too"]
+        - ["🧱", "A building"]
+        - ["➖", "Money shrinking"]
+      best: 0
+      why: When interest earns interest, money grows faster and faster over time.

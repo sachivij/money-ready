@@ -1,0 +1,50 @@
+# Game: Choose Your Money Path
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: money-path
+multiRound: true
+name: Choose Your Money Path
+emoji: 🛤️
+devices: none
+minutes: 12
+group: Whole class
+energy: Medium
+materials:
+  - The story (below)
+  - Two signs, A and B, on opposite walls (add a picture to each)
+summary: A choose-your-own-adventure story told out loud. At each fork the class moves to A or B, the story follows the majority — then you reveal where the other path would have led.
+howToPlay:
+  - "Introduce the main character: Jordan, who just earned $20 helping a neighbor."
+  - Read the story to the first fork. Students walk to the A wall or the B wall.
+  - Ask one student on each side why they chose it, then follow the side with more students.
+  - "Keep going through all four forks. Keep a tally on the board: what Jordan has, and what Jordan gave up."
+  - At the end, tell the other ending — what would have happened on the path the class didn't take.
+  - "Vote: which ending would you rather have, and why?"
+teenTip: Tell it with energy — voices and sound effects help. The real lesson is the other ending, so save time for it.
+topics:
+  - opportunity-costs
+  - money-tales
+  - save-or-spend
+  - needs-vs-wants
+  - credit-climb
+  - college-cost-choices
+reinforces: Every choice has an opportunity cost, small choices add up over time, and waiting can change what you can afford later.
+levels:
+  35: Use the full story with a picture tally on the board: what Jordan has, what Jordan gave up.
+  68: After the story, pairs write a fifth fork: a new choice and what happens on each side.
+  912: Retell it with older stakes: a first paycheck, a credit card sign-up gift, a car loan offer, and community college vs a four-year school. Track savings and debt on the board.
+  k2: Use three forks and pictures on the walls instead of letters (a toy, a piggy bank). Students can point instead of walking. Act Jordan out with a puppet or stuffed animal.
+debrief:
+  - What did Jordan give up at each fork?
+  - Which choice made the biggest difference by the end?
+  - Was there a fork where waiting was the smart move?
+access: Students who can't move hold up an A or B card at their seat. Pictures on the signs mean non-readers can play fully.
+cards:
+  title: The story: Jordan's $20
+  items:
+    - "Fork 1 — Jordan earns $20 helping a neighbor. A: spend it all on a new game today. B: spend $5 on a snack and save $15."
+    - "Fork 2 — Friends invite Jordan to the movies ($8). If Jordan spent it all, A: borrow $8 from a cousin, B: stay home. If Jordan saved, A: go and pay, B: skip it and keep saving."
+    - "Fork 3 — Jordan's bike tire goes flat; fixing it costs $10. Who can pay without borrowing? If Jordan can't, A: borrow again, B: walk for two weeks."
+    - "Fork 4 — The game Jordan really wants comes out for $25. A: buy it now with whatever it takes (borrow if needed). B: wait and save for two more weeks."
+    - "Other ending — Tell the class where the path they didn't choose ends up: money left, money owed, and what Jordan has to show for it."

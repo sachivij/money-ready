@@ -1,0 +1,142 @@
+# Module: Credit Climb
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: credit-climb
+title: Credit Climb
+emoji: 🧗
+gradeBand: Grades 7–10
+minutes: 40
+keyConcept: Borrowing & credit responsibly
+activityType: Level-up scenario
+color: teal
+materials: ["Slides", "Level board", "Reveal screen", "Take-home card"]
+summary: Credit is borrowed money you pay back — usually with interest. Students climb levels by making responsible choices.
+objective: Students can explain what credit is and why paying it back on time matters.
+interactive:
+  - Level-up scenario
+  - Group vote
+  - Interest reveal
+  - Discussion prompt
+  - Exit ticket
+challenge:
+  scenario: A store offers a phone for '$0 down, pay later.' You don't have the money yet. What's the responsible move?
+  options:
+    - Take it — it's free right now
+    - Check what you'd owe later and if you can pay it
+    - Borrow from two places to be safe
+    - Ignore the total cost, focus on monthly
+  best: 1
+  timerSeconds: 40
+  round: 1
+reveal:
+  bestAnswer: B. Check what you'd owe later and if you can pay it
+  why: "'Pay later' is still borrowing. Credit isn't free — you usually pay interest, and only paying it back on time keeps it from snowballing. Always know the real total before you say yes."
+  keyConcept: Interest — the cost of borrowing money over time
+  commonTrap: Looking only at the monthly payment, not the full cost
+  discussionPrompt: When is borrowing a smart tool, and when is it a trap?
+  applyIt: Find one ad that says 'pay later' and figure out what it really costs.
+takeHome:
+  title: Borrowing Talk
+  prompt: Ask a grown-up: what's one thing people commonly buy with credit?
+  boxes: ["Smart use", "Risky use", "Not sure"]
+  familyQuestion: Why does paying bills on time matter?
+prep:
+  openingScript: Today we climb the Credit Climb. Credit means borrowing money and paying it back later — often with a little extra called interest. Used well, it's a tool. Used carelessly, it's a trap. Let's learn the difference.
+  vocab:
+    - term: Credit
+      def: Borrowed money you agree to pay back later.
+    - term: Interest
+      def: The extra you pay for borrowing, on top of what you owe.
+    - term: Credit score
+      def: A number that shows how reliably someone repays.
+  steps:
+    - What is credit, really? (7 min)
+    - Level 1–3 borrowing scenarios (14 min)
+    - "Interest reveal: the true cost (6 min)"
+    - "Discussion: tool vs. trap (7 min)"
+    - Exit ticket + take-home (6 min)
+  discussionPrompts:
+    - Why do lenders charge interest?
+    - How could a small late payment grow into a big problem?
+  printables: ["Credit level board", "'True cost' worksheet", "Exit ticket"]
+lesson_pack:
+  bestGames: ["human-bar-graph", "speed-round"]
+  hook: Ask who would like to borrow $10 from you right now. Then ask how they'd feel if you said they must pay back $12 next week.
+  miniLesson: Credit is borrowed money you promise to pay back. Interest is the extra you pay for borrowing. Used carefully it's a tool — a car, a house, an education. Used carelessly, the extra piles up faster than people expect.
+  guidedPractice: Walk through a 'buy now, pay later' offer as a class and work out the true total cost, not just the monthly amount.
+  checkUnderstanding: Students explain in their own words the difference between the price of something and the true cost when borrowing.
+  extension: Students find one real advertisement using 'pay later' language and identify what it doesn't say clearly.
+  unpluggedSwap: Use Red Flag / Green Flag on lending offers instead of the on-screen level board.
+  commonQuestions:
+    - q: Is credit bad?
+      a: No — being careless with it is. Emphasize that it's a tool with a cost you should know before you agree.
+    - q: What's a credit score?
+      a: A number showing how reliably someone repays what they borrow. Keep it simple at this level.
+game_rounds:
+  picture:
+    - q: You borrow a pencil. What do you do?
+      opts:
+        - ["↩️", "Give it back"]
+        - ["🎒", "Keep it"]
+      best: 0
+      why: When we borrow, we give it back.
+    - q: Will a friend lend again if you pay back?
+      opts:
+        - ["😊", "Yes"]
+        - ["😠", "No"]
+      best: 0
+      why: Paying back builds trust.
+    - q: Which one is borrowing?
+      opts:
+        - ["📚", "Library book"]
+        - ["🎁", "A gift"]
+      best: 0
+      why: You borrow a library book and bring it back.
+    - q: Pay back on time or late?
+      opts:
+        - ["⏰", "On time"]
+        - ["🐢", "Late"]
+      best: 0
+      why: On time is best. It shows you can be trusted.
+  rounds:
+    - q: What is credit?
+      opts:
+        - ["🤝", "Borrowing now and promising to pay later"]
+        - ["🎁", "Free money"]
+        - ["🫙", "Savings"]
+      best: 0
+      why: Credit lets you buy now, but you must pay it back, often with interest.
+      src: cfpb
+    - q: What helps a credit score the most?
+      opts:
+        - ["⏰", "Paying bills on time"]
+        - ["🛍️", "Opening lots of cards"]
+        - ["🙈", "Ignoring bills"]
+      best: 0
+      why: Paying on time is the biggest part of a good credit history.
+      src: cfpb
+    - q: You only pay the minimum on a credit card. What happens?
+      opts:
+        - - 📈
+          - You pay much more interest and it takes longer
+        - ["🎉", "The rest is forgiven"]
+        - ["0️⃣", "No extra cost"]
+      best: 0
+      why: The unpaid balance keeps charging interest month after month.
+      src: cfpb
+    - q: What is interest on a loan?
+      opts:
+        - ["💲", "The extra cost of borrowing"]
+        - ["😀", "How much you like the loan"]
+        - ["🎁", "A reward"]
+      best: 0
+      why: Interest is what lenders charge you for using their money.
+    - q: Who might look at your credit report?
+      opts:
+        - ["🏠", "Landlords and lenders"]
+        - ["🍦", "The ice cream truck"]
+        - ["🏫", "Your classmates"]
+      best: 0
+      why: Lenders, landlords and some employers check credit to see if you pay what you owe.
+      src: cfpb

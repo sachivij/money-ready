@@ -1,0 +1,141 @@
+# Module: Paycheck Puzzle
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: paycheck-puzzle
+title: Paycheck Puzzle
+emoji: 🧩
+gradeBand: Grades 8–12
+minutes: 45
+keyConcept: Gross vs. net pay
+activityType: Build-the-paycheck
+color: purple
+materials: ["Slides", "Paycheck builder", "Reveal screen", "Take-home card"]
+summary: Your first paycheck is smaller than you think. Students piece together where the money goes before it reaches you.
+objective: Students can explain the difference between gross and net pay and name common deductions.
+interactive:
+  - Build-the-paycheck activity
+  - Group vote
+  - Deduction reveal
+  - Discussion prompt
+  - Exit ticket
+challenge:
+  scenario: You earn $200 this week (that's your gross pay). Your paycheck says $170. Where did the other $30 most likely go?
+  options:
+    - The company kept it for no reason
+    - Taxes and required deductions
+    - It's a mistake — you should get it all
+    - A tip to your manager
+  best: 1
+  timerSeconds: 40
+  round: 1
+reveal:
+  bestAnswer: B. Taxes and required deductions
+  why: Gross pay is what you earn; net pay ('take-home') is what lands in your pocket after taxes and deductions. Knowing the gap helps you budget with the real number, not the big one.
+  keyConcept: Net pay — your real take-home amount
+  commonTrap: Budgeting off gross pay and coming up short
+  discussionPrompt: Why might your take-home be different from a friend's for the same job?
+  applyIt: If a job pays $15/hour for 10 hours, estimate your take-home after ~15% is withheld.
+takeHome:
+  title: Paycheck Detective
+  prompt: If someone in your home is willing, look at a pay stub together (no numbers needed to share).
+  boxes: ["Gross pay", "Deductions", "Net pay"]
+  familyQuestion: What is one thing taxes help pay for in our community?
+prep:
+  openingScript: Here's a puzzle: you earn $200 but your check says less. Where did it go? Today we solve the Paycheck Puzzle — the difference between what you earn and what you actually take home.
+  vocab:
+    - term: Gross pay
+      def: The total you earn before anything is taken out.
+    - term: Net pay
+      def: Your take-home amount after deductions.
+    - term: Deduction
+      def: Money taken from pay, like taxes or benefits.
+  steps:
+    - "Gross vs. net: the big reveal (7 min)"
+    - Build a paycheck piece by piece (14 min)
+    - "Group vote: where did it go? (8 min)"
+    - "Discussion: budgeting off the real number (8 min)"
+    - Exit ticket + take-home (8 min)
+  discussionPrompts:
+    - Why do taxes come out automatically?
+    - How would using gross pay to plan get someone in trouble?
+  printables: ["Paycheck builder sheet", "Deductions glossary", "Exit ticket"]
+lesson_pack:
+  bestGames: ["budget-relay", "live-vote"]
+  hook: Write $200 on the board and ask what students would do with a first paycheck that size. Then cross it out and write $170.
+  miniLesson: Gross pay is what you earn. Net pay — your take-home — is what's left after taxes and deductions. Budget from your net pay, because that's the money that actually arrives.
+  guidedPractice: Build a paycheck together on the board, removing one deduction at a time and naming what each one funds.
+  checkUnderstanding: Given an hourly wage and hours worked, students estimate gross pay and a rough take-home figure.
+  extension: Students list three things in their community that taxes help pay for.
+  unpluggedSwap: Use paper paycheck-builder sheets and Two Truths and a Myth about taxes.
+  commonQuestions:
+    - q: Can I get that money back?
+      a: Some may come back as a tax refund, but plan around net pay rather than counting on it.
+    - q: Why is my friend's take-home different?
+      a: Deductions vary by benefits and situation. Keep it general and never ask students about family finances.
+game_rounds:
+  picture:
+    - q: How do grown-ups get paid?
+      opts:
+        - ["👷", "Work"]
+        - ["🎈", "Magic"]
+      best: 0
+      why: People get paid for working.
+    - q: Do you keep all your pay?
+      opts:
+        - ["🧾", "Some goes to taxes"]
+        - ["💯", "Keep all"]
+      best: 0
+      why: Some pay goes to taxes that help everyone.
+    - q: Taxes help pay for…
+      opts:
+        - ["🏫", "Schools"]
+        - ["🍭", "Your candy"]
+      best: 0
+      why: Taxes pay for schools, roads and parks.
+    - q: More hours of work means…
+      opts:
+        - ["➕", "More pay"]
+        - ["➖", "Less pay"]
+      best: 0
+      why: For hourly jobs, more hours means more pay.
+  rounds:
+    - q: What is gross pay?
+      opts:
+        - ["💵", "Pay before anything is taken out"]
+        - ["🧾", "Pay after taxes"]
+        - ["🤢", "Pay that's gross"]
+      best: 0
+      why: Gross pay is the full amount you earned before deductions.
+    - q: What is net pay?
+      opts:
+        - ["🧾", "What you actually take home"]
+        - ["🥅", "Money for sports"]
+        - ["➕", "Pay plus a bonus"]
+      best: 0
+      why: Net pay is what's left after taxes and other deductions.
+    - q: Why is your first paycheck smaller than hours × rate?
+      opts:
+        - ["🏛️", "Taxes and deductions are taken out"]
+        - ["😈", "Your boss kept some"]
+        - ["🐛", "It's a mistake"]
+      best: 0
+      why: Taxes like income tax, Social Security and Medicare come out first.
+      src: irs
+    - q: Which form tells your employer how much tax to hold back?
+      opts:
+        - ["📄", "Form W-4"]
+        - ["🎫", "A movie ticket"]
+        - ["📓", "Your report card"]
+      best: 0
+      why: You fill out a W-4 when you start a job.
+      src: irs
+    - q: What do Social Security taxes help pay for?
+      opts:
+        - - 👵
+          - Benefits for retirees and people with disabilities
+        - ["🎮", "Video games"]
+        - ["🏖️", "Your vacation"]
+      best: 0
+      why: Workers pay in now and get benefits later.
+      src: ssa

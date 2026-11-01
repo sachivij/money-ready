@@ -1,0 +1,140 @@
+# Module: Budget Battle
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: budget-battle
+title: Budget Battle
+emoji: ⚔️
+gradeBand: Grades 5–8
+minutes: 40
+keyConcept: Budgeting & prioritizing
+activityType: Team challenge + vote
+color: blue
+materials: ["Slides", "Team budget board", "Reveal screen", "Take-home card"]
+summary: Teams get a set amount and a list of costs — they must build a plan that survives a surprise expense.
+objective: Students can build a simple budget and adjust it when priorities compete.
+interactive:
+  - Team challenge
+  - Live budget board
+  - Surprise-expense twist
+  - Group vote
+  - Reveal screen
+  - Exit ticket
+challenge:
+  scenario: Your team has $40 for the week: bus fare ($15), lunch ($15), a movie ($12), and you want to save $5. You can't afford everything. What gets cut first?
+  options:
+    - Cut the bus fare
+    - Cut lunch
+    - Cut the movie
+    - Cut savings this week
+  best: 2
+  timerSeconds: 40
+  round: 1
+reveal:
+  bestAnswer: C. Cut the movie
+  why: Bus fare and lunch are needs, and skipping savings should be a last resort. The movie is the want — cutting it keeps the plan working. Budgets are about ranking, not having it all.
+  keyConcept: Prioritizing — needs and goals before extras
+  commonTrap: Protecting fun spending and raiding savings instead
+  discussionPrompt: How did your team decide what mattered most?
+  applyIt: List your top 3 money priorities for this month, in order.
+takeHome:
+  title: Our Family Plan
+  prompt: With a grown-up, name one thing your family spends on every week.
+  boxes: ["Need", "Want", "Could cut"]
+  familyQuestion: If money got tight, what would we cut first?
+prep:
+  openingScript: Welcome to the Budget Battle! A budget is just a plan for your money. Today your team gets a set amount and some tough choices. Spoiler: you can't buy everything — and that's exactly the point.
+  vocab:
+    - term: Budget
+      def: A plan for money coming in and going out.
+    - term: Priority
+      def: What matters most, decided on purpose.
+    - term: Fixed cost
+      def: A cost that stays the same, like bus fare.
+  steps:
+    - What is a budget? (6 min)
+    - Team gets $40 and a cost list (8 min)
+    - Build the plan on the budget board (12 min)
+    - Surprise expense twist + revote (8 min)
+    - Reveal, discussion & exit ticket (6 min)
+  discussionPrompts:
+    - What surprised you when the extra cost appeared?
+    - Did every team make the same cuts? Why not?
+  printables: ["Team budget board", "Cost cards", "Exit ticket"]
+lesson_pack:
+  bestGames: ["tradeoff-auction", "budget-relay"]
+  hook: Announce that the class has exactly $40 to get through a whole week, and start listing costs on the board until it obviously doesn't fit.
+  miniLesson: A budget is a plan you make on purpose, before the money is gone. Money comes in, money goes out. When the list is longer than the money, you rank what matters most instead of hoping it works out.
+  guidedPractice: In teams, build a weekly plan on paper. Halfway through, announce a surprise cost everyone must cover, and let them revise.
+  checkUnderstanding: Each team reads its final plan and names the one thing they cut first, and why.
+  extension: Students rewrite their plan as if their income dropped by half.
+  unpluggedSwap: Use paper budget sheets and the Budget Relay game instead of the on-screen budget board.
+  commonQuestions:
+    - q: What if I don't have any income?
+      a: A budget works with any amount — allowance, gifts, birthday money. The skill is planning, not the size of the number.
+    - q: Why not just spend and see what happens?
+      a: That's exactly the common trap. Ask who has ever gotten to the end of their money and wondered where it went.
+game_rounds:
+  picture:
+    - q: What do we pay for first?
+      opts:
+        - ["🥪", "Lunch"]
+        - ["🎮", "Game"]
+      best: 0
+      why: Needs first, wants later.
+    - q: A plan for money is called…
+      opts:
+        - ["📝", "A budget"]
+        - ["🎈", "A party"]
+      best: 0
+      why: A budget is a plan for your money.
+    - q: 3 coins. The toy costs 5. Enough?
+      opts:
+        - ["🙅", "No"]
+        - ["🙆", "Yes"]
+      best: 0
+      why: 3 is less than 5. You need to save more.
+    - q: Where should some money go?
+      opts:
+        - ["🐷", "Savings"]
+        - ["🕳️", "Lost"]
+      best: 0
+      why: Put some money away to save.
+  rounds:
+    - q: What is a budget?
+      opts:
+        - ["📝", "A plan for how you will use your money"]
+        - ["🧾", "A bill"]
+        - ["🚫", "A rule against spending"]
+      best: 0
+      why: A budget is a plan that lets you choose before the money is gone.
+    - q: You have $25: lunch tomorrow, a game skin, and $5 you promised to save. What first?
+      opts:
+        - - 🫙
+          - Save $5 and set aside lunch, then decide on the skin
+        - ["🎮", "Buy the skin first"]
+        - ["🎲", "Spend it all and see"]
+      best: 0
+      why: Cover needs and savings first. Wants get what's left.
+    - q: What is a fixed expense?
+      opts:
+        - - 📌
+          - A cost that's the same every time, like a phone plan
+        - ["🔧", "Something you repair"]
+        - ["🍕", "A snack you buy sometimes"]
+      best: 0
+      why: Fixed costs stay the same; variable costs like snacks change.
+    - q: Your spending is more than your income. What happens?
+      opts:
+        - ["⚠️", "You run short or go into debt"]
+        - ["😎", "Nothing"]
+        - ["🎉", "You save more"]
+      best: 0
+      why: Spending more than you earn means borrowing or running out.
+    - q: A popular budget idea splits money into needs, wants and…
+      opts:
+        - ["🫙", "Savings"]
+        - ["🍬", "Candy"]
+        - ["🎮", "Games"]
+      best: 0
+      why: Needs, wants and savings is a simple way to plan.

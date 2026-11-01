@@ -1,0 +1,39 @@
+# Game: Money Would-You-Rather
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: would-you-rather
+name: Money Would-You-Rather
+emoji: 🤔
+devices: none
+minutes: 8
+group: Whole class
+energy: Calm
+materials: ["None"]
+summary: Two tempting options, no obviously right answer — students pick a side and argue it.
+howToPlay:
+  - "Read two options: 'Would you rather ___ or ___?'"
+  - Students move to one side of the room for each option.
+  - Give each side 60 seconds to come up with their best reason.
+  - One speaker per side presents.
+  - Anyone convinced may switch sides — point out that changing your mind with new information is smart.
+teenTip: Pick options that are genuinely close. If one is obviously right there's nothing to discuss.
+reinforces: Weighing two good options and naming what you give up — opportunity cost in everyday choices.
+levels:
+  35: Each side gets 60 seconds to agree on its best reason; anyone may switch after hearing both.
+  68: Add a twist after the first vote ('the cheaper one breaks in a month') and see who switches.
+  912: Use bigger choices, like a higher-paying job with a long commute or a lower-paying one nearby. Each side must name the downside of its own choice.
+  k2: Hold up two pictures. Students point or walk to one. Ask for just one 'why' from each side.
+debrief:
+  - What did your side give up?
+  - What made someone switch?
+  - Is there a right answer? Why or why not?
+access: Students who can't move hold up an A or B card. Say both options twice and show each one as a picture.
+cards:
+  title: Sample prompts
+  items:
+    - Would you rather get $5 today or $8 next week?
+    - Would you rather have one expensive toy or three cheaper ones?
+    - Would you rather save for a big trip or spend a little every weekend?
+    - Would you rather buy new shoes, or fix your old ones and buy a book?
+    - Would you rather earn money walking dogs or washing cars?

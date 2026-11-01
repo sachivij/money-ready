@@ -11,13 +11,13 @@ Two people (each with their own Claude) build this app at the same time. Read th
 - Before starting, pull the latest `main` and check `docs/specs/README.md`. Only pick a spec nobody owns.
 - Claim it first: set its Owner and Status in `docs/specs/README.md` and push that to `main`, so the other person sees it.
 - Do the work on its own branch (`<name>/<spec-number>-<short-topic>`) and open a pull request into `main`. Docs-only tweaks can go straight to `main`.
-- Keep pull requests small and merge often, so the two people rarely edit the same lines. `assets/js/app.js` and `assets/js/lessons.js` are shared hot spots; merge `main` into your branch before opening the PR.
+- Keep pull requests small and merge often, so the two people rarely edit the same lines. `assets/js/app.js` and `assets/js/lessons.js` are shared hot spots (content now lives in `content/`, see below); merge `main` into your branch before opening the PR.
 - When a spec is done, set its status to Done in the same pull request.
 
 ## Content files (spec 11)
 
-- Standards Helper answers and the approved source list live in `content/` as Markdown files. `assets/js/helper-kb.js` is generated from them by `node scripts/build-content.js` (a GitHub Action does this on every PR and push to `main`). Edit `content/`, never `helper-kb.js`. See `content/README.md`.
-- Lessons, games and modules are still in the JS files until spec 11 moves them.
+- All teaching content lives in `content/`: modules (with lesson packs and game rounds), extra topics, games, official lessons (YAML), helper answers and sources (Markdown). `node scripts/build-content.js` checks it and generates `assets/js/content.js` and `assets/js/helper-kb.js`; a GitHub Action does this on every PR and push to `main`. Edit `content/`, never the generated files, and don't put content back into the JS. See `content/README.md`.
+- Content files are small and separate, so two people rarely clash on them. `app.js` and `lessons.js` (now code only) are still the shared hot spots.
 
 ## Decisions already made
 

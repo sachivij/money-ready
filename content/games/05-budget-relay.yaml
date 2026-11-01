@@ -1,0 +1,37 @@
+# Game: Budget Relay
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: budget-relay
+name: Budget Relay
+emoji: 🏃
+devices: none
+minutes: 12
+group: Teams of 4–5
+energy: High
+materials: ["Paper budget sheet per team", "Markers"]
+summary: A relay race where each teammate adds one decision to the team's money plan.
+howToPlay:
+  - Each team gets one budget sheet at the far end of the room.
+  - One runner at a time goes and fills in a single line of the budget.
+  - Runner returns and tags the next teammate.
+  - First team with a complete, balanced plan wins — but it must actually add up.
+  - Read two teams' plans aloud and compare their priorities.
+teenTip: Award the win for a plan that balances, not for speed alone. Otherwise they'll scribble anything.
+reinforces: A budget has to balance: money in covers needs first, then savings, then wants.
+levels:
+  35: A $20 budget with four lines: food, savings, fun, giving.
+  68: A $200-a-month budget from a pretend teen job, with six lines including a phone bill.
+  912: A take-home pay of $1,600 with rent, transport, food, savings and fun. The plan must land within $50 of a 50/30/20 split.
+  k2: No writing. Each runner carries one picture card (food, home, toy, piggy bank) to the team mat, needs first. The team is done when all the 'must have' pictures are down.
+debrief:
+  - Which line did your team argue about?
+  - What did you cut so it would balance?
+  - Why does a budget have to add up exactly?
+access: Teams can relay by passing the sheet around a table instead of running. Calculators are fine. Read every budget line aloud at the start.
+cards:
+  title: Sample budget sheets
+  items:
+    - "Grades 3–5: You have $20. Food ___ Savings ___ Fun ___ Giving ___ (must add up to $20)"
+    - "Grades 6–8: You earn $200 a month. Phone ___ Food ___ Transport ___ Savings ___ Fun ___ Gifts ___"
+    - "Grades 9–12: Take-home pay $1,600. Rent ___ Transport ___ Food ___ Phone ___ Savings ___ Fun ___"

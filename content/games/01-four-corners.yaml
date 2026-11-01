@@ -1,0 +1,38 @@
+# Game: Four Corners
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: four-corners
+name: Four Corners
+emoji: 🧭
+devices: none
+minutes: 10
+group: Whole class
+energy: High
+materials: ["4 signs for the corners", "Tape"]
+summary: Students physically move to the corner matching their answer, then defend it.
+howToPlay:
+  - Label the four corners of the room with the answer choices A, B, C, D.
+  - Read the module's scenario out loud.
+  - Say 'go' — students walk to the corner matching their choice.
+  - Ask one student per corner to explain why they picked it.
+  - Reveal the strongest answer and talk about the common trap.
+teenTip: Movement wakes a sleepy room up fast. Let students change corners after hearing an argument — that's a great sign they're thinking.
+reinforces: Every answer is a choice with reasons, and hearing classmates defend other options shows there is more than one way to think about money.
+levels:
+  35: Four corners, each with a letter and a picture. Ask one student per corner to finish the sentence 'I picked this because…'.
+  68: After the first move, give each corner 60 seconds to convince another corner to switch. Count who moved.
+  912: Use scenarios with no single right answer (buy or lease, a gap year or college). Each corner must name the downside of its own choice, not just the benefits.
+  k2: Use two corners, not four, with a big picture in each. Read the question twice and act it out. Students can point to a corner from their seat if moving is too much.
+debrief:
+  - Which corner was hardest to choose? Why?
+  - Did anyone change corners? What changed your mind?
+  - What would you need to know to be sure?
+access: Students who can't move hold up an A–D card at their seat, and their vote counts in that corner. Put a picture as well as a letter in each corner, and read every option aloud.
+cards:
+  title: Sample scenarios — pick ones that match your module
+  items:
+    - "You get $10 for your birthday. A: buy a toy today. B: save it all. C: save half, spend half. D: give some to a class fundraiser."
+    - "Your favorite shoes have a hole. A: buy new ones now. B: get them fixed. C: wait for a sale. D: borrow a pair for now."
+    - "A game asks you to pay $5 for extra lives. A: pay it. B: keep playing for free. C: ask a grown-up first. D: play something else."
+    - "You have $20 to get a friend a gift. A: spend all $20. B: spend $10 and make a card. C: make the gift yourself. D: chip in on a group gift."

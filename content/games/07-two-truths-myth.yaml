@@ -1,0 +1,38 @@
+# Game: Two Truths and a Myth
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: two-truths-myth
+name: Two Truths and a Myth
+emoji: 🕵️
+devices: none
+minutes: 10
+group: Pairs
+energy: Calm
+materials: ["Prepared statement sets"]
+summary: Three money statements — students find the one that isn't true.
+howToPlay:
+  - "Read three statements about the topic: two true, one a myth."
+  - Pairs get 30 seconds to decide which is the myth.
+  - Take a quick show of hands for each statement.
+  - Reveal the myth and explain exactly why people believe it.
+  - "Challenge: pairs write their own set for the next round."
+teenTip: Letting students write their own set at the end is the best check of whether they actually understood.
+reinforces: Questioning money 'facts' you hear, and explaining why a myth sounds believable.
+levels:
+  35: Three statements. Pairs must say why the myth sounds true before you reveal it.
+  68: After two rounds, pairs write their own set for another pair to solve.
+  912: Use investing and credit myths. Pairs must say how they would check the claim.
+  k2: Two statements, one true and one silly, each with a picture ('Money grows on trees' and 'People earn money by working'). Thumbs up for the true one.
+debrief:
+  - Why do people believe the myth?
+  - How could you check a money 'fact' you hear?
+  - Which myth surprised you most?
+access: Read each statement aloud and number them. Students can answer by holding up one, two or three fingers instead of speaking.
+cards:
+  title: Sample sets (myth in brackets)
+  items:
+    - "1. Banks keep your money safe. 2. Saving a little each week adds up. 3. Money in a piggy bank grows by itself. [Myth: 3]"
+    - "1. A want is something you could live without. 2. Needs always cost more than wants. 3. Food is a need. [Myth: 2]"
+    - "1. Paying bills on time helps your credit. 2. Checking your own credit score lowers it. 3. Credit cards charge interest if you don't pay in full. [Myth: 2]"
+    - "1. Investing can lose money. 2. You have to be rich to start investing. 3. Starting early gives money more time to grow. [Myth: 2]"

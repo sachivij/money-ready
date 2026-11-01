@@ -1,0 +1,143 @@
+# Module: Fraud & Red Flags
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: fraud-red-flags
+title: Fraud & Red Flags
+emoji: 🚩
+gradeBand: Grades 5–9
+minutes: 35
+keyConcept: Scams & staying safe
+activityType: Spot-the-scam quiz
+color: coral
+materials: ["Slides", "Spot-the-scam screen", "Reveal screen", "Take-home card"]
+summary: Scammers use urgency and secrets to trick people. Students learn the red flags and a simple 'stop and check' rule.
+objective: Students can identify common scam red flags and describe a safe response.
+interactive:
+  - Spot-the-scam quiz
+  - Group vote
+  - Red-flag reveal
+  - Discussion prompt
+  - Exit ticket
+challenge:
+  scenario: A text says: 'You won a $500 gift card! Click now and enter your bank info in the next 10 minutes or lose it.' What do you do?
+  options:
+    - Click fast before it expires
+    - Enter your info — it's just a card
+    - Don't click; it's a scam (urgency + info request)
+    - Forward it to friends so they can win too
+  best: 2
+  timerSeconds: 30
+  round: 1
+reveal:
+  bestAnswer: C. Don't click; it's a scam
+  why: Two huge red flags: a rush ('10 minutes!') and a request for private info. Real prizes don't need your bank details in a hurry. When in doubt: stop, don't click, and ask a trusted adult.
+  keyConcept: Red flag — a warning sign that something is a scam
+  commonTrap: Acting fast because a message creates panic or excitement
+  discussionPrompt: Why do scammers try to make you rush?
+  applyIt: Name the 3 red flags to watch for: urgency, secrecy, and asking for private info.
+takeHome:
+  title: Scam Spotters
+  prompt: With a grown-up, talk about a scam text or call your family has seen.
+  boxes: ["Red flag", "Safe move", "Who to tell"]
+  familyQuestion: Who is our trusted person to ask if a message seems fishy?
+prep:
+  openingScript: Today we become Scam Spotters. Scammers are sneaky, but they almost always use the same tricks: they rush you, they want secrets, and they ask for private info. Learn the red flags and you can't be fooled.
+  vocab:
+    - term: Fraud
+      def: Tricking someone to take their money or information.
+    - term: Red flag
+      def: A warning sign that something isn't right.
+    - term: Phishing
+      def: Fake messages that try to steal your info.
+  steps:
+    - How scams work (6 min)
+    - Spot-the-scam quiz rounds (14 min)
+    - Red-flag reveal & the 'stop and check' rule (7 min)
+    - "Discussion: staying safe (4 min)"
+    - Exit ticket + take-home (4 min)
+  discussionPrompts:
+    - Why is 'act now!' such a common trick?
+    - What should you do before clicking any link?
+  printables: ["Red-flag checklist", "Spot-the-scam cards", "Take-home card"]
+lesson_pack:
+  bestGames: ["red-flag-green-flag", "two-truths-myth"]
+  hook: Read a real-sounding scam text out loud with total confidence and see how many students believe it before you reveal it's fake.
+  miniLesson: Scams almost always use the same three moves: they rush you, they ask for private information, and they want it kept secret. Spotting any one of those is your signal to stop.
+  guidedPractice: Read scenarios aloud; students identify which of the three red flags appears in each one.
+  checkUnderstanding: Students name all three red flags from memory and say what to do instead of clicking.
+  extension: Students write their own fake scam message, then trade and spot each other's red flags.
+  unpluggedSwap: Red Flag / Green Flag cards work perfectly here with no screen at all.
+  commonQuestions:
+    - q: What if it's really from my bank?
+      a: Real institutions don't mind if you hang up and call back on the official number. That's always the safe move.
+    - q: What if I already clicked?
+      a: Tell a trusted adult right away — fast is better than perfect, and nobody should feel embarrassed.
+game_rounds:
+  picture:
+    - q: A stranger online asks your name. Tell?
+      opts:
+        - ["🙅", "No"]
+        - ["🙆", "Yes"]
+      best: 0
+      why: Keep your private things private. Tell a grown-up.
+    - q: Something online feels weird. Who do you tell?
+      opts:
+        - ["🧑‍🏫", "A grown-up"]
+        - ["🤫", "Nobody"]
+      best: 0
+      why: Always tell a trusted grown-up.
+    - q: "'You won a prize! Send money!' Real?"
+      opts:
+        - ["🚩", "Trick"]
+        - ["🎁", "Real"]
+      best: 0
+      why: Real prizes don't ask you to pay.
+    - q: Your password is…
+      opts:
+        - ["🔒", "A secret"]
+        - ["📢", "For everyone"]
+      best: 0
+      why: Passwords are secret. Only share with your grown-up.
+  rounds:
+    - q: A text says you won a phone but must pay a $5 fee with a gift card. What is it?
+      opts:
+        - ["🚩", "A scam"]
+        - ["🎁", "A real prize"]
+        - ["🤷", "Can't tell"]
+      best: 0
+      why: Real prizes never ask you to pay, and gift-card payment is a big red flag.
+      src: ftc
+    - q: Which is a red flag in a message?
+      opts:
+        - ["⏰", "'Act now or lose it!'"]
+        - ["👋", "'Hi, see you at practice'"]
+        - ["📅", "'School starts at 8'"]
+      best: 0
+      why: Scammers rush you so you don't stop and think.
+      src: ftc
+    - q: Someone asks for your password to 'fix your account'. What do you do?
+      opts:
+        - ["🛑", "Never share it; tell a trusted adult"]
+        - ["🔑", "Send it quickly"]
+        - ["🤝", "Share half of it"]
+      best: 0
+      why: Real companies don't ask for your password.
+      src: ftc
+    - q: What is phishing?
+      opts:
+        - - 🎣
+          - Fake messages trying to steal your information
+        - ["🐟", "A weekend hobby"]
+        - ["📧", "Any email"]
+      best: 0
+      why: Phishing messages pretend to be someone you trust.
+      src: ftc
+    - q: If you think you've been scammed, what should you do?
+      opts:
+        - ["📣", "Tell a trusted adult and report it"]
+        - ["🤫", "Keep it secret"]
+        - ["🔁", "Send more money to fix it"]
+      best: 0
+      why: Telling someone fast limits the damage. Scams can be reported to the FTC.
+      src: ftc

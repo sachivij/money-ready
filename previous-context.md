@@ -67,7 +67,8 @@ mostly through the GitHub web UI and the live site.
 - `#/builder?topic=…&grade=…&min=…&group=…&dev=…&game=…` reopens a plan;
   "Copy link" and "Download plan" (`planToText()`) are on the plan.
 
-**Real Teen Teach-In lessons (`assets/js/official-lessons.js`).** The five
+**Real Teen Teach-In lessons (`content/official-lessons/`, generated into
+`OFFICIAL_LESSONS` in `assets/js/content.js`).** The five
 official lessons (Grade 1 Needs and Wants, Grade 2 Choices and Opportunity
 Costs, Grade 3 Saving/Spending/Borrowing/Lending, Grade 4 Investing in
 Tomorrow, and Ally's Planet Zeee) are written up step by step from
@@ -78,7 +79,7 @@ Each step names the deck slides it uses. In the builder, these topics show
 follows the deck, the packet's first item becomes a slide-by-slide guide,
 and "Try a different main activity" swaps only the deck's hands-on step.
 Only used for modules carrying an `officialLesson` tag, so the 4-H edition
-never shows them. The module cards, challenges and reveals in `data.js`
+never shows them. The module cards, challenges and reveals (`content/modules/`)
 were not rewritten from the decks; that is still open.
 
 **Naming decision:** the page stays **Workshop Builder**. Do not rename it
@@ -133,27 +134,39 @@ to "Generator" (the old `#/generator` route still works as an alias).
 ## File layout
 
 ```
-index.html              Shell: header, nav, footer. Loads the four scripts.
+index.html              Shell: header, nav, footer. Loads the scripts.
 assets/css/styles.css   All styling. Design tokens at the top.
-assets/js/data.js       MODULES (the workshops), STATUS_BADGES,
-                        IMPACT_EXAMPLE, FAQ_KNOWLEDGE. Content only.
-assets/js/lessons.js    ACCOUNT_TYPES, IMPACT_METRICS, GAME_FORMATS,
-                        GRADE_PROFILES, DEVICE_GUIDES, PICTURE_ACTIVITIES,
-                        LESSON_PACKS, buildLessonPlan(), buildPacket().
+content/                ALL teaching content as plain files (spec 11):
+                        modules (+ lesson packs and game rounds), extra
+                        topics, games, official lessons, helper answers,
+                        sources. See content/README.md.
+assets/js/content.js    GENERATED from content/: MODULES, LESSON_PACKS,
+                        GAME_BANK, EXTRA_TOPICS, GAME_FORMATS,
+                        OFFICIAL_LESSONS. Never edit by hand.
+assets/js/helper-kb.js  GENERATED from content/: FAQ_KNOWLEDGE, KB_SRC.
+assets/js/data.js       STATUS_BADGES, IMPACT_EXAMPLE.
+assets/js/lessons.js    ACCOUNT_TYPES, IMPACT_METRICS, GRADE_PROFILES,
+                        DEVICE_GUIDES, PICTURE_ACTIVITIES, SETTINGS,
+                        buildLessonPlan(), buildPacket().
 assets/js/metrics.js    Privacy-safe aggregate counters in localStorage.
 assets/js/reach.js      Sends the students-reached count (spec 09). Holds
                         the Google Sheet address; see docs/impact-sheet/.
-assets/js/game-bank.js  Rounds for the builder's games (GAME_BANK) and the
-                        extra topics with cited sources (EXTRA_TOPICS).
+assets/js/game-bank.js  buildTopicGame(): turns a topic's rounds into a game.
 assets/js/play.js       Engines for the on-screen games (#/play/<game id>).
                         Their words live in GAME_FORMATS, not here.
 assets/js/app.js        Hash router + every screen.
 scripts/audit.js        End-to-end browser check (see Testing).
+scripts/build-content.js  Checks content/ and writes the GENERATED files.
+scripts/watch-jumpstart.js  Weekly check of the Jump$tart resources page.
 scripts/4h-build/       The two scripts that derive the 4-H edition.
+.github/workflows/      "Content" (rebuild on every PR/main push) and
+                        "Jump$tart watch" (weekly issue on new material).
 ```
 
-Content lives in `data.js` and `lessons.js` **on purpose**, so a student or
-educator can edit workshops without touching app logic. Keep that split.
+Content lives in `content/` **on purpose** (spec 11), so a student or
+educator can edit workshops without touching app logic. Keep that split:
+never put teaching content back into the JS files, and never edit
+`content.js` or `helper-kb.js` by hand.
 
 ---
 
@@ -181,11 +194,13 @@ The 4-H repo is **derived from this one**, not developed separately.
 
 ```bash
 # 1. copy the shared files into a working copy
-cp assets/js/app.js assets/js/data.js assets/js/helper-kb.js assets/js/lessons.js \
-   assets/js/official-lessons.js assets/js/play.js assets/js/reach.js  <copy>/assets/js/
-cp index.html <copy>/
+#    (content/ and scripts/ are needed too: strip.py rebuilds from content/)
+mkdir -p <copy>/assets/js
+cp assets/js/*.js <copy>/assets/js/
+rm -rf <copy>/content && cp -r content scripts index.html <copy>/
 
-# 2. remove the Jump$tart-only content
+# 2. remove the Jump$tart-only content (edits <copy>/content, then runs
+#    scripts/build-content.js there to regenerate content.js / helper-kb.js)
 python3 scripts/4h-build/strip.py <copy>
 
 # 3. rebrand
@@ -279,7 +294,7 @@ the screen without a server (spec 10). **The Facilitator dashboard was
 removed on 2026-10-30 at the owner's request**; `#/facilitator` opens the
 builder. Extra topics cite a `KB_SRC` source on every round and have no
 take-home or prep page. The "Other topic?" box only finds written topics
-and never invents one. `game-bank.js` isn't in the 4-H build yet.
+and never invents one.
 
 **Grades K–2 switches the generated plan to picture mode**: no reading,
 drawing and pointing instead of writing, two vocabulary words instead of

@@ -2,7 +2,7 @@
  * play.js — on-screen versions of games
  * -------------------------------------
  * Each engine draws one game into a container. The words, events and
- * messages live with the game in GAME_FORMATS (lessons.js), so they can
+ * messages live with the game in content/games/ (GAME_FORMATS), so they can
  * be edited without touching this file. A game opts in with
  * `play: { engine: "<name>", ... }`; app.js serves it at #/play/<game id>.
  *

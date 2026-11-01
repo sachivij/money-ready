@@ -1,0 +1,147 @@
+# Module: Save or Spend?
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: save-or-spend
+title: Save or Spend?
+emoji: 🐷
+gradeBand: Grade 3
+officialLesson: Grade 3 — Saving and Spending
+officialMaterials: ["Presentation", "Toolkit", "Worksheet"]
+minutes: 30
+keyConcept: Saving & delayed gratification
+activityType: This-or-that vote
+color: amber
+materials: ["Slides", "Vote screen", "Savings calculator", "Take-home card"]
+summary: Why saving even a little is a superpower — plus a live look at how weekly saving adds up to a goal.
+objective: Students can explain why saving matters and estimate time to reach a goal.
+interactive:
+  - This-or-that vote
+  - Live savings calculator
+  - Pay-yourself-first demo
+  - Reveal screen
+  - Take-home reflection
+challenge:
+  scenario: You want a $60 skateboard. You get $10 a week. A store has a $20 gadget on sale today. What's the smart move?
+  options:
+    - Buy the gadget — deals don't wait
+    - Save the full $10 toward the skateboard
+    - Save $5, keep $5 for now
+    - Give up on the skateboard
+  best: 2
+  timerSeconds: 30
+  round: 1
+reveal:
+  bestAnswer: C. Save $5, keep $5 for now
+  why: Saving something every week keeps your goal moving without feeling miserable. Blowing it all on the gadget resets your progress; saving a little consistently wins.
+  keyConcept: Delayed gratification — small saving now, bigger reward later
+  commonTrap: Letting a 'today only' deal derail a bigger goal
+  discussionPrompt: What's a goal worth waiting for?
+  applyIt: Pick one goal and figure out how many weeks it would take you to save for it.
+takeHome:
+  title: Our Savings Goal
+  prompt: Draw or name one thing your family would like to save for.
+  boxes: ["Save", "Spend", "Wait for it"]
+  familyQuestion: How much could we set aside each week?
+# K–2 picture take-home card (spec 05): one sentence, two boxes to draw in.
+takeHomeK2:
+  title: "Save or Spend?"
+  say: Draw something to save for. Draw something to spend on.
+  boxes:
+    - ["🐷", "Save for"]
+    - ["🛍️", "Spend on"]
+  grownUp: Ask your child: What is worth waiting for?
+prep:
+  openingScript: Saving money means keeping some instead of spending it all right now. Sounds hard — but it's a superpower. Today we'll see how a little bit, over and over, adds up faster than you'd think.
+  vocab:
+    - term: Save
+      def: Keep money now to use for a bigger goal later.
+    - term: Pay yourself first
+      def: Put money into savings BEFORE you spend any.
+    - term: Goal
+      def: Something you're saving toward on purpose.
+  steps:
+    - The superpower of saving (5 min)
+    - Live 'how long to save?' calculator (10 min)
+    - Pay-yourself-first demo (5 min)
+    - This-or-that vote (6 min)
+    - Confidence check + take-home (4 min)
+  discussionPrompts:
+    - What happens to your goal if you save more each week?
+    - Why is 'whatever's left' usually nothing?
+  printables: ["Savings goal card", "Weekly tracker", "Take-home card"]
+lesson_pack:
+  bestGames: ["would-you-rather", "four-corners"]
+  hook: Offer the class a deal: one small treat now, or double the treat if everyone waits until the end of the workshop. Take a vote and revisit at the end.
+  miniLesson: Saving means keeping some money now so a bigger goal is possible later. 'Pay yourself first' means you set money aside the moment it arrives, before you spend any of it — because 'whatever is left over' is usually nothing.
+  guidedPractice: Pick a class goal and a weekly amount, then work out together how many weeks it takes. Change the weekly amount and watch the number of weeks move.
+  checkUnderstanding: Students state one goal and how many weeks of saving it would take at an amount they choose.
+  extension: Students make a simple paper savings tracker with a box to color in for each week.
+  unpluggedSwap: Do the math on the whiteboard together instead of using the on-screen calculator, and use Would-You-Rather for the voting round.
+  commonQuestions:
+    - q: Why save if I can just ask my parents?
+      a: Reframe gently toward independence and choice: saving is what lets you decide without asking anyone.
+    - q: What if the thing I want goes on sale?
+      a: Great real-world wrinkle — a sale can be smart if the goal is unchanged, and a trap if it's a brand new want.
+game_rounds:
+  picture:
+    - q: Where does saved money go?
+      opts:
+        - ["🐷", "Piggy bank"]
+        - ["🗑️", "Trash"]
+      best: 0
+      why: We keep saved money safe in a piggy bank or a bank.
+    - q: Want a big toy later? Now we…
+      opts:
+        - ["🫙", "Save"]
+        - ["🍬", "Spend"]
+      best: 0
+      why: Saving now helps you get the big thing later.
+    - q: Which one is spending?
+      opts:
+        - ["🛒", "Buying a snack"]
+        - ["🐷", "Coins in a piggy bank"]
+      best: 0
+      why: Spending means using money to buy something.
+    - q: Your jar fills up slowly. What helps?
+      opts:
+        - ["⏳", "Wait and keep saving"]
+        - ["😩", "Give up"]
+      best: 0
+      why: Saving takes time. Keep going!
+  rounds:
+    - q: You get $10. You want a $30 game. What is the best plan?
+      opts:
+        - ["🫙", "Save some each week until you have $30"]
+        - ["🛍️", "Spend the $10 on something else now"]
+        - ["🤝", "Borrow $20 from a friend"]
+      best: 0
+      why: A savings goal and a little each week gets you there without owing anyone.
+    - q: What is a savings goal?
+      opts:
+        - ["🎯", "Something you are saving up for"]
+        - ["🥅", "A sports net"]
+        - ["💳", "A way to spend faster"]
+      best: 0
+      why: A goal gives your saving a reason, so it is easier to keep going.
+    - q: Why keep savings in a bank instead of under your bed?
+      opts:
+        - ["🏦", "It's safer and can earn interest"]
+        - ["🛏️", "Beds are for sleeping"]
+        - ["🎲", "No reason"]
+      best: 0
+      why: Banks keep money safe and many pay a little interest to savers.
+    - q: Which is an example of saving?
+      opts:
+        - ["🐷", "Putting part of your birthday money away"]
+        - ["🍕", "Buying pizza with all of it"]
+        - ["🎟️", "Buying a movie ticket"]
+      best: 0
+      why: Saving means keeping some money to use later.
+    - q: What is 'pay yourself first'?
+      opts:
+        - ["🫙", "Save a part as soon as you get money"]
+        - ["🧾", "Pay your bills last"]
+        - ["🛒", "Buy what you want first"]
+      best: 0
+      why: Saving first means it actually happens, before the money gets spent.

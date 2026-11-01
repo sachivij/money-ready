@@ -1,0 +1,51 @@
+# Game: Credit Ladder
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: credit-ladder
+multiRound: true
+name: Credit Ladder
+emoji: 🪜
+devices: none
+minutes: 15
+group: Teams of 4–5
+energy: Medium
+materials:
+  - A 7-step ladder taped on the floor or drawn on the board
+  - One marker per team
+  - Choice cards (below)
+  - A and B cards for each team
+summary: Teams climb a trust ladder with their borrowing choices. Paying on time moves you up; missed payments slide you down — and the higher you are, the cheaper borrowing gets.
+howToPlay:
+  - "Draw a 7-step ladder. Every team starts on step 4. Explain: the higher you are, the more lenders trust you."
+  - Read a choice card. Each team secretly picks A or B, then all reveal at once.
+  - Move every team up or down as the card says.
+  - "After every second card, each team must borrow 5 coins. What it costs depends on their step: steps 6–7 pay 1 extra, steps 3–5 pay 2 extra, steps 1–2 pay 4 extra. Keep a running total on the board."
+  - "After six cards, compare: where did each team end, and how much extra did borrowing cost them?"
+  - Discuss what moved teams up fastest and what made them slide.
+teenTip: The extra-cost total is what makes it click: the same loan costs one team 3 coins and another 12. Point straight at the numbers.
+topics:
+  - credit-climb
+  - college-cost-choices
+  - paycheck-puzzle
+  - banking-basics
+reinforces: Credit is trust: on-time payments build it, late payments and maxed-out cards hurt it, and a good history makes borrowing cheaper.
+levels:
+  35: Use borrowing from a friend and library late fees. Keep the step-and-cost idea with small numbers.
+  68: Use the full cards and the extra-cost tally.
+  912: Call the ladder a credit score (300–850). Add cards on credit utilization, checking your own credit report, and co-signing for a friend.
+  k2: Make it about borrowing toys and library books. Giving things back on time moves you up the trust ladder; losing them moves you down. No money math — the top step is trusted with the class's special pencil.
+debrief:
+  - What moved your team up the fastest?
+  - How much more did borrowing cost the bottom team than the top team?
+  - Why would a lender charge more to someone lower on the ladder?
+access: The ladder shows every move, so nobody has to follow by listening alone. Teams decide together, so one confident reader can read the card for the group.
+cards:
+  title: Choice cards
+  items:
+    - "Your phone bill is due. A: pay it on time (up 1). B: pay it two weeks late (down 2)."
+    - "A store offers a free T-shirt if you open their card. A: sign up for the shirt (down 1 — another new account). B: no thanks (stay)."
+    - "You have a $500 limit. A: use $450 of it (down 1). B: keep it under $150 (up 1)."
+    - "You can't pay the whole bill this month. A: pay the minimum, on time (stay). B: skip it (down 2)."
+    - "A: check your credit report and fix a mistake you find (up 1). B: never look at it (stay)."
+    - "A friend asks you to co-sign their loan. A: say yes — they miss payments (down 2). B: say no (stay)."

@@ -1,11 +1,18 @@
 # Content
 
-Everything the Standards Helper says lives here as small text files, one per answer. You can change it from the GitHub website without touching any code. Lessons, games and modules will move here too (see [spec 11](../docs/specs/11-content-files.md)).
+All of the app's teaching content lives here as plain text files: modules, lessons, games and Standards Helper answers. You can change any of it from the GitHub website without touching code. See [spec 11](../docs/specs/11-content-files.md).
 
-| Folder | What's in it |
-| --- | --- |
-| `helper/` | One file per Standards Helper answer. |
-| `sources/` | The approved sources. An answer can only cite a source listed here. |
+| Folder | What's in it | Format |
+| --- | --- | --- |
+| `modules/` | One file per module (workshop): the card, challenge, reveal, take-home card and volunteer prep. Each file also holds the module's `lesson_pack` (the extra teaching the Workshop Builder adds) and its `game_rounds` (the questions for the builder's game). | YAML |
+| `extra-topics/` | Topics that aren't modules (coins, insurance, taxes and so on), each written from a trusted source, with its `game_rounds`. | YAML |
+| `games/` | One file per game format (Four Corners, Budget Relay and so on): how to play, a version per age group, printable cards. | YAML |
+| `official-lessons/` | The official Jump$tart Teen Teach-In lessons, step by step, following each slide deck. | YAML |
+| `helper/` | One file per Standards Helper answer. | Markdown |
+| `sources/` | The approved sources. Answers and extra-topic rounds can only cite a source listed here. | Markdown |
+| `watch/` | Written by the weekly Jump$tart check. Don't edit it. | |
+
+The number at the start of each file name sets the order on the site. Files starting with `_` are templates and never appear.
 
 ## Add or change a helper answer (on the GitHub website)
 
@@ -41,9 +48,56 @@ Say Jump$tart adds a new deck, "Grade 2: Earning Income", to the [Teen Teach-In 
 5. **You review.** Open the Vercel Preview link on the pull request, ask the helper "what is income?", and read the answer.
 6. **You merge.** Within a minute or two the live site answers the new question.
 
-Until spec 11 moves them, the official lessons (`assets/js/official-lessons.js`), games and modules are still edited in the JS files. Step 3 is the same for them: Claude makes the change in a pull request, and you review and merge it.
+A new official lesson works the same way. Claude adds a file to `official-lessons/` (and the module it belongs to, if it's a new topic), the check runs, and you review it on the preview and merge.
 
-## The header, line by line
+## Editing a module, game, topic or lesson (the YAML files)
+
+These files are YAML: "name: value" lines, indented with **2 spaces** to show what belongs to what. Open a file on GitHub and click the pencil to edit it. Most edits are just changing the words after a colon. For example, in `modules/04-needs-vs-wants.yaml`:
+
+```yaml
+title: Needs vs. Wants
+minutes: 30
+summary: Students sort everyday items into needs and wants.
+materials: ["Picture cards", "Sorting mat"]
+challenge:
+  scenario: You have $10. Which should you buy first?
+  options:
+    - A sandwich for lunch
+    - A new sticker pack
+  best: 0
+```
+
+The rules that matter:
+
+- **Indent with spaces, never tabs.** Things inside a group sit 2 spaces further in, like `scenario:` under `challenge:`.
+- **A list** is one item per line starting with `- `. A short list can go on one line: `["one", "two"]`.
+- **Counting starts at 0.** `best: 0` means the first option is right, `best: 1` the second. In a game round, `best: -1` means any answer is OK.
+- **Use double quotes** around text that starts with a quote, a bracket, `- ` or `#`, or that is only a number or true/false: `"42"`.
+- **Text over several lines** goes after `|-`, indented 2 more spaces than its name.
+- Lines starting with `#` are notes for editors and are ignored.
+- Every file needs `approved_by:` and `approved_on:` at the top. Update them when you change the content.
+
+**A game round** (in `game_rounds`, under `picture:` for Grades K–2 or `rounds:` for Grades 3–12):
+
+```yaml
+    - q: Which one do we need?
+      opts:
+        - ["💧", "Water"]
+        - ["🍭", "Candy"]
+      best: 0
+      why: We need water to live. Candy is a want.
+      src: cfpbKids
+```
+
+Each answer in `opts` is a picture and a label. `src` (optional on modules, required on extra topics) is a source `key` from `sources/`. Keep facts general and stable, never figures that change every year, and never ask students about family money.
+
+**A game** (`games/`): `devices` is `none` (fully unplugged), `shared` (one screen at the front) or `personal` (students' own devices). `levels` has one version per age group: `k2`, `35`, `68` and `912`. A module's `lesson_pack` → `bestGames` lists the game ids that suit it best, strongest first.
+
+**An official lesson** (`official-lessons/`): `module` is the id of the module it belongs to. Each step has a `name`, its `minutes`, the deck `slides` it uses, `what` happens, a short `script` and `how` to run it. Mark the hands-on step a volunteer may swap for a game with `activity: true`. The Workshop Builder only uses it when the module has an `officialLesson` line.
+
+**To add a new one**, copy an existing file in the same folder, give the copy the next number and a new `id`, and change the content. If something is wrong, the Content check names the file and the line.
+
+## The helper answer header, line by line
 
 ```
 ---
@@ -71,7 +125,7 @@ Copy `sources/_template.md` into a new numbered file in `sources/`. The `kind` i
 
 ## How it reaches the site
 
-The site can't read these files directly. A browser won't load extra files when `index.html` is opened from disk, and Vercel has no build step. So the **Content** GitHub Action runs `scripts/build-content.js` on every pull request and on every change to `main`. The script checks the files, writes `assets/js/helper-kb.js` and saves it back to the branch. Never edit `helper-kb.js` by hand, because the next run overwrites it.
+The site can't read these files directly. A browser won't load extra files when `index.html` is opened from disk, and Vercel has no build step. So the **Content** GitHub Action runs `scripts/build-content.js` on every pull request and on every change to `main`. The script checks the files, writes `assets/js/content.js` and `assets/js/helper-kb.js`, and saves them back to the branch. Never edit those two files by hand, because the next run overwrites them.
 
 To run it yourself: `node scripts/build-content.js`.
 

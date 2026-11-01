@@ -1,0 +1,111 @@
+# Extra topic: Insurance Basics
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: insurance-basics
+title: Insurance Basics
+emoji: ☂️
+sources: ["naic"]
+tags:
+  - insurance
+  - premium
+  - deductible
+  - renters insurance
+  - car insurance
+  - health insurance
+  - risk
+summary: How insurance protects people from big, unexpected costs.
+objective: Students can explain what insurance does and define premium and deductible.
+reveal:
+  keyConcept: Insurance shares the cost of big surprises
+  discussionPrompt: What is something people protect with insurance, and why?
+takeHome:
+  title: Plan for Surprises
+  familyQuestion: What is one way our family gets ready for surprises?
+prep:
+  openingScript: Raise your hand if you've ever brought an umbrella just in case. Insurance is a money umbrella. Let's see how it works.
+  vocab:
+    - term: Insurance
+      def: A plan that helps pay for big, unexpected losses.
+    - term: Premium
+      def: What you pay regularly for insurance.
+    - term: Deductible
+      def: What you pay before insurance pays.
+    - term: Risk
+      def: The chance something bad happens.
+pack:
+  bestGames: ["four-corners", "would-you-rather"]
+  hook: Hold up an umbrella. Ask why you'd carry it on a sunny morning.
+  miniLesson: Insurance means many people pay a little so nobody has to pay a huge cost alone when something bad happens.
+game_rounds:
+  picture:
+    - q: It might rain. What do you bring?
+      opts:
+        - ["☂️", "Umbrella"]
+        - ["🕶️", "Sunglasses"]
+      best: 0
+      why: We plan for surprises. Insurance is like an umbrella for money.
+      src: naic
+    - q: Riding a bike, you wear…
+      opts:
+        - ["⛑️", "Helmet"]
+        - ["🎩", "Top hat"]
+      best: 0
+      why: A helmet protects you. Insurance protects money.
+      src: naic
+    - q: Something breaks. Who helps pay?
+      opts:
+        - ["🛡️", "Insurance"]
+        - ["🧚", "A fairy"]
+      best: 0
+      why: Insurance helps pay when bad things happen.
+      src: naic
+    - q: Are surprises always fun?
+      opts:
+        - ["🙅", "No"]
+        - ["🙆", "Yes"]
+      best: 0
+      why: Some surprises cost money. Planning helps.
+      src: naic
+  rounds:
+    - q: What does insurance do?
+      opts:
+        - ["🛡️", "Helps pay for big, unexpected losses"]
+        - ["📈", "Makes money grow"]
+        - ["🎟️", "Gives you discounts"]
+      best: 0
+      why: You pay a small amount regularly so a big loss doesn't fall on you alone.
+      src: naic
+    - q: What is a premium?
+      opts:
+        - ["💵", "What you pay to keep your insurance"]
+        - ["⭐", "The best gas"]
+        - ["🎁", "A prize"]
+      best: 0
+      why: The premium is your regular payment for coverage.
+      src: naic
+    - q: What is a deductible?
+      opts:
+        - ["🧾", "The amount you pay before insurance pays"]
+        - ["➖", "A discount"]
+        - ["📄", "A kind of policy"]
+      best: 0
+      why: A higher deductible usually means a lower premium, and more cost to you when something happens.
+      src: naic
+    - q: Which insurance covers a renter's belongings?
+      opts:
+        - ["🏢", "Renters insurance"]
+        - ["🚗", "Car insurance"]
+        - ["🩺", "Health insurance"]
+      best: 0
+      why: Renters insurance covers your stuff; the landlord's policy covers the building.
+      src: naic
+    - q: Why do drivers need car insurance?
+      opts:
+        - - ⚖️
+          - States require it to cover damage or injuries
+        - ["🎨", "To change the car's color"]
+        - ["⛽", "For free gas"]
+      best: 0
+      why: States set rules so drivers can pay for harm they cause.
+      src: naic
