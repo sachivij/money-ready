@@ -1421,6 +1421,54 @@ const PICTURE_ACTIVITIES = [
 ];
 
 /* ===================================================================
+   SETTINGS
+   Where the workshop happens changes the setup and the energy level.
+   =================================================================== */
+const SETTINGS = {
+  classroom: {
+    label: "School classroom",
+    icon: "🏫",
+    tips: [
+      "Ask the teacher to stay in the room. They know the students and keep the room settled.",
+      "Find out the class's quiet signal before you start and use the same one.",
+      "Check whether you can write on the board, and where the take-home cards should go at the end.",
+    ],
+    materials: [],
+    energy: 0,
+  },
+  club: {
+    label: "Club or after-school program",
+    icon: "🍀",
+    tips: [
+      "Ages are often mixed. Pair an older student with a younger one so everyone can take part.",
+      "Students arrive tired at the end of a school day. Open with something that gets them moving.",
+      "There may be no board. Bring chart paper and tape so you can still write the key idea up.",
+    ],
+    materials: ["Chart paper and tape"],
+    energy: 1,
+  },
+  library: {
+    label: "Library or community room",
+    icon: "📚",
+    tips: [
+      "The room may be shared or need to stay quiet. Check the noise rules with the staff before you plan loud games.",
+      "Arrive early to move tables. Ask staff how the room should be left afterwards.",
+      "People may drop in late. Keep a short welcome ready to catch them up.",
+    ],
+    materials: ["Chart paper and tape"],
+    energy: -1,
+  },
+};
+
+/* Class sizes offered in the builder, and what each one means for groups. */
+const CLASS_SIZES = [
+  { value: 10, label: "Up to 10 students" },
+  { value: 20, label: "11–20 students" },
+  { value: 30, label: "21–30 students" },
+  { value: 40, label: "31 or more students" },
+];
+
+/* ===================================================================
    LESSON GENERATOR
    Assembles a complete, timed lesson plan from a module's core data,
    its lesson pack, and games that fit the room's device situation.
@@ -1431,6 +1479,9 @@ function buildLessonPlan(moduleId, opts) {
   var devices = opts.devices === "shared" || opts.devices === "personal" ? "devices" : opts.devices || "none"; // "none" | "devices"
   var grade = opts.grade || "Grades 3–5";
   var groupSize = opts.groupSize || "Whole class";
+  var students = Number(opts.students) || 20;
+  var settingId = SETTINGS[opts.setting] ? opts.setting : "classroom";
+  var setting = SETTINGS[settingId];
 
   // A module, or one of the extra topics written from trusted sources.
   var mod = findTopic(moduleId);
@@ -1459,6 +1510,8 @@ function buildLessonPlan(moduleId, opts) {
     groupSize: groupSize,
     devices: devices,
     gameBudget: Math.max(minutes - 12, 8),
+    students: students,
+    settingEnergy: setting.energy,
   });
   var mainGame = null;
   for (var gi = 0; gi < ranked.length; gi++) {
@@ -1476,7 +1529,7 @@ function buildLessonPlan(moduleId, opts) {
   // and to what technology is actually in the room.
   var steps = [];
   function add(name, mins, what, script, how) {
-    steps.push({ name: name, minutes: mins, what: what, script: script || "", how: how || "" });
+    steps.push({ id: steps.length, name: name, minutes: mins, what: what, script: script || "", how: how || "" });
   }
 
   var short = minutes <= 20;
@@ -1598,6 +1651,27 @@ function buildLessonPlan(moduleId, opts) {
     }
   }
 
+  // The volunteer's own edits: `order` lists which built steps to keep,
+  // in the order they want them. Minutes from removed steps go to the main
+  // activity so the plan still fills the slot.
+  var edited = false;
+  if (opts.order && opts.order.length) {
+    var kept = [];
+    opts.order.forEach(function (i) {
+      if (steps[i] && kept.indexOf(steps[i]) < 0) kept.push(steps[i]);
+    });
+    if (kept.length) {
+      edited = true;
+      var freed = total - kept.reduce(function (sum, s) { return sum + s.minutes; }, 0);
+      if (freed > 0) {
+        var target = kept.filter(function (s) { return s.name.indexOf("Main activity") === 0; })[0] ||
+          kept.slice().sort(function (a, b) { return b.minutes - a.minutes; })[0];
+        target.minutes += freed;
+      }
+      steps = kept;
+    }
+  }
+
   // Group-size guidance.
   var groupTips = {
     "Whole class": "Keep every activity as one group. Use call-and-response and whole-room movement so nobody hides at the back.",
@@ -1617,7 +1691,11 @@ function buildLessonPlan(moduleId, opts) {
     pack: pack,
     grade: grade,
     groupSize: groupSize,
-    groupTip: groupTips[groupSize] || "",
+    groupTip: (groupTips[groupSize] || "") + groupCountTip(groupSize, students),
+    students: students,
+    setting: setting,
+    settingId: settingId,
+    edited: edited,
     devices: devices,
     deviceGuide: deviceGuide,
     profile: profile,
@@ -1631,9 +1709,24 @@ function buildLessonPlan(moduleId, opts) {
     alternatives: alternatives,
     topicGame: topicGame,
     materials: (mainGame ? mainGame.materials : []).concat(
-      devices === "none" ? ["Printed take-home cards"] : ["Screen or projector", "Printed take-home cards"]
-    ).concat(picture ? ["Picture cards or printed images", "Paper and crayons for drawing"] : []),
+      devices === "none" ? [] : ["Screen or projector"]
+    ).concat(["Printed take-home cards (" + (students + Math.ceil(students / 10)) + ", a few spares included)"])
+     .concat(picture ? ["Picture cards or printed images", "Paper and crayons for drawing (" + students + " sets)"] : [])
+     .concat(setting.materials),
   };
+}
+
+/* How many groups that size makes, as a sentence (or nothing). */
+function groupCountTip(groupSize, students) {
+  if (groupSize === "Small groups") {
+    var g = Math.max(1, Math.round(students / 4));
+    return " With about " + students + " students, that is about " + g + (g === 1 ? " group." : " groups.");
+  }
+  if (groupSize === "Pairs") {
+    return " With about " + students + " students, that is about " + Math.ceil(students / 2) + " pairs" +
+      (students % 2 ? ", so plan for one group of three." : ".");
+  }
+  return "";
 }
 
 /* ===================================================================
@@ -1795,7 +1888,7 @@ function gameTopics(g) {
 }
 
 /* Score games for a plan, best first. Ties keep the GAME_FORMATS order.
-   ctx: { bestGames, moduleId, gradeId, groupSize, devices, gameBudget } */
+   ctx: { bestGames, moduleId, gradeId, groupSize, devices, gameBudget, students, settingEnergy } */
 function rankGames(games, ctx) {
   // Discussion-heavy games ask too much of pre-readers; teens like them.
   var talky = ["story-circle", "two-truths-myth", "would-you-rather"];
@@ -1822,6 +1915,16 @@ function rankGames(games, ctx) {
       if (/pairs/i.test(grp)) s += 1;
       if (/teams|groups of|circle/i.test(grp)) s -= 2;
     }
+    // Big rooms need games everyone can do at once; small ones can sit in a circle.
+    if (ctx.students >= 31) {
+      if (g.id === "story-circle") s -= 3;
+      if (/whole class/i.test(grp)) s += 1;
+    } else if (ctx.students <= 10) {
+      if (g.id === "story-circle") s += 1;
+    }
+    // Quiet rooms lose points for loud games; clubs gain them.
+    if (ctx.settingEnergy < 0 && g.energy === "High") s -= 2;
+    if (ctx.settingEnergy > 0 && g.energy === "High") s += 1;
     return s;
   }
   return games
@@ -1888,6 +1991,7 @@ function planToText(plan, packet) {
   var lines = [
     "MONEY READY WORKSHOP PLAN",
     m.title + " | " + plan.grade + " | " + plan.totalMinutes + " min | " + plan.deviceGuide.label + " | " + plan.groupSize,
+    "About " + plan.students + " students | " + plan.setting.label,
     "",
     "LEARNING OBJECTIVE: " + m.objective,
     "",
@@ -1906,6 +2010,8 @@ function planToText(plan, packet) {
     });
     if (s.how) lines.push("  Tip: " + s.how);
   });
+  lines.push("", "SETTING: " + plan.setting.label);
+  plan.setting.tips.forEach(function (t) { lines.push("  - " + t); });
   lines.push("", "MATERIALS");
   plan.materials.forEach(function (x) { lines.push("[ ] " + x); });
   if (plan.topicGame) lines.push("", "=".repeat(48), topicGameToText(plan.topicGame));
