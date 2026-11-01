@@ -1,0 +1,40 @@
+# Opens every screen of the site in a real browser and fails if anything is
+# broken: a missing element, a JavaScript error, a request to another site.
+# Runs on every pull request and every push to main. See scripts/audit.js.
+name: Site check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audit-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install a browser for the check
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save playwright@1.49.1
+          npx playwright install --with-deps chromium
+
+      - name: Serve the site and check every screen
+        run: |
+          python3 -m http.server 8000 >/dev/null 2>&1 &
+          sleep 1
+          BASE=http://localhost:8000/index.html node scripts/audit.js
