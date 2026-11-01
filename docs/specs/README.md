@@ -5,11 +5,14 @@ To claim a spec, put your name in Owner and push to `main` before you start. Eac
 | # | Spec | Status | Owner |
 | --- | --- | --- | --- |
 | 01 | [Workshop builder: smarter, shareable plans](01-workshop-builder.md) | Phases 1 and 2 done | Sumeet |
-| 02 | [Landing page "where do I go?" flow chart](02-landing-flow-chart.md) | In progress | Ridhi Poranki |
+| 02 | [Landing page "where do I go?" flow chart](02-landing-flow-chart.md) | Done | Ridhi Poranki |
 | 03 | [Works on school computers](03-school-computers.md) | Not started | |
-| 04 | [4-H edition: remove the clover](04-4h-branding.md) | Likely done (💵 mark); confirm on 4-H site | |
-| 05 | [K–2 picture mode](05-k2-picture-mode.md) | Not started | |
-| 06 | [More games](06-more-games.md) | Not started | |
+| 04 | [4-H edition: remove the clover](04-4h-branding.md) | Done (💵 mark, confirmed on the 4-H site 2026-10-30) | Sumeet |
+| 05 | [K–2 picture mode](05-k2-picture-mode.md) | In progress (K–2 games first) | Sumeet |
+| 06 | [More games](06-more-games.md) | Done | Ridhi Poranki |
 | 07 | [Volunteer and school matching](07-matching.md) | Needs decisions | |
+| 08 | [Builder makes playable games, incl. other topics](08-generated-games.md) | Done | Sumeet |
+| 09 | [Count students reached and workshops used](09-impact-tracking.md) | Done | Ridhi Poranki |
+| 10 | [Students join the game live on their own devices](10-live-join.md) | Needs decisions | Sumeet |
 
 Ground rules for every spec: plain HTML/CSS/JS, no backend, no personal data, works offline, content stays editable in `assets/js/data.js` and `assets/js/lessons.js`.

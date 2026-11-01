@@ -6,15 +6,12 @@
  *
  * Screens:
  *   #/               Landing page
- *   #/modules        Module library (10 cards)
  *   #/module/:id     Lesson transformation
  *   #/challenge/:id  Student challenge + reveal
- *   #/facilitator    Facilitator dashboard
- *   #/prep           Teen volunteer prep
+ *   #/prep           Teen volunteer prep (any topic, age, length)
+ *   #/resources      What each official resource is
  *   #/builder        Toolkit builder (guided packet workflow)
- *   #/portal         Request-a-volunteer / partner portal
  *   #/helper         Standards-grounded helper (retrieval only)
- *   #/impact         Impact snapshot + measurement layer
  *   #/take-home/:id  Printable take-home card
  */
 (function () {
@@ -108,13 +105,12 @@
 
   // ================================================================
   // ACCOUNT TYPE (volunteer / school / organization)
-  // Stored on this device only — it is a view preference, not a login.
-  // No password, no personal data, nothing sent anywhere.
+  // There is no "who's using the toolkit?" question any more. Picking a
+  // path in the home page chart quietly remembers the role on this device,
+  // so the students-reached count knows who started the activity.
   // ================================================================
   var ROLE_KEY = "moneyReady.accountType.v1";
-  // In-memory fallback so the choice still sticks for the session when
-  // localStorage is unavailable — private browsing, or a browser set to
-  // block site data. Without this the picker reappears on every page.
+  // In-memory fallback for when localStorage is unavailable.
   var roleMemory = "";
 
   function getRole() {
@@ -123,57 +119,69 @@
   function setRole(id) {
     roleMemory = id;
     try { localStorage.setItem(ROLE_KEY, id); } catch (e) {}
-    updateRoleChip();
   }
   function roleDef(id) {
     var r = ACCOUNT_TYPES.filter(function (a) { return a.id === (id || getRole()); })[0];
     return r || null;
   }
-  function updateRoleChip() {
-    var lab = document.getElementById("roleChipLabel");
-    if (!lab) return;
-    var r = roleDef();
-    lab.textContent = r ? r.label : "Choose role";
-    var chip = document.getElementById("roleChip");
-    if (chip) chip.firstChild.nodeValue = (r ? r.emoji : "👤") + " ";
-  }
 
-  // The picker. `force` shows it even if a role is already chosen.
-  function showRolePicker(force) {
-    if (!force && getRole()) return;
-    var current = getRole();
+  // ================================================================
+  // STUDENTS REACHED (spec 09)
+  // Before a volunteer or teacher uses something — builds a plan or
+  // opens an on-screen game — ask how many students will
+  // take part. An answer is required to continue; "Go back" leaves without
+  // counting. Organizations (picked on the home page chart) aren't asked.
+  // Anyone who never picked a path counts as a volunteer, the main user.
+  // reach.js sends the count.
+  // ================================================================
+  function askStudents(kind, item, onDone) {
+    var role = getRole() || "volunteer";
+    if ((role !== "volunteer" && role !== "school") || Reach.alreadyCounted(kind, item)) return onDone();
+
+    var old = document.getElementById("studentsOverlay");
+    if (old) old.remove();
     var el = document.createElement("div");
     el.className = "role-overlay";
-    el.id = "roleOverlay";
+    el.id = "studentsOverlay";
     el.innerHTML =
-      '<div class="role-modal" role="dialog" aria-modal="true" aria-label="Choose your account type">' +
-        '<div class="eyebrow">Welcome to Money Ready</div>' +
-        "<h2>Who's using the toolkit?</h2>" +
-        '<p class="muted" style="margin-bottom:0">Everything in the toolkit is the same for everyone — this only changes which ' +
-          "impact numbers you see, so each group gets the view that's useful to them. You can switch anytime.</p>" +
-        '<div class="role-options">' +
-          ACCOUNT_TYPES.map(function (a) {
-            return '<button class="role-option' + (a.id === current ? " on" : "") + '" data-role="' + a.id + '">' +
-              '<span class="ro-emoji">' + a.emoji + "</span>" +
-              '<span class="ro-name">' + esc(a.label) + "</span>" +
-              '<span class="ro-blurb">' + esc(a.blurb) + "</span></button>";
-          }).join("") +
+      '<form class="role-modal students-modal" role="dialog" aria-modal="true" aria-labelledby="studentsTitle" novalidate>' +
+        '<div class="eyebrow">Before you start</div>' +
+        '<h2 id="studentsTitle">How many students will be participating in this activity?</h2>' +
+        '<label class="students-field"><span class="sr-only">Number of students</span>' +
+          '<input id="studentsInput" type="number" inputmode="numeric" min="1" max="' + Reach.MAX_STUDENTS +
+            '" step="1" placeholder="e.g. 24" required aria-describedby="studentsHint"></label>' +
+        '<p id="studentsHint" class="students-hint" aria-live="polite">Enter a whole number from 1 to ' + Reach.MAX_STUDENTS + ".</p>" +
+        '<div class="students-actions">' +
+          '<button type="submit" class="btn btn-primary btn-lg" id="studentsGo" disabled>Continue →</button>' +
+          '<button type="button" class="btn btn-ghost" id="studentsBack">Go back</button>' +
         "</div>" +
-        '<p class="role-note">🔒 This is a view preference saved on this device only — not an account. ' +
-          "There is no password and no personal information is collected.</p>" +
-      "</div>";
+        '<p class="role-note">🔒 We count how many students Money Ready reaches. Only this number and the activity are sent to ' +
+          "the project team — never names or anything about your students.</p>" +
+      "</form>";
     document.body.appendChild(el);
-    el.querySelectorAll(".role-option").forEach(function (b) {
-      b.addEventListener("click", function () {
-        setRole(b.getAttribute("data-role"));
-        el.remove();
-        route(); // re-render so the impact view matches
-      });
+    var input = el.querySelector("#studentsInput");
+    var go = el.querySelector("#studentsGo");
+    var hint = el.querySelector("#studentsHint");
+    input.addEventListener("input", function () {
+      var ok = Reach.parseStudents(input.value) !== null;
+      go.disabled = !ok;
+      hint.classList.toggle("bad", !ok && input.value !== "");
     });
-    // Clicking the dim background closes only if a role already exists.
-    el.addEventListener("click", function (ev) {
-      if (ev.target === el && getRole()) el.remove();
+    el.querySelector("form").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var n = Reach.parseStudents(input.value);
+      if (n === null) { hint.classList.add("bad"); input.focus(); return; }
+      Reach.record(kind, item, n, role);
+      el.remove();
+      onDone();
     });
+    function back() {
+      el.remove();
+      if (history.length > 1) history.back(); else location.hash = "#/";
+    }
+    el.querySelector("#studentsBack").addEventListener("click", back);
+    el.addEventListener("keydown", function (ev) { if (ev.key === "Escape") back(); });
+    input.focus();
   }
 
   // ================================================================
@@ -185,9 +193,11 @@
     // Loudoun 4-H edition) fall back to the general layout automatically.
     var official = officialModules();
     var elementary = official.length > 0;
-    var featured = elementary ? official : MODULES.slice(0, 6);
+    // The page reads top to bottom as: where do I go (hero chart), how a
+    // workshop works, every page explained, why it works, and the pilot
+    // plan for organizers. The lessons themselves live on the Modules page.
     app.innerHTML =
-      // Hero
+      // Hero: what this is, and the "what do you want to do?" chart
       '<section class="hero"><div class="wrap hero-grid">' +
         "<div>" +
           '<div class="eyebrow">Money Ready · Virginia Interactive Toolkit</div>' +
@@ -201,26 +211,51 @@
               '<span class="badge amber">🙋 Taught by teen volunteers</span>' +
               '<span class="badge blue">🙌 Works without devices</span>' +
             "</div>" : "") +
-          '<div class="hero-cta">' +
-            '<a class="btn btn-primary btn-lg" href="#/modules">See Example Modules</a>' +
-            '<a class="btn btn-secondary btn-lg" href="#/facilitator">View Workshop Flow</a>' +
-          "</div>" +
           '<p class="muted" style="font-size:.85rem">Educational only · Privacy-safe by design · ' +
             "Pending review and approval by Virginia Jump$tart</p>" +
         "</div>" +
-        '<div class="hero-art">' +
-          miniCard("🎮", "Live scenario challenge", "Students vote on their own device or a shared screen") +
-          miniCard("📊", "Instant class results", "See how the room answered, then discuss") +
-          miniCard("🧑‍🏫", "Confident teen volunteers", "Opening scripts, vocab, and practice mode") +
-          miniCard("🔒", "Privacy-safe metrics", "Aggregate only — no names, no logins") +
+        '<div class="hero-art">' + pathChart() + "</div>" +
+      "</div></section>" +
+
+      // How a workshop works
+      '<section class="section" style="background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">' +
+        '<div class="center" style="margin-bottom:34px"><div class="eyebrow">How it works</div>' +
+          "<h2>Every workshop follows the same four steps</h2></div>" +
+        '<div class="steps">' +
+          howStep(1, "Pick a module", elementary ? "Choose the official Grade 1–4 lesson you're teaching, or any module from the wider library." : "Choose a topic and grade band from the library of ready-made workshops.") +
+          howStep(2, "Run the challenge", "Students face a real-life money scenario and vote — on a shared screen, or by walking to a corner of the room.") +
+          howStep(3, "Reveal & discuss", "Show the best answer, the key concept, and the common trap, then talk it through.") +
+          howStep(4, "Take it home", "Students leave with a fridge-friendly card that keeps the money talk going with family.") +
         "</div>" +
       "</div></section>" +
-      badgeStrip() +
 
-      // Why interactive learning
+      // Every page, explained
+      '<section class="section" style="background:var(--cream-2)"><div class="wrap">' +
+        '<div class="center" style="margin-bottom:30px"><div class="eyebrow">Every page, explained</div>' +
+          "<h2>Still not sure where to click?</h2>" +
+          '<p class="muted" style="max-width:56ch;margin:0 auto">Find what you\'re trying to do, and go straight there.</p></div>' +
+        '<div class="grid grid-2">' +
+          navGuide("🛠️", "Workshop Builder", "#/builder",
+            "I'm teaching a workshop and need to prepare",
+            "Start here. Answer four questions and get a timed lesson plan plus the whole packet — parent letter, checklist, deck outline, everything.") +
+          navGuide("📚", "Resources", "#/resources",
+            "I want to know what the official materials are",
+            "A short explanation of each official Teen Teach-In lesson, the partner programs, and the trusted sources the toolkit uses.") +
+          navGuide("💪", "Volunteer Prep", "#/prep",
+            "I'm nervous and want to practice first",
+            "Pick any topic, age group and length. Get a script to say out loud, vocabulary, timed steps, answers to questions students ask, and a practice run.") +
+          navGuide("🎲", "Games", "#/games",
+            "I need an activity, and there may be no screens",
+            GAME_FORMATS.length + " games you can drop into any topic. " + unpluggedGames() + " of them need no technology at all.") +
+        "</div>" +
+        '<p class="center muted mt-3" style="font-size:.88rem">Also here: ' +
+          '<a href="#/helper">Standards Helper</a> for quick answers to financial-literacy questions.</p>' +
+      "</div></section>" +
+
+      // Why it works
       '<section class="section"><div class="wrap">' +
         '<div class="center" style="max-width:680px;margin:0 auto 36px">' +
-          '<div class="eyebrow">Why interactive learning</div>' +
+          '<div class="eyebrow">Why it works</div>' +
           "<h2>" + (elementary
             ? "Young students remember what they do — not what they sit through"
             : "Students remember what they do — not what they sit through") + "</h2>" +
@@ -231,113 +266,22 @@
         '<div class="grid grid-3">' +
           feature("green", "🙋", "Active, not passive", "Every module has a decision to make and a vote to cast, so students participate instead of just listening.") +
           feature("amber", "💪", "Confidence for volunteers", "Say-this-out-loud scripts and a practice mode mean teen volunteers always know what comes next.") +
-          feature("blue", "🔁", "Repeatable by design", "A consistent flow — challenge, vote, reveal, discuss, take home — that works for any topic or grade.") +
+          feature("blue", "🙌", "No screens needed", unpluggedGames() + " of our " + GAME_FORMATS.length + " games run with just movement, cards, and conversation. A workshop should never fail because the wifi did.") +
         "</div>" +
-        '<div class="grid grid-2 mt-3">' +
-          '<a class="card feature green" href="#/games" style="text-decoration:none;color:inherit">' +
-            '<div class="ico">🙌</div><h3>Games that need no devices</h3>' +
-            '<p class="muted mb-0">Ten of our twelve games run with zero screens — just movement, cards, and conversation. ' +
-            "A workshop should never fail because the wifi did.</p></a>" +
-          '<a class="card feature amber" href="#/builder" style="text-decoration:none;color:inherit">' +
-            '<div class="ico">🛠️</div><h3>Workshop builder</h3>' +
-            '<p class="muted mb-0">Pick a topic, age, length, and what technology you have — get a timed plan and the ' +
-            "whole packet. Choose K–2 and it turns picture-based.</p></a>" +
-        "</div>" +
-      "</div></section>" +
-
-      // How the toolkit works
-      '<section class="section" style="background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">' +
-        '<div class="center" style="margin-bottom:34px"><div class="eyebrow">How the toolkit works</div>' +
-          "<h2>One simple flow, every session</h2></div>" +
-        '<div class="steps">' +
-          howStep(1, "Pick a module", elementary ? "Choose the official Grade 1–4 lesson you're teaching, or any module from the wider library." : "Choose a topic and grade band from the library of ready-made workshops.") +
-          howStep(2, "Run the challenge", "Students face a real-life money scenario and vote — on a shared screen, or by walking to a corner of the room.") +
-          howStep(3, "Reveal & discuss", "Show the best answer, the key concept, and the common trap, then talk it through.") +
-          howStep(4, "Take it home", "Students leave with a fridge-friendly card that keeps the money talk going with family.") +
-        "</div>" +
-      "</div></section>" +
-
-      // Where do I go? — a plain-language map of the tabs
-      '<section class="section" style="background:var(--cream-2)"><div class="wrap">' +
-        '<div class="center" style="margin-bottom:30px"><div class="eyebrow">Where do I start?</div>' +
-          "<h2>Find the page you need</h2>" +
-          '<p class="muted" style="max-width:56ch;margin:0 auto">Not sure which tab to click? Find what you\'re trying to do.</p></div>' +
-        '<div class="grid grid-2">' +
-          navGuide("📚", "Modules", "#/modules",
-            "I want to see what topics are available",
-            "Browse every ready-made workshop. Each shows the grade band, how long it takes, and what's included.") +
-          navGuide("🛠️", "Workshop Builder", "#/builder",
-            "I'm teaching a workshop and need to prepare",
-            "Start here. Answer four questions and get a timed lesson plan plus the whole packet — parent letter, checklist, deck outline, everything.") +
-          navGuide("🎲", "Games", "#/games",
-            "I need an activity, and there may be no screens",
-            "Twelve games you can drop into any topic. Ten of them need no technology at all.") +
-          navGuide("🎤", "Facilitator", "#/facilitator",
-            "The workshop is happening right now",
-            "Your live dashboard during the session — current step, class results, discussion prompts, and the exit-ticket summary.") +
-          navGuide("💪", "Volunteer Prep", "#/prep",
-            "I'm nervous and want to practice first",
-            "Opening scripts to say out loud, key vocabulary, timed steps, and a practice mode to rehearse before the real thing.") +
-          navGuide("📊", "Impact", "#/impact",
-            "I need numbers to share with someone",
-            "Privacy-safe metrics you can report. What you see depends on whether you're a volunteer, a school, or an organization.") +
-        "</div>" +
-        '<p class="center muted mt-3" style="font-size:.88rem">Also here: ' +
-          '<a href="#/portal">Request / Partner</a> to ask for a volunteer or offer support, and ' +
-          '<a href="#/helper">Standards Helper</a> for quick answers to financial-literacy questions.</p>' +
-      "</div></section>" +
-
-      // Sample modules
-      '<section class="section"><div class="wrap">' +
-        '<div class="flex items-center wrap-flex" style="justify-content:space-between;margin-bottom:24px">' +
-          "<div><div class=\"eyebrow\">Sample modules</div>" +
-            "<h2>" + (elementary ? "The Grades 1–4 Teen Teach-In sequence" : "Ready-made, standards-based topics") + "</h2>" +
-            (elementary ? '<p class="muted mb-0" style="max-width:52ch">Every official lesson, with the interactive layer added. More modules cover older students.</p>' : "") +
-            "</div>" +
-          '<a class="btn btn-secondary" href="#/modules">See all ' + MODULES.length + " modules →</a>" +
-        "</div>" +
-        '<div class="grid module-grid">' +
-          featured.map(function (m, i) { return moduleCard(m, i + 1); }).join("") +
-        "</div>" +
-      "</div></section>" +
-
-      // Built for teen volunteers
-      '<section class="section" style="background:var(--cream-2)"><div class="wrap">' +
-        '<div class="grid grid-2" style="align-items:center;gap:40px">' +
-          "<div><div class=\"eyebrow\">Built for teen volunteers</div>" +
-            "<h2>" + (elementary ? "So a nervous first-timer can walk into a classroom of second graders and teach" : "So a nervous first-timer can teach with confidence") + "</h2>" +
-            '<ul class="privacy-list mt-2">' +
-              liOk("A friendly opening script for every module — never wonder what to say") +
-              liOk("Key vocabulary in plain, kid-ready language") +
-              liOk("Step-by-step activity timing so the session runs itself") +
-              liOk("Practice mode to rehearse before the real thing") +
-            "</ul>" +
-            '<a class="btn btn-primary mt-3" href="#/prep">Open volunteer prep</a>' +
-          "</div>" +
-          '<div class="card"><div class="eyebrow">Preview</div>' +
-            '<div class="script-box">"Hi everyone! I\'m a teen volunteer and today we\'re money ' +
-              "detectives. Our big question: what's the difference between something you NEED and " +
-              "something you just WANT?\"</div>" +
-            '<p class="muted mt-2" style="font-size:.85rem;margin-bottom:0">Opening script · Needs vs. Wants</p>' +
-          "</div>" +
-        "</div>" +
-      "</div></section>" +
-
-      // Privacy-safe by design
-      '<section class="section"><div class="wrap">' +
-        '<div class="callout">' +
+        '<div class="callout mt-3">' +
           '<div class="ico">🔒</div>' +
           "<div><h3 style=\"margin-bottom:8px\">Privacy-safe by design</h3>" +
             '<p class="mb-0 muted">This prototype is built to protect students from the ground up. ' +
               "It collects <strong>no names, no logins, and no personal data</strong>. Impact numbers are " +
-              "aggregate counts only, and there is no backend server — nothing to leak.</p>" +
-            '<a class="btn btn-ghost" style="padding-left:0" href="#/impact">See how impact is measured →</a>' +
+              "aggregate counts only: when a volunteer or teacher starts an activity, the site sends just the number of " +
+              "students and which activity, so the team can count students reached.</p>" +
           "</div>" +
         "</div>" +
       "</div></section>" +
 
-      // Pilot plan
-      '<section class="section" style="background:var(--white);border-top:1px solid var(--line)"><div class="wrap">' +
+      // Status, then the pilot plan for organizers
+      badgeStrip() +
+      '<section class="section" style="background:var(--white)"><div class="wrap">' +
         '<div class="center" style="margin-bottom:30px"><div class="eyebrow">Pilot plan</div>' +
           "<h2>A practical, repeatable model to test with real workshops</h2></div>" +
         '<div class="timeline" style="max-width:820px;margin:0 auto">' +
@@ -348,28 +292,56 @@
         "</div>" +
         '<p class="center muted mt-3" style="font-size:.85rem">This is a concept for discussion — a proposed pilot, ' +
           "pending review and approval by Virginia Jump$tart.</p>" +
-      "</div></section>" +
-
-      // Audiences
-      '<section class="section"><div class="wrap center">' +
-        '<div class="eyebrow">Designed to feel right for everyone in the room</div>' +
-        "<h2 style=\"margin-bottom:20px\">Warm, credible, and educator-friendly</h2>" +
-        '<div class="badge-row" style="justify-content:center;max-width:760px;margin:0 auto">' +
-          ["Virginia Jump$tart leadership", elementary ? "Elementary teachers" : "Teachers", "High school volunteers",
-           elementary ? "Grades 1–4 students" : "Elementary & middle students",
-           "Parents & families", "Libraries", "Community partners", "Potential sponsors"]
-            .map(function (a) { return '<span class="badge gray">' + esc(a) + "</span>"; }).join("") +
-        "</div>" +
-        '<div class="hero-cta" style="justify-content:center;margin-top:28px">' +
-          '<a class="btn btn-primary btn-lg" href="#/modules">Explore the modules</a>' +
-          '<a class="btn btn-secondary btn-lg" href="#/builder">Build a workshop</a>' +
-        "</div>" +
       "</div></section>";
+    // Picking a path in the chart also sets the role, so the Impact page
+    // already matches. The link itself does the navigating.
+    app.querySelectorAll(".path-chart [data-role]").forEach(function (a) {
+      a.addEventListener("click", function () { setRole(a.getAttribute("data-role")); });
+    });
     wireNav();
   }
-  function miniCard(e, t, s) {
-    return '<div class="mini-card"><div class="emoji-badge">' + e + "</div><div><strong>" +
-      esc(t) + "</strong><span>" + esc(s) + "</span></div></div>";
+
+  // "What do you want to do?" — one row per role in the role picker. Each
+  // row has one main button that says what happens next, plus smaller
+  // links. Top-down chart on desktop, stacked cards on phones.
+  var PATHS = [
+    { role: "volunteer", want: "I'm teaching a lesson",
+      main: ["🛠️", "Build my lesson plan", "#/builder"],
+      more: [["💪", "Practice first", "#/prep"], ["📚", "See the resources", "#/resources"]] },
+    { role: "school", want: "I want a workshop for my class",
+      main: ["🛠️", "Plan a class workshop", "#/builder"],
+      more: [["📚", "See the resources", "#/resources"]] },
+    { role: "organization", want: "I run the program",
+      main: ["📚", "See the official resources", "#/resources"],
+      more: [["🛠️", "Plan a workshop", "#/builder"]] },
+  ];
+  function pathChart() {
+    var current = getRole();
+    function link(l, role, cls) {
+      return '<a class="' + cls + '" href="' + l[2] + '" data-role="' + role + '">' +
+        '<span aria-hidden="true">' + l[0] + "</span> " + esc(l[1]) + " →</a>";
+    }
+    return '<nav class="path-chart" aria-label="What do you want to do?">' +
+      '<div class="path-start"><span class="path-eyebrow">Start here</span>' +
+        "<strong>What do you want to do?</strong></div>" +
+      '<ol class="path-list">' +
+        PATHS.map(function (p) {
+          var r = roleDef(p.role);
+          return '<li class="path-row' + (p.role === current ? " on" : "") + '">' +
+            '<div class="path-who"><span class="emoji-badge" aria-hidden="true">' + (r ? r.emoji : "👤") + "</span>" +
+              "<span><span class=\"path-role\">" + esc(r ? r.label : "") + "</span>" +
+              "<strong>" + esc(p.want) + "</strong></span></div>" +
+            '<div class="path-go">' + link(p.main, p.role, "path-main") +
+              (p.more.length
+                ? '<span class="path-more">or ' + p.more.map(function (l) { return link(l, p.role, "path-link"); }).join(" · ") + "</span>"
+                : "") +
+            "</div></li>";
+        }).join("") +
+      "</ol>" +
+      '<div class="path-quick">' +
+        '<a href="#/builder">🎤 Workshop happening right now?</a>' +
+        '<a href="#/games">🎲 Just need a game?</a>' +
+      "</div></nav>";
   }
   function feature(color, ico, t, body) {
     return '<div class="card feature ' + color + '"><div class="ico">' + ico + "</div>" +
@@ -379,8 +351,10 @@
     return '<div class="step"><div class="num">' + n + "</div><h3>" + esc(t) +
       '</h3><p class="muted mb-0">' + esc(body) + "</p></div>";
   }
-  function liOk(t) { return '<li><span class="ok">✓</span><span>' + esc(t) + "</span></li>"; }
   // A card on the landing page that answers "which tab do I click?"
+  function unpluggedGames() {
+    return GAME_FORMATS.filter(function (g) { return g.devices === "none"; }).length;
+  }
   function navGuide(ico, tab, href, want, does) {
     return '<a class="card" href="' + href + '" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:flex-start">' +
       '<span style="font-size:1.8rem;flex:none">' + ico + "</span>" +
@@ -394,96 +368,8 @@
       '<p class="muted mb-0">' + esc(body) + "</p></div></div>";
   }
 
-  // ================================================================
-  // MODULE LIBRARY
-  // ================================================================
-  function moduleCard(m, n) {
-    return '<a class="card module-card c-' + m.color + '" href="#/module/' + m.id + '">' +
-      '<div class="mc-top"><span class="mc-emoji">' + m.emoji + "</span>" +
-        '<span class="mc-num">' + (n < 10 ? "0" + n : n) + "</span></div>" +
-      "<h3>" + esc(m.title) + "</h3>" +
-      (m.officialLesson ? '<div class="badge amber" style="margin-bottom:8px">⭐ Official Teen Teach-In lesson</div>' : "") +
-      '<p class="mc-summary">' + esc(m.summary) + "</p>" +
-      '<ul class="mc-meta">' +
-        metaRow("Grade band", m.gradeBand) +
-        metaRow("Length", m.minutes + " min") +
-        metaRow("Key concept", m.keyConcept) +
-        metaRow("Activity", m.activityType) +
-        (m.officialMaterials ? metaRow("Official kit", m.officialMaterials.join(", ")) : "") +
-      "</ul>" +
-      '<div class="mc-materials">' +
-        m.materials.map(function (x) { return '<span class="chip">' + esc(x) + "</span>"; }).join("") +
-      "</div></a>";
-  }
   function metaRow(k, v) {
     return '<li><span class="k">' + esc(k) + '</span><span class="v">' + esc(v) + "</span></li>";
-  }
-  function renderModules() {
-    // The library splits in two: the official Teen Teach-In sequence for
-    // Grades 1–4, and an extended set for older students that goes beyond
-    // the official program.
-    var core = officialModules();
-    var extended = MODULES.filter(function (m) { return !m.officialLesson; });
-
-    // No official lessons tagged (the Loudoun 4-H edition): show one flat
-    // list rather than an empty "core sequence" section.
-    if (!core.length) {
-      app.innerHTML =
-        '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Module library</div>' +
-          '<div class="eyebrow">Module library</div>' +
-          "<h1>" + MODULES.length + " ready-made, interactive modules</h1>" +
-          '<p class="muted" style="max-width:62ch">Each is built around an existing financial-literacy topic and ' +
-            "follows the same repeatable flow. Grade bands and lengths are starting points you can adjust.</p>" +
-        "</div>" +
-        badgeStrip() +
-        '<section class="section tight"><div class="wrap"><div class="grid module-grid">' +
-          MODULES.map(function (m, i) { return moduleCard(m, i + 1); }).join("") +
-        "</div></div></section>";
-      wireNav();
-      return;
-    }
-
-    app.innerHTML =
-      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Module library</div>' +
-        '<div class="eyebrow">Module library</div>' +
-        "<h1>" + MODULES.length + " ready-made, interactive modules</h1>" +
-        '<p class="muted" style="max-width:62ch">Each follows the same repeatable flow — challenge, vote, reveal, ' +
-          "discuss, take home. Grade bands and lengths are starting points you can adjust.</p>" +
-      "</div>" +
-      badgeStrip() +
-
-      // Core: the official Grades 1–4 sequence
-      '<section class="section tight"><div class="wrap">' +
-        '<div class="flex items-center wrap-flex gap" style="justify-content:space-between;margin-bottom:6px">' +
-          "<div><div class=\"eyebrow\">Core sequence</div>" +
-            "<h2 style=\"margin-bottom:4px\">⭐ Teen Teach-In · Grades 1–4</h2></div>" +
-          '<span class="badge">' + core.length + " official lessons</span>" +
-        "</div>" +
-        '<p class="muted" style="max-width:62ch;margin-bottom:20px">These line up with the official Teen Teach-In ' +
-          "lessons taught by teen volunteers in elementary classrooms. Each official lesson has its own presentation, " +
-          "toolkit, or worksheet — this adds the live, interactive layer on top. " +
-          '<a href="#/resources">See the official resources →</a></p>' +
-        '<div class="grid module-grid">' +
-          core.map(function (m, i) { return moduleCard(m, i + 1); }).join("") +
-        "</div>" +
-      "</div></section>" +
-
-      // Extended: older students, beyond the official program
-      '<section class="section tight" style="background:var(--cream-2);border-top:1px solid var(--line)"><div class="wrap">' +
-        '<div class="flex items-center wrap-flex gap" style="justify-content:space-between;margin-bottom:6px">' +
-          "<div><div class=\"eyebrow\">Extended library</div>" +
-            "<h2 style=\"margin-bottom:4px\">📚 For older students · Grades 5–12</h2></div>" +
-          '<span class="badge gray">' + extended.length + " additional modules</span>" +
-        "</div>" +
-        '<p class="muted" style="max-width:62ch;margin-bottom:20px">These go <strong>beyond the official Teen Teach-In ' +
-          "program</strong>, covering topics for middle and high school students — budgeting, credit, paychecks, scams, " +
-          "banking, college costs, and investing. Useful for older audiences, library programs, or a future expansion " +
-          "of the pilot. They are not part of the Grades 1–4 sequence.</p>" +
-        '<div class="grid module-grid">' +
-          extended.map(function (m, i) { return moduleCard(m, i + 1); }).join("") +
-        "</div>" +
-      "</div></section>";
-    wireNav();
   }
 
   // ================================================================
@@ -496,7 +382,7 @@
       "Hand out a worksheet", "Move on to the next topic"];
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · ' +
-        '<a href="#/modules">Modules</a> · ' + esc(m.title) + "</div>" +
+        esc(m.title) + "</div>" +
         '<div class="flex items-center gap wrap-flex">' +
           '<span style="font-size:2.4rem">' + m.emoji + "</span>" +
           "<div><div class=\"eyebrow\">Lesson transformation</div><h1 style=\"margin-bottom:2px\">" + esc(m.title) + "</h1>" +
@@ -626,8 +512,8 @@
           confidenceRow(m) +
           '<div class="flex gap wrap-flex mt-2 no-print">' +
             '<a class="btn btn-primary" href="#/take-home/' + m.id + '">Get the take-home card</a>' +
-            '<a class="btn btn-secondary" href="#/facilitator">Open facilitator dashboard</a>' +
-            '<a class="btn btn-ghost" href="#/modules">Back to modules</a>' +
+            '<a class="btn btn-secondary" href="#/builder?topic=' + m.id + '">Build a workshop on this</a>' +
+            '<a class="btn btn-ghost" href="#/prep?topic=' + m.id + '">Volunteer prep</a>' +
           "</div>" +
         "</div>" +
       "</div>";
@@ -672,250 +558,280 @@
   }
 
   // ================================================================
-  // FACILITATOR DASHBOARD
-  // ================================================================
-  function renderFacilitator() {
-    var current = MODULES[0];
-    var code = roomCode();
-    app.innerHTML =
-      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Facilitator dashboard</div>' +
-        '<div class="eyebrow">Facilitator dashboard</div>' +
-        "<h1>Run the session from one screen</h1>" +
-        '<p class="muted"><span class="pill-note">Demo data</span> Numbers below are simulated to show the live workshop flow. ' +
-          "No student data is collected.</p>" +
-      "</div>" +
-      '<section class="section tight"><div class="wrap"><div class="dash-grid">' +
-        // Left column
-        "<div>" +
-          '<div class="card">' +
-            '<div class="flex items-center wrap-flex gap" style="justify-content:space-between">' +
-              "<div><div class=\"eyebrow\">Current module</div>" +
-                '<select id="modSelect" style="font-size:1.1rem;font-weight:700;border:none;padding:6px 0;background:transparent">' +
-                  MODULES.map(function (m) { return '<option value="' + m.id + '">' + m.emoji + " " + esc(m.title) + "</option>"; }).join("") +
-                "</select></div>" +
-              '<div class="center"><div class="eyebrow">Room code</div>' +
-                '<div style="font-size:1.4rem;font-weight:800;letter-spacing:.15em">' + code + "</div></div>" +
-            "</div>" +
-            '<div class="flex items-center gap mt-2" style="justify-content:space-between">' +
-              '<div class="dash-stat"><span class="live-dot"></span> <span class="muted">Students joined</span> ' +
-                '<span class="big" id="joined">0</span></div>' +
-              '<div class="toggle-row" id="modeToggle">' +
-                '<button class="btn btn-primary" data-mode="shared">📺 Shared screen</button>' +
-                '<button class="btn btn-secondary" data-mode="hotseat">🎤 Hotseat</button>' +
-              "</div>" +
-            "</div>" +
-          "</div>" +
-
-          '<div class="card mt-3"><div class="eyebrow">Class response results <span class="pill-note">live demo</span></div>' +
-            '<div id="results"></div>' +
-          "</div>" +
-        "</div>" +
-
-        // Right column
-        "<div>" +
-          '<div class="card" style="background:var(--green-soft);border-color:rgba(31,157,107,.25)">' +
-            '<div class="eyebrow">Suggested discussion prompt</div>' +
-            '<p id="prompt" style="font-size:1.15rem;font-weight:700;margin-bottom:0"></p>' +
-          "</div>" +
-          '<div class="card mt-3"><div class="eyebrow">Session controls</div>' +
-            '<p class="muted" style="font-size:.9rem">Step: <strong id="stepName">—</strong></p>' +
-            '<button class="btn btn-primary btn-block" id="nextBtn">Next activity →</button>' +
-            '<button class="btn btn-secondary btn-block mt-2" id="dlBtn">📋 Generate exit-ticket summary</button>' +
-            '<p class="muted mt-2" style="font-size:.8rem;margin-bottom:0">Summary is aggregate only — no names, no personal data.</p>' +
-          "</div>" +
-          '<div id="exitOut" class="mt-3"></div>' +
-          '<div class="card mt-3"><div class="eyebrow">Mode</div><p id="modeLabel" class="mb-0">' +
-            "📺 <strong>Shared screen</strong> — one projected view the whole class answers together.</p></div>" +
-        "</div>" +
-      "</div></div></section>";
-
-    var joinedEl = document.getElementById("joined");
-    var joined = 0, target = 18 + Math.floor(Math.random() * 10);
-    var join = setInterval(function () {
-      if (joined < target) { joined += 1; joinedEl.textContent = joined; }
-      else clearInterval(join);
-    }, 180);
-    timers.push(join);
-
-    function refresh() {
-      var m = moduleById(document.getElementById("modSelect").value);
-      document.getElementById("prompt").textContent = m.reveal.discussionPrompt;
-      // demo response distribution, best answer leading
-      var opts = m.challenge.options, best = m.challenge.best;
-      var demo = opts.map(function (_, i) { return i === best ? 46 + Math.floor(Math.random() * 20) : 6 + Math.floor(Math.random() * 22); });
-      var sum = demo.reduce(function (a, b) { return a + b; }, 0);
-      document.getElementById("results").innerHTML = opts.map(function (opt, i) {
-        var pct = Math.round((demo[i] / sum) * 100);
-        return '<div class="result-bar"><div class="rb-top"><span>' + String.fromCharCode(65 + i) + ". " + esc(opt) +
-          "</span><span>" + pct + '%</span></div><div class="rb-track"><div class="rb-fill ' +
-          (i === best ? "best" : "other") + '" style="width:' + Math.max(pct, 8) + '%">' + (i === best ? "Best" : "") + "</div></div></div>";
-      }).join("");
-      // steps
-      stepIndex = 0;
-      document.getElementById("stepName").textContent = m.prep.steps[0];
-    }
-    var stepIndex = 0;
-    document.getElementById("modSelect").addEventListener("change", refresh);
-    document.getElementById("nextBtn").addEventListener("click", function () {
-      var m = moduleById(document.getElementById("modSelect").value);
-      stepIndex = (stepIndex + 1) % m.prep.steps.length;
-      document.getElementById("stepName").textContent = m.prep.steps[stepIndex];
-    });
-    document.getElementById("dlBtn").addEventListener("click", function () {
-      var m = moduleById(document.getElementById("modSelect").value);
-      var txt = "Money Ready — Exit Ticket Summary (EXAMPLE / aggregate only)\n" +
-        "Module: " + m.title + "\nRoom: " + code + "\n\n" +
-        "Students joined: " + joined + "\n" +
-        "Key concept: " + m.reveal.keyConcept + "\n" +
-        "Discussion prompt: " + m.reveal.discussionPrompt + "\n" +
-        "Apply it: " + m.reveal.applyIt + "\n\n" +
-        "Privacy note: no names, logins, or personal data collected. Demo figures.\n";
-      showExitSummary(txt, m.id);
-    });
-    document.getElementById("modeToggle").querySelectorAll("button").forEach(function (b) {
-      b.addEventListener("click", function () {
-        document.querySelectorAll("#modeToggle button").forEach(function (x) { x.className = "btn btn-secondary"; });
-        b.className = "btn btn-primary";
-        var shared = b.getAttribute("data-mode") === "shared";
-        document.getElementById("modeLabel").innerHTML = shared
-          ? "📺 <strong>Shared screen</strong> — one projected view the whole class answers together."
-          : "🎤 <strong>Hotseat</strong> — one student at a time answers on the main screen while the class coaches.";
-      });
-    });
-    refresh();
-    wireNav();
-  }
-
-  // ================================================================
   // TEEN VOLUNTEER PREP
   // ================================================================
+  // Any module or extra topic, for any age group and length. Answers to
+  // questions come only from the Standards Helper's cited entries
+  // (Jump$tart materials first, then named government sources).
+  var PREP_LENGTHS = [20, 30, 40, 45];
+
+  // Spread `total` minutes over steps in proportion to `weights`, at
+  // least 2 minutes each, adding up exactly.
+  function spreadMinutes(weights, total) {
+    var sum = weights.reduce(function (x, y) { return x + y; }, 0) || 1;
+    var mins = weights.map(function (w) { return Math.max(2, Math.floor(w * total / sum)); });
+    var left = total - mins.reduce(function (x, y) { return x + y; }, 0);
+    // Hand out (or take back) the rest, biggest steps first.
+    var order = weights.map(function (w, i) { return i; }).sort(function (x, y) { return weights[y] - weights[x]; });
+    for (var i = 0; left !== 0 && i < 200; i++) {
+      var k = order[i % order.length];
+      if (left > 0) { mins[k]++; left--; } else if (mins[k] > 2) { mins[k]--; left++; }
+    }
+    return mins;
+  }
+
+  // The timed steps for a topic: [{ text, min }].
+  function prepSteps(t, total) {
+    var steps;
+    if (t.prep && t.prep.steps) {
+      steps = t.prep.steps.map(function (x) {
+        var m = /\((\d+)\s*min\)\s*$/.exec(x);
+        return { text: x.replace(/\s*\(\d+\s*min\)\s*$/, ""), w: m ? Number(m[1]) : 5 };
+      });
+    } else {
+      var pack = t.pack || {};
+      var games = (pack.bestGames || []).map(function (id) {
+        var g = GAME_FORMATS.filter(function (x) { return x.id === id; })[0];
+        return g ? g.name : "";
+      }).filter(Boolean);
+      steps = [
+        { text: "Hook: " + (pack.hook || t.prep.openingScript), w: 3 },
+        { text: "Mini-lesson: " + (pack.miniLesson || t.summary), w: 5 },
+      ];
+      if (pack.guidedPractice) steps.push({ text: "Practice together: " + pack.guidedPractice, w: 4 });
+      steps.push({ text: "Activity: play " + (games.length ? games.join(" or ") : "a quick class vote") +
+        " (see Games for how to run it)", w: 10 });
+      steps.push({ text: "Reveal and discuss: " + t.reveal.keyConcept, w: 4 });
+      steps.push({ text: "Exit question and take-home card: " + t.takeHome.title, w: 3 });
+    }
+    var mins = spreadMinutes(steps.map(function (s) { return s.w; }), total);
+    return steps.map(function (s, i) { return { text: s.text, min: mins[i] }; });
+  }
+
+  // Where a topic's facts come from, for the line under the plan.
+  function prepSources(t) {
+    if (t.officialLesson) return "Jump$tart Teen Teach-In · " + t.officialLesson;
+    if (t.extraTopic) return t.sources.map(function (k) { return KB_SRC[k] ? KB_SRC[k][0] : ""; }).filter(Boolean).join("; ");
+    return "Money Ready module, written from Jump$tart topics (pending review)";
+  }
+
+  function kbAnswerCard(f) {
+    return '<div class="card mt-2"><h3 style="font-size:1.02rem">' + esc(f.q) + "</h3>" +
+      '<div class="helper-answer">' + esc(f.a) + "</div>" + sourceLine(f) + "</div>";
+  }
+
   function renderPrep(query) {
-    var topic = (query && query.topic) || MODULES[0].id;
+    var gradeNames = Object.keys(GRADE_PROFILES);
+    var state = {
+      topic: findTopic(query && query.topic) ? query.topic : (officialModules()[0] || MODULES[0]).id,
+      grade: gradeNames.filter(function (k) { return GRADE_PROFILES[k].id === (query && query.grade); })[0] || "Grades 3–5",
+      len: PREP_LENGTHS.indexOf(Number(query && query.len)) >= 0 ? Number(query.len) : 30,
+    };
+    var core = officialModules();
+    var others = MODULES.filter(function (m) { return core.indexOf(m) < 0; });
+    function opt(t) { return '<option value="' + t.id + '">' + t.emoji + " " + esc(t.title) + "</option>"; }
+
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Volunteer prep</div>' +
         '<div class="eyebrow">Teen volunteer prep</div><h1>Everything you need to teach with confidence</h1>' +
-        '<p class="muted">Pick a topic and you\'ll get a script, vocabulary, timed steps, prompts, printables, and a practice run.</p>' +
+        '<p class="muted" style="max-width:66ch">Pick any topic, the age of your students, and how long you have. You get a script, ' +
+          "vocabulary, a timed plan, tips for that age, and answers to questions students ask. Every answer names its source: " +
+          "Jump$tart materials first, then trusted U.S. government sources.</p>" +
       "</div>" +
-      '<section class="section tight"><div class="wrap"><div class="grid grid-2" style="grid-template-columns:320px 1fr;align-items:start">' +
-        // Controls
-        '<div class="card">' +
-          '<div class="field"><label for="pTopic">Choose topic</label><select id="pTopic">' +
-            MODULES.map(function (m) { return '<option value="' + m.id + '"' + (m.id === topic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>"; }).join("") +
+      '<section class="section tight"><div class="wrap"><div class="grid grid-2 prep-layout">' +
+        '<div class="card prep-controls">' +
+          '<div class="field"><label for="pFind">Find a topic</label>' +
+            '<input id="pFind" placeholder="e.g. taxes, coins, scams" autocomplete="off" />' +
+            '<div id="pFindMsg" class="muted" style="font-size:.82rem;margin-top:4px" aria-live="polite"></div></div>' +
+          '<div class="field"><label for="pTopic">Or choose one</label><select id="pTopic">' +
+            (core.length ? '<optgroup label="Official Teen Teach-In lessons">' + core.map(opt).join("") + "</optgroup>" : "") +
+            '<optgroup label="More workshop topics">' + others.map(opt).join("") + "</optgroup>" +
+            '<optgroup label="More topics (from trusted sources)">' + EXTRA_TOPICS.map(opt).join("") + "</optgroup>" +
           "</select></div>" +
-          '<div class="field"><label for="pAge">Select age group</label><select id="pAge"><option>Elementary (K–5)</option><option>Middle (6–8)</option><option>High school (9–12)</option></select></div>' +
-          '<div class="field"><label>Select workshop length</label><div class="chips-select" id="pLen">' +
-            ["20 min", "30 min", "40 min", "45 min"].map(function (l, i) { return '<button class="chip-toggle' + (i === 1 ? " on" : "") + '" data-len="' + l + '">' + l + "</button>"; }).join("") +
+          '<div class="field"><label for="pAge">Age group</label><select id="pAge">' +
+            gradeNames.map(function (g) { return "<option>" + esc(g) + "</option>"; }).join("") +
+          "</select></div>" +
+          '<div class="field"><label>Workshop length</label><div class="chips-select" id="pLen">' +
+            PREP_LENGTHS.map(function (l) { return '<button type="button" class="chip-toggle" data-len="' + l + '">' + l + " min</button>"; }).join("") +
           "</div></div>" +
-          '<a class="btn btn-primary btn-block" id="practiceBtn" href="#/challenge/' + topic + '?practice=1">▶ Launch practice mode</a>' +
+          '<a class="btn btn-primary btn-block" id="practiceBtn" href="#/">▶ Practice the game</a>' +
+          '<p class="muted" style="font-size:.8rem;margin:8px 0 0">Practice runs the game on this screen for the age group you picked. Nothing is counted or sent.</p>' +
         "</div>" +
-        // Content
         '<div id="prepContent"></div>' +
       "</div></div></section>";
 
+    var topicSel = document.getElementById("pTopic");
+    var ageSel = document.getElementById("pAge");
+    var lenWrap = document.getElementById("pLen");
+
     function fillPrep() {
-      var m = moduleById(document.getElementById("pTopic").value);
-      var p = m.prep;
-      document.getElementById("practiceBtn").setAttribute("href", "#/challenge/" + m.id + "?practice=1");
+      var t = findTopic(state.topic);
+      var p = t.prep;
+      var prof = GRADE_PROFILES[state.grade];
+      topicSel.value = t.id;
+      ageSel.value = state.grade;
+      lenWrap.querySelectorAll(".chip-toggle").forEach(function (b) {
+        b.classList.toggle("on", Number(b.getAttribute("data-len")) === state.len);
+      });
+      document.getElementById("practiceBtn").setAttribute("href",
+        "#/game?topic=" + encodeURIComponent(t.id) + "&grade=" + prof.id + "&solo=1");
+      // Keep the link shareable without re-rendering the page.
+      try { history.replaceState(null, "", "#/prep?topic=" + t.id + "&grade=" + prof.id + "&len=" + state.len); } catch (e) {}
+
+      var steps = prepSteps(t, state.len);
+      var vocab = p.vocab.slice(0, prof.vocabCount);
+      var prompts = (p.discussionPrompts || [t.reveal.discussionPrompt]);
+      var related = searchKB(t.title + " " + (t.tags || []).join(" ") + " " +
+        p.vocab.map(function (v) { return v.term; }).join(" ")).slice(0, 3);
+
       document.getElementById("prepContent").innerHTML =
-        '<div class="card"><div class="eyebrow">Opening script — say this out loud</div>' +
-          '<div class="script-box">' + esc(p.openingScript) + "</div></div>" +
-        '<div class="grid grid-2 mt-3">' +
-          '<div class="card"><div class="eyebrow">Key vocabulary</div>' +
-            p.vocab.map(function (v) { return '<div class="vocab-item"><strong>' + esc(v.term) + "</strong> — " + esc(v.def) + "</div>"; }).join("") +
-          "</div>" +
-          '<div class="card"><div class="eyebrow">Activity steps</div><ol class="numbered">' +
-            p.steps.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") +
-          "</ol></div>" +
+        '<div class="card"><div class="eyebrow">' + t.emoji + " " + esc(t.title) + " · " + esc(state.grade) + " · " + state.len + " min</div>" +
+          '<p class="muted" style="margin:4px 0 12px">' + esc(t.objective || t.summary) + "</p>" +
+          '<div class="eyebrow">Opening script — say this out loud</div>' +
+          '<div class="script-box">' + esc(p.openingScript) + "</div>" +
+          (prof.pictureBased ? '<p class="muted mt-1" style="font-size:.88rem">🖼️ For this age, hold up a picture or act it out while you say it.</p>' : "") +
         "</div>" +
         '<div class="grid grid-2 mt-3">' +
-          '<div class="card"><div class="eyebrow">Discussion prompts</div><ul class="privacy-list">' +
-            p.discussionPrompts.map(function (d) { return "<li><span class=\"ok\">💬</span><span>" + esc(d) + "</span></li>"; }).join("") +
-          "</ul></div>" +
-          '<div class="card"><div class="eyebrow">Printables</div>' +
-            p.printables.map(function (x) { return '<span class="chip" style="font-size:.85rem;margin:0 6px 6px 0;display:inline-block">🖨 ' + esc(x) + "</span>"; }).join("") +
-            '<div class="mt-2"><a class="btn btn-secondary" href="#/take-home/' + m.id + '">Open take-home card →</a></div>' +
+          '<div class="card"><div class="eyebrow">Key vocabulary (' + vocab.length + " for this age)</div>" +
+            vocab.map(function (v) { return '<div class="vocab-item"><strong>' + esc(v.term) + "</strong> — " + esc(v.def) + "</div>"; }).join("") +
           "</div>" +
-        "</div>";
+          '<div class="card"><div class="eyebrow">Timed plan · ' + state.len + " min</div><ol class=\"numbered\">" +
+            steps.map(function (s) { return "<li>" + esc(s.text) + " <strong>(" + s.min + " min)</strong></li>"; }).join("") +
+          "</ol></div>" +
+        "</div>" +
+        '<div class="card mt-3"><div class="eyebrow">Teaching ' + esc(state.grade) + "</div>" +
+          '<p class="muted" style="margin:4px 0 8px">' + esc(prof.readingLevel) + " " + esc(prof.attention) + "</p>" +
+          '<ul class="privacy-list">' +
+            prof.delivery.concat(prof.language).map(function (d) { return '<li><span class="ok">✓</span><span>' + esc(d) + "</span></li>"; }).join("") +
+            '<li><span class="ok">👀</span><span>' + esc(prof.watchFor) + "</span></li>" +
+          "</ul></div>" +
+        '<div class="grid grid-2 mt-3">' +
+          '<div class="card"><div class="eyebrow">Discussion prompts</div><ul class="privacy-list">' +
+            prompts.map(function (d) { return '<li><span class="ok">💬</span><span>' + esc(d) + "</span></li>"; }).join("") +
+          "</ul></div>" +
+          '<div class="card"><div class="eyebrow">Take-home</div>' +
+            "<p style=\"margin:4px 0\"><strong>" + esc(t.takeHome.title) + "</strong></p>" +
+            '<p class="muted" style="margin:0 0 10px">Family question: ' + esc(t.takeHome.familyQuestion) + "</p>" +
+            (p.printables ? p.printables.map(function (x) { return '<span class="chip" style="font-size:.85rem;margin:0 6px 6px 0;display:inline-block">🖨 ' + esc(x) + "</span>"; }).join("") : "") +
+            (moduleById(t.id) ? '<div class="mt-2"><a class="btn btn-secondary" href="#/take-home/' + t.id + '">Open take-home card →</a></div>' : "") +
+          "</div>" +
+        "</div>" +
+        '<div class="card mt-3"><div class="eyebrow">Questions students might ask</div>' +
+          (related.length
+            ? related.map(function (r) { return kbAnswerCard(r.f); }).join("")
+            : '<p class="muted mb-0">No ready answers for this topic yet. Use the box below.</p>') +
+        "</div>" +
+        '<div class="card mt-3"><div class="eyebrow">Ask your own question</div>' +
+          '<div class="flex gap wrap-flex" style="margin-top:6px"><input id="pAsk" style="flex:1;min-width:200px" placeholder="e.g. What is a deductible?" />' +
+          '<button type="button" class="btn btn-primary" id="pAskBtn">Get answer</button></div>' +
+          '<div id="pAns"></div>' +
+        "</div>" +
+        '<p class="muted mt-2" style="font-size:.82rem">📚 Facts for this topic: ' + esc(prepSources(t)) +
+          ". Educational only · pending review by Virginia Jump$tart.</p>";
+
+      function ask() {
+        var q = document.getElementById("pAsk").value;
+        var res = searchKB(q);
+        document.getElementById("pAns").innerHTML = res.length
+          ? kbAnswerCard(res[0].f)
+          : '<div class="card mt-2"><p class="muted mb-0">🤔 There\'s no sourced answer for that yet, so this won\'t guess. ' +
+            "Tell students it's a great question and you'll find out, or look it up together on consumerfinance.gov.</p></div>";
+      }
+      document.getElementById("pAskBtn").addEventListener("click", ask);
+      document.getElementById("pAsk").addEventListener("keydown", function (e) { if (e.key === "Enter") ask(); });
     }
-    document.getElementById("pTopic").addEventListener("change", fillPrep);
-    document.getElementById("pLen").querySelectorAll(".chip-toggle").forEach(function (b) {
-      b.addEventListener("click", function () {
-        document.querySelectorAll("#pLen .chip-toggle").forEach(function (x) { x.classList.remove("on"); });
-        b.classList.add("on");
-      });
+
+    topicSel.addEventListener("change", function () { state.topic = topicSel.value; fillPrep(); });
+    ageSel.addEventListener("change", function () { state.grade = ageSel.value; fillPrep(); });
+    lenWrap.querySelectorAll(".chip-toggle").forEach(function (b) {
+      b.addEventListener("click", function () { state.len = Number(b.getAttribute("data-len")); fillPrep(); });
+    });
+    var find = document.getElementById("pFind");
+    find.addEventListener("input", function () {
+      var msg = document.getElementById("pFindMsg");
+      if (!find.value.trim()) { msg.textContent = ""; return; }
+      var hits = searchTopics(find.value);
+      if (!hits.length) {
+        msg.textContent = "No topic for that yet. Pick one below, or ask it as a question further down.";
+        return;
+      }
+      msg.textContent = "Showing: " + hits[0].title + (hits.length > 1 ? " (also: " + hits.slice(1, 3).map(function (h) { return h.title; }).join(", ") + ")" : "");
+      if (hits[0].id !== state.topic) { state.topic = hits[0].id; fillPrep(); }
     });
     fillPrep();
     wireNav();
   }
 
-  // ================================================================
-  // TOOLKIT BUILDER (guided packet workflow)
-  // ================================================================
-  function renderPortal() {
-    app.innerHTML =
-      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Request &amp; partner portal</div>' +
-        '<div class="eyebrow">Request a volunteer · offer support</div>' +
-        "<h1>Connect schools, teen volunteers, and community partners</h1>" +
-        '<p class="muted" style="max-width:64ch">A lightweight way for teachers to request a workshop and for partners to ' +
-          "offer help. <span class=\"pill-note\">Prototype: nothing is sent anywhere — your entry becomes a copy-ready summary you can email.</span></p>" +
-      "</div>" +
-      '<section class="section tight"><div class="wrap"><div class="grid grid-2">' +
-        // Request
-        '<div class="card"><h3>🍎 Request a volunteer</h3><p class="muted" style="font-size:.9rem">For teachers &amp; school partners.</p>' +
-          '<div class="field"><label>Topic</label><select id="rTopic">' +
-            MODULES.map(function (m) { return "<option>" + esc(m.title) + "</option>"; }).join("") +
-          "</select></div>" +
-          '<div class="field"><label>Grade band</label><select id="rGrade"><option>Grades K–2</option><option>Grades 3–5</option><option>Grades 6–8</option><option>Grades 9–12</option></select></div>' +
-          '<div class="field"><label>Format</label><select id="rFormat"><option>In-class workshop</option><option>Teen Teach-In event</option><option>Library / after-school</option><option>Assembly</option></select></div>' +
-          '<div class="field"><label>General location (city / county — no address)</label><input id="rLoc" placeholder="e.g. Richmond" /></div>' +
-          '<button class="btn btn-primary btn-block" id="rBtn">Create request summary</button>' +
-          '<div id="rOut"></div>' +
-        "</div>" +
-        // Offer
-        '<div class="card"><h3>🤝 Offer support</h3><p class="muted" style="font-size:.9rem">For coalition partners &amp; financial institutions.</p>' +
-          '<div class="field"><label>Organization type</label><select id="oType"><option>Financial institution</option><option>Nonprofit / coalition partner</option><option>Library</option><option>Employer / sponsor</option></select></div>' +
-          '<div class="field"><label>How you can help</label><div class="chips-select" id="oHelp">' +
-            ["Classroom support", "Judging help", "Workshop facilitation", "Materials / printing", "Sponsorship"].map(function (h) { return '<button class="chip-toggle" data-h="' + esc(h) + '">' + esc(h) + "</button>"; }).join("") +
-          "</div></div>" +
-          '<div class="field"><label>General location (city / county)</label><input id="oLoc" placeholder="e.g. Fairfax County" /></div>' +
-          '<button class="btn btn-primary btn-block" id="oBtn">Create offer summary</button>' +
-          '<div id="oOut"></div>' +
-        "</div>" +
-      "</div>" +
-      '<div class="callout mt-3"><div class="ico">🔒</div><div><strong>Privacy note.</strong> ' +
-        "This prototype has no server and stores nothing. It only builds a text summary you can copy into an email " +
-        "to a coordinator. Please don't enter student names or personal details.</div></div>" +
-      "</div></section>";
+  // ---- Helper matching (shared by the Standards Helper and Volunteer Prep)
+  // A question matches an entry only through the entry's topic `tags`.
+  // Both sides are turned into word lists (lowercase, punctuation dropped,
+  // plurals folded: "taxes" -> "tax", "needs" -> "need"), and a tag counts
+  // only as whole words in a row. When tags overlap in the question, the
+  // longer phrase wins and the shorter one is ignored, so "deposit
+  // insurance" never also counts as "insurance" and "credit card" never
+  // also counts as "credit". Entries with nothing left get no answer.
+  function stem(w) {
+    if (w.length > 4 && /ies$/.test(w)) return w.slice(0, -3) + "y";
+    if (/(ss|x|ch|sh)es$/.test(w)) return w.slice(0, -2);
+    if (w.length > 3 && /s$/.test(w) && !/(ss|us|is)$/.test(w)) return w.slice(0, -1);
+    return w;
+  }
+  function words(text) {
+    var t = text.toLowerCase()
+      .replace(/401\s*\(?k\)?/g, "401k").replace(/403\s*\(?b\)?/g, "403b")
+      .replace(/['\u2019]s\b/g, "").replace(/['\u2019]/g, "")
+      .replace(/[^a-z0-9]+/g, " ").trim();
+    return t ? t.split(" ").map(stem) : [];
+  }
+  // Words too common to say what a question is about; only used to break
+  // ties between entries that matched the same tags.
+  var STOP = ["what", "when", "where", "which", "while", "should", "would", "could", "about",
+    "does", "difference", "between", "there", "their", "they", "this", "that", "with", "have",
+    "your", "from", "work", "like", "much", "many", "some", "good", "best", "people", "really", "know"];
+  var TAG_WORDS = FAQ_KNOWLEDGE.map(function (f) { return f.tags.map(words); });
+  var Q_WORDS = FAQ_KNOWLEDGE.map(function (f) { return words(f.q); });
 
-    document.getElementById("rBtn").addEventListener("click", function () {
-      var s = "VOLUNTEER REQUEST (draft — copy into an email)\n" +
-        "Topic: " + document.getElementById("rTopic").value + "\n" +
-        "Grade band: " + document.getElementById("rGrade").value + "\n" +
-        "Format: " + document.getElementById("rFormat").value + "\n" +
-        "Location: " + (document.getElementById("rLoc").value || "—") + "\n";
-      showSummary("rOut", s);
-    });
-    var helpSel = {};
-    document.getElementById("oHelp").querySelectorAll(".chip-toggle").forEach(function (b) {
-      b.addEventListener("click", function () {
-        b.classList.toggle("on");
-        helpSel[b.getAttribute("data-h")] = b.classList.contains("on");
+  function searchKB(query) {
+    var qw = words(query), matches = [];
+    TAG_WORDS.forEach(function (tags, e) {
+      tags.forEach(function (tw) {
+        for (var i = 0; i + tw.length <= qw.length; i++) {
+          var hit = tw.length > 0;
+          for (var k = 0; k < tw.length && hit; k++) hit = qw[i + k] === tw[k];
+          if (hit) matches.push({ e: e, start: i, end: i + tw.length });
+        }
       });
     });
-    document.getElementById("oBtn").addEventListener("click", function () {
-      var help = Object.keys(helpSel).filter(function (k) { return helpSel[k]; });
-      var s = "PARTNER OFFER (draft — copy into an email)\n" +
-        "Organization type: " + document.getElementById("oType").value + "\n" +
-        "Can help with: " + (help.length ? help.join(", ") : "—") + "\n" +
-        "Location: " + (document.getElementById("oLoc").value || "—") + "\n";
-      showSummary("oOut", s);
+    // Drop a match when a longer match (from any entry) covers it.
+    var kept = matches.filter(function (m) {
+      return !matches.some(function (n) {
+        return n.end - n.start > m.end - m.start && n.start <= m.start && n.end >= m.end;
+      });
     });
-    function showSummary(id, text) {
-      document.getElementById(id).innerHTML =
-        '<div class="apply-box mt-2"><strong>Copy this summary:</strong>' +
-        '<pre style="white-space:pre-wrap;font-family:inherit;margin:8px 0 0">' + esc(text) + "</pre></div>";
+    var byEntry = {};
+    kept.forEach(function (m) {
+      var b = byEntry[m.e] || (byEntry[m.e] = { covered: {}, tags: 0 });
+      for (var i = m.start; i < m.end; i++) b.covered[i] = true;
+      b.tags += 1;
+    });
+    var scored = Object.keys(byEntry).map(function (e) {
+      var b = byEntry[e], score = Object.keys(b.covered).length * 10 + b.tags;
+      Q_WORDS[e].forEach(function (w) {
+        if (w.length > 3 && STOP.indexOf(w) < 0 && qw.indexOf(w) >= 0) score += 1;
+      });
+      return { f: FAQ_KNOWLEDGE[e], score: score, order: +e };
+    });
+    // Highest score first; on a tie, Jump$tart entries (listed first) win.
+    scored.sort(function (a, b) { return b.score - a.score || a.order - b.order; });
+    return scored;
+  }
+  function sourceLine(f) {
+    if (f.tier === "trusted") {
+      return '<div class="helper-source">🏛️ <span>Source: ' + esc(f.source) + " · " + esc(f.url) + "</span></div>" +
+        '<p class="muted" style="font-size:.82rem;margin:4px 0 0">Jump$tart materials don\'t cover this question, ' +
+        "so this answer comes from a trusted U.S. government consumer-education source.</p>";
     }
-    wireNav();
+    return '<div class="helper-source">📚 <span>Source: ' + esc(f.source) + "</span></div>";
   }
 
   // ================================================================
@@ -925,9 +841,10 @@
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Standards helper</div>' +
         '<div class="eyebrow">Standards-grounded helper</div>' +
-        "<h1>Quick answers — only from approved resources</h1>" +
+        "<h1>Quick answers — always with a source</h1>" +
         '<p class="muted" style="max-width:66ch">Ask a financial-literacy question and this helper looks up a plain-English ' +
-          "answer from a small set of approved-style resources, always with a source. " +
+          "answer from Jump$tart resources, or from trusted U.S. government consumer-education sources (such as CFPB, FDIC, FTC, SEC, IRS, and " +
+          "Federal Student Aid) for questions Jump$tart doesn't cover. Every answer shows its source underneath. " +
           "<strong>It does not freestyle or make things up.</strong> " +
           "<span class=\"pill-note\">Prototype: example resource set, pending Jump$tart review</span></p>" +
       "</div>" +
@@ -942,35 +859,25 @@
         "</div>" +
         '<div id="ans" class="mt-3"></div>' +
         '<div class="callout mt-3"><div class="ico">🛡️</div><div><strong>How this stays safe.</strong> ' +
-          "The helper only retrieves from the approved list above — if it doesn't have a grounded answer, it says so and " +
-          "points you to a trusted adult or the Virginia Jump$tart / National Standards resources, rather than guessing.</div></div>" +
+          "Every answer is written ahead of time from Jump$tart materials or a named government source — nothing is made up on the spot. " +
+          "If it doesn't have a grounded answer, it says so and points you to a trusted adult rather than guessing.</div></div>" +
       "</div></section>";
 
-    function search(query) {
-      var q = query.toLowerCase();
-      var scored = FAQ_KNOWLEDGE.map(function (f) {
-        var score = 0;
-        f.tags.forEach(function (t) { if (q.indexOf(t) >= 0) score += 2; });
-        f.q.toLowerCase().split(/\W+/).forEach(function (w) { if (w.length > 3 && q.indexOf(w) >= 0) score += 1; });
-        return { f: f, score: score };
-      }).filter(function (x) { return x.score > 0; }).sort(function (a, b) { return b.score - a.score; });
-      return scored;
-    }
     function answer(query) {
-      var results = search(query);
+      var results = searchKB(query);
       var out = document.getElementById("ans");
       if (!results.length) {
         out.innerHTML = '<div class="card"><h3>🤔 I don\'t have a grounded answer for that yet</h3>' +
           '<p class="muted">To stay safe, this helper only answers from its approved example resources — it won\'t guess. ' +
-          "Try one of the suggested questions above, or ask a teacher or trusted adult. A full version would draw on the " +
-          "National Standards and chapter-approved Virginia Jump$tart resources.</p></div>";
+          "Try one of the suggested questions above, or ask a teacher or trusted adult. For money questions, " +
+          "consumerfinance.gov (CFPB) is a good trusted place to look together.</p></div>";
         return;
       }
       var top = results[0].f;
       out.innerHTML =
         '<div class="card"><div class="eyebrow">Answer</div><h3>' + esc(top.q) + "</h3>" +
           '<div class="helper-answer">' + esc(top.a) + "</div>" +
-          '<div class="helper-source">📚 <span>Source: ' + esc(top.source) + "</span></div>" +
+          sourceLine(top) +
           '<p class="muted mt-2" style="font-size:.82rem;margin-bottom:0">Educational only · not financial advice · pending review.</p>' +
         "</div>" +
         (results.length > 1 ? '<div class="card mt-2"><div class="eyebrow">Related</div><div class="suggested-q">' +
@@ -986,120 +893,6 @@
       b.addEventListener("click", function () { document.getElementById("q").value = b.getAttribute("data-q"); answer(b.getAttribute("data-q")); });
     });
     wireNav();
-  }
-
-  // ================================================================
-  // IMPACT SNAPSHOT + MEASUREMENT LAYER
-  // ================================================================
-  // Build the metric cards this account type should see.
-  function roleMetricCards(role, x) {
-    // With no account type chosen yet, fall back to the volunteer view.
-    // Listing every metric would show both "Workshops delivered" and
-    // "Workshops received" — the same number under two contradictory labels.
-    var ids = (role && role.metrics) || ACCOUNT_TYPES[0].metrics;
-    var programWide = (role && role.programWide) || [];
-    return ids.map(function (id) {
-      var def = IMPACT_METRICS[id];
-      if (!def) return "";
-      var raw = x[def.key];
-      var val = (def.prefix || "") + raw + (def.suffix || "");
-      var wide = programWide.indexOf(id) >= 0;
-      return '<div class="card metric-card"><div class="m-num">' + esc(val) + "</div>" +
-        '<div class="m-lab">' + esc(def.label) +
-        (wide ? '<br><span class="pill-note" style="margin-top:6px;display:inline-block">program-wide total</span>' : "") +
-        "</div></div>";
-    }).join("");
-  }
-
-  function renderImpact() {
-    var x = IMPACT_EXAMPLE;
-    var local = Metrics.summary();
-    var role = roleDef();
-    var roleId = role ? role.id : "";
-    var showVolunteerValue = roleId === "organization"; // organizations only
-    var showProgramDetail = !!(role && role.showMeasurementLayer); // organizations
-    // Value of donated volunteer time = hours x estimated hourly value.
-    var volunteerValue = Math.round(x.volunteerHours * x.volunteerHourValue);
-    var volunteerValueStr = "$" + volunteerValue.toLocaleString();
-    app.innerHTML =
-      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Impact snapshot</div>' +
-        '<div class="eyebrow">Impact snapshot &amp; measurement layer</div>' +
-        "<h1>Simple, privacy-safe metrics a pilot could report</h1>" +
-      "</div>" +
-      '<section class="section tight"><div class="wrap">' +
-        '<div class="example-flag" style="margin-bottom:22px">⚠️ <span><strong>Example / placeholder figures.</strong> ' +
-          "Every number in this section is illustrative — a mock-up of what a pilot could measure. These are not real results.</span></div>" +
-        // Metrics chosen by account type. Everything else on this page is
-        // identical for every account type.
-        '<div class="role-banner" style="margin-bottom:20px">' +
-          "<span>" + (role ? role.emoji : "👤") + "</span>" +
-          "<span>Showing the <strong>" + esc(role ? role.label : "general") + "</strong> view — " +
-            (role ? role.metrics.length : 0) + " measures chosen for this audience.</span>" +
-          '<button class="btn btn-ghost no-print" id="switchRole" style="margin-left:auto;padding:6px 10px">Switch view</button>' +
-        "</div>" +
-        '<div class="grid grid-4">' + roleMetricCards(role, x) + "</div>" +
-
-        // Spotlight: money saved through the value of volunteer hours.
-        // Shown to volunteers (it's their hours) and organizations (it's a
-        // sponsor-facing figure); schools asked for neither.
-        (showVolunteerValue ?
-        '<div class="card mt-3" style="border-left:5px solid var(--amber);background:linear-gradient(120deg,#fff,var(--amber-soft))">' +
-          '<div class="eyebrow">Value of volunteer time <span class="pill-note">example</span></div>' +
-          '<div class="flex items-center wrap-flex" style="gap:16px">' +
-            '<div class="m-num" style="font-size:2.8rem;color:#b5760f">' + volunteerValueStr + "</div>" +
-            '<div><strong>saved through ' + x.volunteerHours + " donated volunteer hours</strong>" +
-              '<div class="muted" style="font-size:.9rem">The workshops would have cost this much to deliver with paid staff — teen volunteers provide it for free.</div></div>' +
-          "</div>" +
-          '<p class="muted" style="font-size:.82rem;margin:10px 0 0">Estimated as ' + x.volunteerHours +
-            " volunteer hours × ~$" + x.volunteerHourValue + '/hour (a common "value of volunteer time" figure). Illustrative placeholder.</p>' +
-        "</div>" : "") +
-
-        // Program-level detail: organizations only.
-        (showProgramDetail ?
-        '<div class="grid grid-2 mt-3">' +
-          '<div class="card"><div class="eyebrow">Measurement layer <span class="pill-note">example</span></div>' +
-            '<ul class="mc-meta" style="font-size:.95rem">' +
-              metaRow("Volunteer hours", x.volunteerHours) +
-              metaRow("Value of volunteer time", volunteerValueStr) +
-              metaRow("Schools reached", x.schoolsReached) +
-              metaRow("Teen Teach-In participation", x.teenTeachInParticipation + " volunteers") +
-              metaRow("Workshop attendance", x.workshopAttendance + "%") +
-            "</ul></div>" +
-          '<div class="card"><div class="eyebrow">Top concepts learned <span class="pill-note">example</span></div>' +
-            x.topConcepts.map(function (c) { return '<span class="badge" style="margin:0 6px 6px 0">🏅 ' + esc(c) + "</span>"; }).join("") +
-            '<div class="eyebrow mt-3">Sponsor-visible outcomes</div><ul class="privacy-list">' +
-            x.sponsorOutcomes.map(function (o) { return "<li><span class=\"ok\">★</span><span>" + esc(o) + "</span></li>"; }).join("") +
-            "</ul></div>" +
-        "</div>" : "") +
-
-        // Live on-device panel (real, privacy-safe)
-        '<div class="card mt-3" style="border-left:5px solid var(--teal)">' +
-          '<div class="eyebrow">Live on this device <span class="badge gray">real · privacy-safe</span></div>' +
-          (local.confidenceResponses || local.sessions
-            ? "<p>From anonymous confidence taps recorded on <strong>this device only</strong>: " +
-              "<strong>" + local.confidenceResponses + "</strong> response(s)" +
-              (local.confidenceAvg ? ", average confidence <strong>" + local.confidenceAvg + "/5</strong>" : "") + "." +
-              '</p><div class="flex gap wrap-flex no-print"><button class="btn btn-secondary" id="expBtn">⬇ Export summary</button>' +
-              '<button class="btn btn-ghost" id="clrBtn">Clear this device\'s data</button></div>'
-            : '<p class="muted mb-0">No on-device data yet. Try a module\'s confidence check (after the reveal) and it will show up here — ' +
-              "stored only in this browser, never sent anywhere.</p>") +
-        "</div>" +
-
-        '<div class="callout mt-3"><div class="ico">🔒</div><div><strong>Privacy-safe by design.</strong> ' +
-          "Real metrics are aggregate counts only — no names, no logins, no personal data, no tracking. Everything a " +
-          "volunteer records stays on their own device unless they choose to copy a summary.</div></div>" +
-      "</div></section>";
-
-    var sw = document.getElementById("switchRole");
-    if (sw) sw.addEventListener("click", function () { showRolePicker(true); });
-    var exp = document.getElementById("expBtn");
-    if (exp) exp.addEventListener("click", function () { download("money-ready-impact.txt", Metrics.textReport()); });
-    var clr = document.getElementById("clrBtn");
-    if (clr) clr.addEventListener("click", function () { Metrics.clearAll(); renderImpact(); });
-    wireNav();
-  }
-  function metric(num, lab) {
-    return '<div class="card metric-card"><div class="m-num">' + esc(num) + '</div><div class="m-lab">' + esc(lab) + "</div></div>";
   }
 
   // ================================================================
@@ -1158,6 +951,17 @@
       });
   }
 
+  // What each kind of official material is, in a sentence.
+  var KIT_ABOUT = {
+    "Presentation": "Slides the teen volunteer shows to the class.",
+    "Toolkit": "The volunteer's guide: what to say, what to do, and how long each part takes.",
+    "Worksheet": "A page students fill in during or after the lesson.",
+    "Vocab Check": "A short check that students know the new words.",
+    "Website Link": "An online version of the story to read together.",
+  };
+
+  // Resources only explains what each resource is. It deliberately has no
+  // games or challenges; those live in the Workshop Builder and Games.
   function renderResources() {
     var core = officialModules();
     var partners = [
@@ -1167,45 +971,53 @@
       { name: "EVERFI's \"Vault: Understanding Money\"", what: "Digital financial-literacy course for elementary students." },
       { name: "Banzai", what: "Interactive, real-life financial-literacy scenarios." },
     ];
+    function item(ico, name, what, extra) {
+      return '<li class="packet-item"><div class="ico">' + ico + '</div><div class="txt"><strong>' +
+        esc(name) + "</strong><span>" + esc(what) + "</span>" + (extra || "") + "</div></li>";
+    }
     app.innerHTML =
-      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Official resources</div>' +
-        '<div class="eyebrow">Official Teen Teach-In resources</div>' +
-        "<h1>What this toolkit is built around</h1>" +
+      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Resources</div>' +
+        '<div class="eyebrow">Resources</div>' +
+        "<h1>What each resource is</h1>" +
         '<p class="muted" style="max-width:66ch">The official Teen Teach-In sequence is written for <strong>elementary ' +
-          "students in Grades 1–4</strong>, taught by teen volunteers. The modules below line up with those lessons. " +
-          "This toolkit adds the interactive layer — it does not replace the official presentations, toolkits, and worksheets.</p>" +
+          "students in Grades 1–4</strong>, taught by teen volunteers. Here is what each official lesson covers, what " +
+          "comes in its kit, and the other sources this toolkit relies on. Download the official materials from Jump$tart.</p>" +
         '<a class="btn btn-primary mt-2" href="' + TTI_URL + '" target="_blank" rel="noopener">Open the official resources page ↗</a>' +
       "</div>" +
-      '<section class="section tight"><div class="wrap">' +
-        '<h2>The Grades 1–4 sequence</h2>' +
-        '<p class="muted">Each official lesson comes with its own materials. Download those from the resources page above; ' +
-          "the module here gives you the live challenge, reveal, discussion, and take-home card to go with it.</p>" +
-        '<div class="grid module-grid mt-2">' +
-          core.map(function (m, i) { return moduleCard(m, i + 1); }).join("") +
+      '<section class="section tight"><div class="wrap" style="max-width:900px">' +
+        "<h2>Official Teen Teach-In lessons</h2>" +
+        '<p class="muted">One lesson per grade, plus two story lessons that work across Grades 1–4.</p>' +
+        '<div class="grid mt-2" style="gap:16px">' +
+          core.map(function (m) {
+            return '<div class="card"><div class="flex items-center gap" style="margin-bottom:6px">' +
+                '<span style="font-size:1.8rem">' + m.emoji + "</span>" +
+                "<div><h3 style=\"margin:0\">" + esc(m.title) + "</h3>" +
+                '<span class="muted" style="font-size:.85rem">' + esc(m.officialLesson) + "</span></div></div>" +
+              "<p style=\"margin:6px 0 10px\">" + esc(m.summary) + "</p>" +
+              '<ul class="mc-meta">' +
+                metaRow("Big idea", m.keyConcept) +
+                (m.officialMaterials || []).map(function (k) { return metaRow(k, KIT_ABOUT[k] || ""); }).join("") +
+              "</ul>" +
+              '<a class="btn btn-ghost" style="padding-left:0" href="#/prep?topic=' + m.id + '">Prepare to teach it →</a>' +
+            "</div>";
+          }).join("") +
         "</div>" +
         '<h2 class="mt-4">Partner resources</h2>' +
-        '<p class="muted">Additional programs listed on the official resources page.</p>' +
+        '<p class="muted">Other programs listed on the official resources page.</p>' +
         '<ul class="packet-list mt-2">' +
-          partners.map(function (p) {
-            return '<li class="packet-item"><div class="ico">🔗</div><div class="txt"><strong>' +
-              esc(p.name) + "</strong><span>" + esc(p.what) + "</span></div></li>";
+          partners.map(function (p) { return item("🔗", p.name, p.what); }).join("") +
+        "</ul>" +
+        '<h2 class="mt-4">Trusted sources for other topics</h2>' +
+        '<p class="muted">When a question or topic goes beyond the Jump$tart lessons, Volunteer Prep and the Standards Helper ' +
+          "answer only from these public sources, and every answer names its source.</p>" +
+        '<ul class="packet-list mt-2">' +
+          Object.keys(KB_SRC).map(function (k) {
+            return item("🏛️", KB_SRC[k][0], KB_SRC_ABOUT[k] || "", '<span class="muted" style="display:block;font-size:.8rem">' + esc(KB_SRC[k][1]) + "</span>");
           }).join("") +
         "</ul>" +
         '<div class="callout mt-3"><div class="ico">📌</div><div><strong>Where this toolkit fits.</strong> ' +
-          "The official materials are the curriculum. This prototype is the delivery layer on top of them — turning each " +
-          "lesson into a live challenge students vote on, with a reveal, discussion prompt, and a take-home card. " +
-          "Nothing here replaces or reproduces the official presentations, toolkits, or worksheets, and all of it is " +
-          "pending review and approval.</div></div>" +
-        '<div class="grid grid-2 mt-3">' +
-          '<div class="card"><div class="eyebrow">Extended library</div>' +
-            "<p>Beyond the official Grades 1–4 sequence, this toolkit includes " + (MODULES.length - core.length) +
-            " more modules covering budgeting, credit, paychecks, scams, banking, college costs, and investing for older students.</p>" +
-            '<a class="btn btn-secondary" href="#/modules">See all ' + MODULES.length + " modules →</a></div>" +
-          '<div class="card"><div class="eyebrow">Run it without screens</div>' +
-            "<p>Ten of the twelve games in this toolkit need no devices at all — useful for elementary classrooms, " +
-            "libraries, and anywhere the wifi can't be trusted.</p>" +
-            '<a class="btn btn-secondary" href="#/games?devices=none">Unplugged games →</a></div>' +
-        "</div>" +
+          "The official materials are the curriculum. This toolkit helps volunteers deliver them. It does not replace " +
+          "or reproduce the official presentations, toolkits, or worksheets, and all of it is pending review and approval.</div></div>" +
       "</div></section>";
     wireNav();
   }
@@ -1215,13 +1027,16 @@
   // ================================================================
   function renderGames(query) {
     var filter = (query && query.devices) || "all";
+    var topic = query && moduleById(query.topic) ? query.topic : "";
     function matches(g) {
+      if (topic && !gameTopics(g).some(function (m) { return m.id === topic; })) return false;
       if (filter === "all") return true;
       if (filter === "none") return g.devices === "none";
       return g.devices !== "none";
     }
     var shown = GAME_FORMATS.filter(matches);
-    var noDeviceCount = GAME_FORMATS.filter(function (g) { return g.devices === "none"; }).length;
+    var noDeviceCount = unpluggedGames();
+    var deepCount = GAME_FORMATS.filter(function (g) { return g.multiRound; }).length;
 
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Games</div>' +
@@ -1230,31 +1045,57 @@
         '<p class="muted" style="max-width:66ch"><strong>' + noDeviceCount + " of these " + GAME_FORMATS.length +
           " games need no technology at all</strong> — just you, the students, and maybe some paper. " +
           "The rest use one shared screen at the front of the room. Both kinds are here on purpose: young classrooms " +
-          "rarely have student devices, but a projector is often available. " +
-          "Every game works with any module — you plug in that topic's items, scenario, or vocabulary.</p>" +
+          "rarely have student devices, but a projector is often available.</p>" +
+        '<p class="muted" style="max-width:66ch">The quick games work with any module — you plug in that topic\'s items, scenario, or vocabulary. ' +
+          "The " + deepCount + " <strong>multi-round games</strong> go deeper: students live with the results of their choices over several rounds. " +
+          "Every game has a version for each age group, sample cards, questions to close with, and a printable game sheet.</p>" +
       "</div>" +
       '<section class="section tight"><div class="wrap">' +
         '<div class="filter-row">' +
-          gameFilterBtn("all", "All games", filter) +
-          gameFilterBtn("none", "🙌 No devices needed", filter) +
-          gameFilterBtn("screen", "📺 Uses a screen", filter) +
+          gameFilterBtn("all", "All games", filter, topic) +
+          gameFilterBtn("none", "🙌 No devices needed", filter, topic) +
+          gameFilterBtn("screen", "📺 Uses a screen", filter, topic) +
+          '<label class="game-topic-filter"><span>Topic</span><select id="gameTopic">' +
+            '<option value="">Any topic</option>' +
+            MODULES.map(function (m) {
+              return '<option value="' + m.id + '"' + (m.id === topic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>";
+            }).join("") +
+          "</select></label>" +
         "</div>" +
-        '<div class="grid game-grid">' +
-          shown.map(gameCard).join("") +
-        "</div>" +
+        (shown.length
+          ? '<div class="grid game-grid">' + shown.map(function (g) { return gameCard(g, topic); }).join("") + "</div>"
+          : '<p class="muted">No games match both filters. Try "All games".</p>') +
         '<div class="callout mt-3"><div class="ico">💡</div><div><strong>Why unplugged games matter.</strong> ' +
           "Not every classroom, library, or after-school room has working screens or reliable wifi — and younger students " +
           "often engage more when they're moving and talking. A workshop should never depend on technology to succeed.</div></div>" +
       "</div></section>";
+    document.getElementById("gameTopic").addEventListener("change", function () {
+      location.hash = "#/games?devices=" + filter + (this.value ? "&topic=" + this.value : "");
+    });
+    app.querySelectorAll("[data-sheet]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var g = GAME_FORMATS.filter(function (x) { return x.id === b.getAttribute("data-sheet"); })[0];
+        if (g) download("money-ready-game-" + g.id + ".txt", gameToText(g));
+      });
+    });
     wireNav();
   }
-  function gameFilterBtn(val, label, current) {
+  function gameFilterBtn(val, label, current, topic) {
     return '<a class="btn ' + (current === val ? "btn-primary" : "btn-secondary") +
-      '" href="#/games?devices=' + val + '">' + esc(label) + "</a>";
+      '" href="#/games?devices=' + val + (topic ? "&topic=" + topic : "") + '">' + esc(label) + "</a>";
   }
-  function gameCard(g) {
+  // An array, not an object: number-like keys ("35") would sort before "k2".
+  var LEVEL_NAMES = [["k2", "Grades K–2"], ["35", "Grades 3–5"], ["68", "Grades 6–8"], ["912", "Grades 9–12"]];
+  function gameCard(g, topic) {
     var devLabel = g.devices === "none" ? "No devices needed"
       : g.devices === "shared" ? "One shared screen" : "Own device";
+    var topics = gameTopics(g);
+    // Open the builder on this game, for the filtered topic or its first fit.
+    var planTopic = topic || (topics[0] && topics[0].id);
+    var planHref = planTopic
+      ? "#/builder?topic=" + planTopic + "&game=" + g.id + "&dev=" + (g.devices === "none" ? "none" : g.devices) +
+        "&min=" + (g.minutes > 15 ? "45" : "30")
+      : "";
     return '<div class="card game-card dev-' + g.devices + '">' +
       '<div class="g-top"><span class="g-emoji">' + g.emoji + "</span><h3 style=\"margin:0\">" + esc(g.name) + "</h3></div>" +
       '<p class="muted mb-0" style="font-size:.92rem">' + esc(g.summary) + "</p>" +
@@ -1264,14 +1105,63 @@
         '<span class="badge gray">⏱ ' + g.minutes + " min</span>" +
         '<span class="badge gray">' + esc(g.group) + "</span>" +
         '<span class="badge gray">Energy: ' + esc(g.energy) + "</span>" +
+        (g.multiRound ? '<span class="badge amber">🔁 Multi-round</span>' : "") +
       "</div>" +
-      '<div class="mt-2"><strong style="font-size:.88rem">Materials:</strong> ' +
+      (g.reinforces ? '<p style="font-size:.9rem;margin:0"><strong>Reinforces:</strong> ' + esc(g.reinforces) + "</p>" : "") +
+      (topics.length
+        ? '<div class="game-topics"><strong style="font-size:.88rem">Fits:</strong> ' + topics.map(function (m) {
+            return '<a class="chip" href="#/module/' + m.id + '">' + m.emoji + " " + esc(m.title) + "</a>"; }).join("") + "</div>"
+        : "") +
+      '<div><strong style="font-size:.88rem">Materials:</strong> ' +
         '<span class="muted" style="font-size:.88rem">' + esc(g.materials.join(", ")) + "</span></div>" +
-      '<details class="mt-2"><summary style="cursor:pointer;font-weight:700;font-size:.9rem">How to play</summary>' +
+      '<details><summary style="cursor:pointer;font-weight:700;font-size:.9rem">How to play</summary>' +
         '<ol class="numbered mt-1">' + g.howToPlay.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ol>" +
         '<div class="script-box" style="font-size:.9rem;margin-top:10px"><strong>Teen tip:</strong> ' + esc(g.teenTip) + "</div>" +
       "</details>" +
+      (g.levels
+        ? '<details><summary style="cursor:pointer;font-weight:700;font-size:.9rem">Make it fit your age group</summary>' +
+            '<dl class="game-levels">' + LEVEL_NAMES.filter(function (l) { return g.levels[l[0]]; }).map(function (l) {
+              return "<dt>" + l[1] + "</dt><dd>" + esc(g.levels[l[0]]) + "</dd>"; }).join("") + "</dl>" +
+          "</details>"
+        : "") +
+      (g.cards
+        ? '<details><summary style="cursor:pointer;font-weight:700;font-size:.9rem">' + esc(g.cards.title) + "</summary>" +
+            '<ol class="numbered mt-1" style="font-size:.9rem">' + g.cards.items.map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("") + "</ol>" +
+          "</details>"
+        : "") +
+      (g.debrief || g.access
+        ? '<details><summary style="cursor:pointer;font-weight:700;font-size:.9rem">Debrief and access</summary>' +
+            (g.debrief ? '<ul class="privacy-list mt-1">' + g.debrief.map(function (q) {
+              return '<li><span class="ok">💬</span><span>' + esc(q) + "</span></li>"; }).join("") + "</ul>" : "") +
+            (g.access ? '<p class="muted" style="font-size:.9rem;margin:8px 0 0"><strong>Everyone can play:</strong> ' + esc(g.access) + "</p>" : "") +
+          "</details>"
+        : "") +
+      '<div class="game-actions">' +
+        (g.play && PLAY_ENGINES[g.play.engine] ? '<a class="btn btn-primary" href="#/play/' + g.id + '">▶ Play on screen</a>' : "") +
+        (planHref ? '<a class="btn btn-secondary" href="' + planHref + '">🛠️ Plan a workshop with it</a>' : "") +
+        '<button class="btn btn-ghost" data-sheet="' + g.id + '">⬇ Download game sheet</button>' +
+      "</div>" +
     "</div>";
+  }
+
+  // On-screen games (engines in play.js). Content comes from GAME_FORMATS.
+  function renderPlay(id) {
+    var g = GAME_FORMATS.filter(function (x) { return x.id === id; })[0];
+    if (!g || !g.play || !PLAY_ENGINES[g.play.engine]) return renderNotFound();
+    app.innerHTML =
+      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · <a href="#/games">Games</a> · ' + esc(g.name) + "</div>" +
+        '<div class="eyebrow">' + g.emoji + " Play on screen</div>" +
+        "<h1>" + esc(g.name.replace(/ \(on screen\)$/, "")) + "</h1>" +
+        '<p class="muted" style="max-width:66ch">' + esc(g.summary) + "</p>" +
+      "</div>" +
+      '<section class="section tight"><div class="wrap">' +
+        '<div id="playRoot" class="play-root"></div>' +
+        '<p class="muted center mt-3" style="font-size:.88rem">🔒 Scores are never saved or sent — the game runs only on this screen.</p>' +
+      "</div></section>";
+    wireNav();
+    askStudents("game", g.id, function () {
+      PLAY_ENGINES[g.play.engine](document.getElementById("playRoot"), g);
+    });
   }
 
   // ================================================================
@@ -1285,7 +1175,8 @@
   // ================================================================
   function renderBuilderCombined(query) {
     query = query || {};
-    var dev = DEVICE_GUIDES[query.dev] ? query.dev : "none";
+    // Two choices. Old links with "shared" or "personal" open as devices.
+    var dev = query.dev === "devices" || query.dev === "shared" || query.dev === "personal" ? "devices" : "none";
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · Workshop builder</div>' +
         '<div class="eyebrow">Workshop builder</div>' +
@@ -1299,9 +1190,12 @@
       '<section class="section tight"><div class="wrap">' +
         '<div class="card"><div class="grid grid-2">' +
           '<div class="field"><label for="gTopic">1. Topic</label><select id="gTopic">' +
-            MODULES.map(function (m) {
-              return '<option value="' + m.id + '"' + (m.id === query.topic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>"; }).join("") +
-          "</select></div>" +
+            '<optgroup label="Modules">' + MODULES.map(topicOption).join("") + "</optgroup>" +
+            '<optgroup label="More topics (from trusted sources)">' + EXTRA_TOPICS.map(topicOption).join("") + "</optgroup>" +
+          "</select>" +
+          '<div class="topic-search"><input id="gFind" type="text" placeholder="Other topic? Try taxes, coins, insurance…" aria-label="Find a topic" />' +
+            '<button class="btn btn-secondary" id="gFindBtn" type="button">Find</button></div>' +
+          '<div id="gFindOut" class="muted" style="font-size:.85rem;margin-top:6px"></div></div>' +
           '<div class="field"><label for="gGrade">2. Age group</label><select id="gGrade">' +
             ["Grades K–2", "Grades 3–5", "Grades 6–8", "Grades 9–12"].map(function (g, i) {
               var on = query.grade ? g === query.grade : i === 1;
@@ -1326,12 +1220,41 @@
           "</select></div>" +
         "</div>" +
         '<div class="field"><label>What technology is actually in the room?</label><div class="chips-select" id="gDev">' +
-          [["none", "🙌 No devices at all"], ["shared", "📺 One shared screen"], ["personal", "📱 Students have devices"]].map(function (d) {
+          [["none", "🙌 No devices"], ["devices", "📺 Devices (a screen and/or students' devices)"]].map(function (d) {
             return '<button class="chip-toggle' + (d[0] === dev ? " on" : "") + '" data-dev="' + d[0] + '">' + d[1] + "</button>"; }).join("") +
         "</div></div>" +
         '<button class="btn btn-primary btn-lg" id="genLesson">✨ Build my workshop</button></div>' +
         '<div id="planOut" class="mt-3"></div>' +
       "</div></section>";
+
+    function topicOption(m) {
+      return '<option value="' + m.id + '"' + (m.id === query.topic ? " selected" : "") + ">" + m.emoji + " " + esc(m.title) + "</option>";
+    }
+    // Find a topic by typing. Only topics with checked content can match;
+    // with no match it says so instead of making something up.
+    function findTopicByText() {
+      var text = document.getElementById("gFind").value;
+      var out = document.getElementById("gFindOut");
+      var hits = searchTopics(text);
+      if (!text.trim()) { out.innerHTML = ""; return; }
+      if (!hits.length) {
+        out.innerHTML = "No checked content for \"" + esc(text) + "\" yet, so the builder won't invent a game for it. " +
+          "Pick one of the topics in the list, or ask the team to add it (each new topic needs a named trusted source).";
+        return;
+      }
+      out.innerHTML = "Found: " + hits.slice(0, 5).map(function (t) {
+        return '<button class="chip-toggle" type="button" data-pick="' + t.id + '">' + t.emoji + " " + esc(t.title) + "</button>";
+      }).join(" ");
+      out.querySelectorAll("[data-pick]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          document.getElementById("gTopic").value = b.getAttribute("data-pick");
+          out.innerHTML = "";
+          build();
+        });
+      });
+    }
+    document.getElementById("gFindBtn").addEventListener("click", findTopicByText);
+    document.getElementById("gFind").addEventListener("keydown", function (e) { if (e.key === "Enter") findTopicByText(); });
 
     document.getElementById("gDev").querySelectorAll(".chip-toggle").forEach(function (b) {
       b.addEventListener("click", function () {
@@ -1355,6 +1278,9 @@
       };
       if (game) choices.game = game;
       if (order && order.length) choices.order = order.join(".");
+      askStudents("builder", choices.topic, function () { showBuilt(choices, order); });
+    }
+    function showBuilt(choices, order) {
       var plan = buildLessonPlan(choices.topic, {
         minutes: Number(choices.min),
         grade: choices.grade,
@@ -1374,7 +1300,7 @@
     }
     document.getElementById("genLesson").addEventListener("click", function () { build(); });
     wireNav();
-    if (query.topic && moduleById(query.topic)) {
+    if (query.topic && findTopic(query.topic)) {
       build(query.game, query.order ? query.order.split(".").map(Number) : null);
     }
   }
@@ -1411,6 +1337,15 @@
         '<div class="card mt-3" style="border-left:5px solid var(--green);box-shadow:none">' +
           "<strong>Learning objective:</strong> " + esc(m.objective) + "</div>" +
 
+        (m.extraTopic && plan.topicGame
+          ? '<div class="callout mt-3"><div class="ico">🏛️</div><div><strong>Not a Jump$tart module.</strong> ' +
+            "Every fact in this workshop's game comes from a trusted U.S. government consumer-education source: " +
+            esc(plan.topicGame.sources.map(function (x) { return x.name + " (" + x.url + ")"; }).join("; ")) + ".</div></div>"
+          : "") +
+
+        // The game for this topic, up front: every round and answer.
+        topicGameCard(plan) +
+
         // K–2 picture banner
         (plan.pictureBased
           ? '<div class="callout mt-3"><div class="ico">🎨</div><div><strong>This plan is built for pre-readers.</strong> ' +
@@ -1443,11 +1378,13 @@
 
         // Run of show
         '<div class="flex items-center wrap-flex mt-4" style="justify-content:space-between;gap:8px">' +
-          '<div class="eyebrow" style="margin:0">Run of show — what to do, minute by minute</div>' +
+          '<div class="eyebrow" style="margin:0">Run of show: what to say and do, minute by minute</div>' +
           (plan.edited && rebuild ? '<button class="btn btn-ghost no-print" id="stepReset">↺ Undo my step changes</button>' : "") +
         "</div>" +
-        (rebuild ? '<p class="muted no-print" style="font-size:.85rem;margin:4px 0 0">Use ↑ ↓ to move a step and ✕ to drop it. ' +
-          "Minutes from a dropped step go to the main activity, so the plan still fills " + plan.totalMinutes + " minutes.</p>" : "") +
+        '<p class="muted" style="font-size:.9rem;margin:0 0 8px">🗣 <strong>Say</strong> lines are word for word, so you can read them straight off the page. ' +
+          "✋ <strong>Do</strong> steps go in order." +
+          (rebuild ? '<span class="no-print"> Use ↑ ↓ to move a step and ✕ to drop it. Minutes from a dropped step go to the main activity, so the plan still fills ' +
+            plan.totalMinutes + " minutes.</span>" : "") + "</p>" +
         plan.steps.map(function (s, n) {
           var tools = rebuild
             ? '<span class="step-tools no-print">' +
@@ -1457,9 +1394,19 @@
               "</span>"
             : "";
           return '<div class="plan-step"><div class="plan-time">' + s.minutes + " min</div>" +
-            '<div><div class="step-head"><h4>' + esc(s.name) + "</h4>" + tools + "</div><p>" + esc(s.what) + "</p>" +
+            '<div><div class="step-head"><h4>' + esc(s.name) + "</h4>" + tools + '</div><p class="muted" style="font-size:.92rem">' + esc(s.what) + "</p>" +
             (s.script ? '<div class="script-box mt-1" style="font-size:.9rem"><strong>Say this:</strong> ' + esc(s.script) + "</div>" : "") +
-            (s.how ? '<div class="apply-box mt-1" style="font-size:.9rem"><strong>How to run it:</strong> ' + esc(s.how) + "</div>" : "") +
+            (s.say && s.say.length ? '<div class="script-box mt-1 say-box"><strong>🗣 Say</strong>' +
+              s.say.map(function (l) { return "<p>“" + esc(l) + "”</p>"; }).join("") + "</div>" : "") +
+            (s.do && s.do.length ? '<div class="do-box mt-1"><strong>✋ Do</strong><ol>' +
+              s.do.map(function (l) { return "<li>" + esc(l) + "</li>"; }).join("") + "</ol></div>" : "") +
+            (s.rounds ? '<div class="round-script mt-1"><strong>🎮 Round by round</strong>' + s.rounds.map(function (r, i) {
+                return '<div class="rs-round"><div class="rs-n">Round ' + (i + 1) + "</div>" +
+                  r.say.map(function (l) { return '<p class="rs-say">🗣 “' + esc(l) + "”</p>"; }).join("") +
+                  r.do.map(function (l) { return '<p class="rs-do">✋ ' + esc(l) + "</p>"; }).join("") +
+                  '<p class="rs-say rs-answer">🗣 Then say: “' + esc(r.answer) + "”</p></div>";
+              }).join("") + "</div>" : "") +
+            (s.how ? '<div class="apply-box mt-1" style="font-size:.86rem"><strong>💡 Tip:</strong> ' + esc(s.how) + "</div>" : "") +
             "</div></div>";
         }).join("") +
 
@@ -1507,9 +1454,9 @@
         "</ul>" +
 
         '<div class="flex gap wrap-flex mt-3 no-print">' +
-          '<a class="btn btn-primary" href="#/take-home/' + m.id + '">Take-home card</a>' +
+          (m.extraTopic ? "" : '<a class="btn btn-primary" href="#/take-home/' + m.id + '">Take-home card</a>') +
           '<a class="btn btn-secondary" href="#/games?devices=' + (plan.devices === "none" ? "none" : "all") + '">Browse games</a>' +
-          '<a class="btn btn-ghost" href="#/prep?topic=' + m.id + '">Full volunteer prep</a>' +
+          (m.extraTopic ? "" : '<a class="btn btn-ghost" href="#/prep?topic=' + m.id + '">Full volunteer prep</a>') +
         "</div>" +
       "</div>";
 
@@ -1545,11 +1492,125 @@
         copyBtn.textContent = ok ? "✓ Link copied" : "Copy failed — use the address bar";
       });
     });
+    var cardsBtn = document.getElementById("gameCards");
+    if (cardsBtn) cardsBtn.addEventListener("click", function () {
+      download("money-ready-game-" + m.id + "-" + plan.profile.id + ".txt", topicGameToText(plan.topicGame) +
+        "\n\nEducational only. Not financial advice. No personal data collected.");
+    });
     document.getElementById("planDownload").addEventListener("click", function () {
       download("money-ready-" + m.id + "-" + plan.totalMinutes + "min.txt", planToText(plan, packet));
     });
     out.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
+  // The ready-to-play game in a plan: play it on screen, or print cards.
+  function topicGameCard(plan) {
+    var g = plan.topicGame;
+    if (!g || !g.rounds.length) return "";
+    var qs = "?topic=" + plan.module.id + "&grade=" + plan.profile.id;
+    var noScreen = plan.devices === "none";
+    var main = plan.mainGame && !plan.mainGame.multiRound ? plan.mainGame : null;
+    var srcNames = g.sources.map(function (x) { return x.name; });
+    return '<div class="card mt-3 topic-game" style="box-shadow:none;border:2px solid var(--green)">' +
+      '<div class="eyebrow">🎮 Your game for this topic · ' + (noScreen ? "no screen needed" : "ready to play") + "</div>" +
+      '<h3 style="margin:4px 0">' + esc(g.title) + "</h3>" +
+      // At a glance: what the game is, who it is for, how to run it.
+      '<div class="game-facts">' +
+        "<div><span>Topic</span><strong>" + esc(g.topic.title) + "</strong></div>" +
+        "<div><span>Made for</span><strong>" + esc(plan.grade) + "</strong></div>" +
+        "<div><span>Rounds</span><strong>" + g.rounds.length + " questions</strong></div>" +
+        "<div><span>Style</span><strong>" + (noScreen
+          ? (g.picture ? "Big picture cards you hold up" : "Answer cards + you read the questions")
+          : (g.picture ? "Two big pictures, read aloud" : "Picture answers + why")) + "</strong></div>" +
+        "<div><span>Run it as</span><strong>" + (main ? main.emoji + " " + esc(main.name) : "On screen or with the cards") + "</strong></div>" +
+        (srcNames.length ? "<div><span>Facts from</span><strong>" + esc(srcNames.join("; ")) + "</strong></div>" : "") +
+      "</div>" +
+      '<p class="muted" style="font-size:.92rem;margin:10px 0 0"><strong>Students practice:</strong> ' + esc(g.topic.objective) +
+        (noScreen
+          ? " No screen needed: print the answer cards, hold them up (or tape one in each corner), and read each question from the script below. Students vote by pointing, moving, or raising hands."
+          : " Put the game on the room's screen. Students vote with hands or on their own devices (the game shows a play-along link). " +
+            "Tap an answer once for every vote you count, then Reveal: the screen shows the answer and how the class voted.") + "</p>" +
+      '<div class="flex gap wrap-flex no-print mt-2">' +
+        (noScreen
+          ? '<a class="btn btn-primary" href="#/game-cards' + qs + '">🖨 Print the answer cards</a>'
+          : '<a class="btn btn-primary" href="#/game' + qs + '">▶ Start the game on screen</a>' +
+            '<a class="btn btn-secondary" href="#/game-cards' + qs + '">🖨 Print the answer cards (backup)</a>') +
+        '<button class="btn btn-ghost" id="gameCards">⬇ Download the questions (text)</button>' +
+      "</div>" +
+      '<div class="eyebrow mt-3">What\'s in the game: every round, with the answer</div>' +
+      '<div class="round-grid' + (g.picture ? " pic" : "") + '">' + g.rounds.map(function (r, i) {
+        var s = roundSource(r, g.topic);
+        return '<div class="round-card"><div class="round-n">Round ' + (i + 1) + "</div>" +
+          '<div class="round-q">' + esc(r.q) + "</div>" +
+          '<div class="round-opts">' + r.opts.map(function (o, k) {
+            return '<span class="round-opt' + (k === r.best ? " ok" : "") + '"><span class="round-emoji" aria-hidden="true">' + o[0] + "</span>" +
+              esc(o[1]) + (k === r.best ? ' <span class="round-tick" aria-label="right answer">✓</span>' : "") + "</span>";
+          }).join("") + "</div>" +
+          '<div class="round-why">' + (r.best < 0 ? "Any answer is OK. " : "") + esc(r.why) + "</div>" +
+          (s ? '<div class="round-src">Source: ' + esc(s.name) + (s.url ? " · " + esc(s.url) : "") + "</div>" : "") +
+          "</div>";
+      }).join("") + "</div>" +
+    "</div>";
+  }
+
+  // #/game-cards?topic=…&grade=… : printable answer cards for rooms with
+  // no screen. One page per round with a big card for each answer, and an
+  // answer key at the end, so the cards students see don't give it away.
+  function renderGameCards(query) {
+    var grade = /^(k2|35|68|912)$/.test(query.grade || "") ? query.grade : "35";
+    var g = buildTopicGame(query.topic, grade);
+    if (!g || !g.rounds.length) return renderNotFound();
+    var gradeName = Object.keys(GRADE_PROFILES).filter(function (k) { return GRADE_PROFILES[k].id === grade; })[0];
+    app.innerHTML =
+      '<div class="wrap page-head no-print"><div class="breadcrumb"><a href="#/">Home</a> · ' +
+        '<a href="#/builder?topic=' + encodeURIComponent(query.topic) + "&grade=" + encodeURIComponent(gradeName) + '&dev=none">Workshop builder</a> · Answer cards</div>' +
+        '<div class="eyebrow">🖨 No screen needed · ' + esc(gradeName) + "</div>" +
+        "<h1>Answer cards: " + esc(g.title.replace(/^\S+ /, "")) + "</h1>" +
+        '<p class="muted" style="max-width:66ch">Print these (one page per round). For each round, read the question out loud, hold up the cards ' +
+          "or tape one in each corner, and let students point or walk to their answer. The answer key is on the last page, just for you.</p>" +
+        '<button class="btn btn-primary" onclick="window.print()">🖨 Print</button>' +
+      "</div>" +
+      '<section class="section tight"><div class="wrap">' +
+        g.rounds.map(function (r, i) {
+          return '<div class="pcard-round"><div class="pcard-q"><span>Round ' + (i + 1) + "</span> " + esc(r.q) + "</div>" +
+            '<div class="pcard-grid' + (r.opts.length === 2 ? " two" : "") + '">' + r.opts.map(function (o, k) {
+              return '<div class="pcard">' + (g.picture ? "" : '<div class="pcard-letter">' + "ABCD".charAt(k) + "</div>") +
+                '<div class="pcard-emoji" aria-hidden="true">' + o[0] + '</div><div class="pcard-word">' + esc(o[1]) + "</div></div>";
+            }).join("") + "</div></div>";
+        }).join("") +
+        '<div class="pcard-round pcard-key"><h2>Answer key (for the volunteer)</h2><ol>' +
+          g.rounds.map(function (r) {
+            var s = roundSource(r, g.topic);
+            return "<li><strong>" + esc(r.q) + "</strong><br>" +
+              (r.best < 0 ? "Any answer is OK." : "Answer: " + r.opts[r.best][0] + " " + esc(r.opts[r.best][1]) + ".") + " " + esc(r.why) +
+              (s ? '<br><span class="muted" style="font-size:.85rem">Source: ' + esc(s.name) + (s.url ? " · " + esc(s.url) : "") + "</span>" : "") + "</li>";
+          }).join("") + "</ol></div>" +
+      "</div></section>";
+    wireNav();
+  }
+
+  // #/game?topic=<module or extra topic>&grade=<k2|35|68|912>
+  function renderTopicGame(query) {
+    var grade = /^(k2|35|68|912)$/.test(query.grade || "") ? query.grade : "35";
+    var g = buildTopicGame(query.topic, grade);
+    if (!g || !g.rounds.length) return renderNotFound();
+    var gradeName = Object.keys(GRADE_PROFILES).filter(function (k) { return GRADE_PROFILES[k].id === grade; })[0];
+    app.innerHTML =
+      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · ' +
+        '<a href="#/builder?topic=' + encodeURIComponent(query.topic) + "&grade=" + encodeURIComponent(gradeName) + '&dev=devices">Workshop builder</a> · Game</div>' +
+        '<div class="eyebrow">' + g.topic.emoji + (query.solo === "1" ? " Play along" : " Play on screen") + " · " + esc(gradeName) + "</div>" +
+        "<h1>" + esc(g.title.replace(/^\S+ /, "")) + "</h1>" +
+        (g.topic.extraTopic ? '<p class="muted" style="max-width:66ch">Every round shows where its facts come from.</p>' : "") +
+      "</div>" +
+      '<section class="section tight"><div class="wrap">' +
+        '<div id="playRoot" class="play-root"></div>' +
+        '<p class="muted center mt-3" style="font-size:.88rem">🔒 Nothing is saved or sent anywhere. The game runs only on this screen.</p>' +
+      "</div></section>";
+    g.solo = query.solo === "1";
+    if (!g.solo) g.playLink = location.href.split("#")[0] + "#/game?topic=" + encodeURIComponent(query.topic) + "&grade=" + grade + "&solo=1";
+    PLAY_ENGINES.quiz(document.getElementById("playRoot"), g);
+    wireNav();
+  }
+
   function renderNotFound() {
     app.innerHTML = '<section class="section"><div class="wrap center">' +
       "<h1>Page not found</h1><p class=\"muted\">That link doesn't match a screen.</p>" +
@@ -1568,19 +1629,19 @@
     if (fd) {
       fd.textContent = "Money Ready Virginia Interactive Toolkit is a student-led prototype and concept for discussion. " +
         "It is educational only, is not financial advice, and is designed to support — pending review and approval — " +
-        "Virginia Jump$tart's Teen Teach-In–style workshops. All impact figures shown as examples are placeholders. " +
+        "Virginia Jump$tart's Teen Teach-In–style workshops. " +
         "No personal data is collected. © " + new Date().getFullYear() + " · Built by a student volunteer.";
     }
     // active nav link
     var route = (location.hash || "#/").split("?")[0].replace("#/", "").split("/")[0];
+    if (route === "play") route = "games";
+    if (route === "game" || route === "game-cards") route = "builder";
     document.querySelectorAll(".nav-links a").forEach(function (a) {
       a.classList.toggle("active", a.getAttribute("data-route") === route);
     });
     // close mobile menu
     var nl = document.getElementById("navLinks");
     if (nl) nl.classList.remove("open");
-    // keep the header account chip current
-    updateRoleChip();
     // Hide the Resources link on builds with no official lessons tagged.
     var resLink = document.querySelector('.nav-links a[data-route="resources"]');
     if (resLink) resLink.style.display = officialModules().length ? "" : "none";
@@ -1598,6 +1659,10 @@
   }
   function route() {
     clearTimers();
+    // Stop a game reading aloud when the page changes.
+    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) { /* no voice */ }
+    var asking = document.getElementById("studentsOverlay");
+    if (asking) asking.remove();
     window.scrollTo(0, 0);
     var raw = (location.hash || "#/").slice(1); // remove '#'
     var parts = raw.split("?");
@@ -1607,20 +1672,25 @@
 
     switch (seg[0]) {
       case "": return renderHome();
-      case "modules": return renderModules();
+      // The Modules tab was folded into Resources.
+      case "modules": location.replace("#/resources"); return;
       // Only present when modules are tagged with official lessons.
       case "resources": return officialModules().length ? renderResources() : renderNotFound();
       case "games": return renderGames(query);
+      case "play": return renderPlay(seg[1]);
+      case "game": return renderTopicGame(query);
+      case "game-cards": return renderGameCards(query);
       case "module": return renderModule(seg[1]);
       case "challenge": return renderChallenge(seg[1], query.practice === "1");
-      case "facilitator": return renderFacilitator();
+      // The Facilitator dashboard was folded into the builder's game.
+      case "facilitator": return renderBuilderCombined(query);
       case "prep": return renderPrep(query);
       // Toolkit builder and lesson generator are now one page.
       case "builder":
       case "generator": return renderBuilderCombined(query);
-      case "portal": return renderPortal();
       case "helper": return renderHelper();
-      case "impact": return renderImpact();
+      // The Impact tab was removed; old links land on the home page.
+      case "impact": location.replace("#/"); return;
       case "take-home": return renderTakeHome(seg[1]);
       default: return renderNotFound();
     }
@@ -1630,17 +1700,8 @@
   document.getElementById("navToggle").addEventListener("click", function () {
     document.getElementById("navLinks").classList.toggle("open");
   });
-  // Account type chip in the header
-  var chipBtn = document.getElementById("roleChip");
-  if (chipBtn) chipBtn.addEventListener("click", function () { showRolePicker(true); });
-
-  // First visit: ask who's using the toolkit before anything else.
-  function start() {
-    route();
-    showRolePicker(false);
-  }
   window.addEventListener("hashchange", route);
-  window.addEventListener("DOMContentLoaded", start);
+  window.addEventListener("DOMContentLoaded", route);
   // In case DOMContentLoaded already fired
-  if (document.readyState !== "loading") start();
+  if (document.readyState !== "loading") route();
 })();

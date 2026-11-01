@@ -47,12 +47,15 @@ mostly through the GitHub web UI and the live site.
 | # | Spec | State |
 | --- | --- | --- |
 | 01 | Workshop Builder | Phase 1 done (see below). Phase 2 next: "number of students" and "setting" inputs, remove/reorder steps. Owner: Sumeet. |
-| 02 | Landing page "where do I go?" flow chart | Not started. The home page already has some `navGuide()` cards; check them before building. |
+| 02 | Landing page "where do I go?" flow chart | Done. A "What do you want to do?" chart sits in the home page hero (`PATHS` and `pathChart()` in `app.js`): one main button per role plus smaller links, and picking a path sets the role. The home page skips the first-visit role pop-up (the chart does that job); other pages still show it. Owner: Ridhi Poranki. |
 | 03 | Works on school computers | Not started. Needs a real Chromebook test. |
 | 04 | 4-H edition, no clover | Already done earlier (💵 mark, see Decisions). Confirm on the 4-H site, then mark Done. |
-| 05 | K–2 picture mode across the whole site | Not started. The builder already has a K–2 picture mode; this extends it to modules and take-home cards. |
-| 06 | More games | Not started. |
+| 05 | K–2 picture mode across the whole site | In progress (Sumeet). K–2 games are done (spec 08); modules and take-home cards are next. |
+| 06 | More games | Done. Nine multi-round games (7 unplugged, 2 on-screen at `#/play/<id>`), each with topics, a version per age group, printable cards and debrief questions. Owner: Ridhi Poranki. |
 | 07 | Volunteer/school matching ("like a dating profile") | Blocked on owner decisions: who sees profiles, what is allowed, coordinator approval. Must stay no-personal-data. |
+| 08 | Builder makes playable games | PR #11 (Sumeet). Every plan carries a game for its topic and age group, a word-for-word Say/Do script for every step, and 8 extra topics with cited sources. See "Builder games" under Decisions. |
+| 10 | Live join on student devices | Needs decisions (Sumeet): approval, hosting service, privacy rules. |
+| 09 | Count students reached and workshops used | Done. Volunteers and teachers must enter a student count before building a plan, or opening an on-screen game; counts go to a private Google Sheet (setup in `docs/impact-sheet/README.md`, address in `reach.js`). Owner: Ridhi Poranki. |
 
 **Workshop Builder phase 1 (PR #4, merged)**
 - `rankGames()` in `lessons.js` scores games by topic (`bestGames` in each
@@ -101,12 +104,17 @@ to "Generator" (the old `#/generator` route still works as an alias).
 1. **No backend. No build step. No dependencies.** Plain HTML, CSS, and
    ES5-style JavaScript loaded with `<script>` tags. Anyone can open
    `index.html` from disk and the whole app works, offline.
-2. **No external requests of any kind** — no CDN, no web fonts, no
-   analytics. This is what makes the privacy claim true rather than
-   aspirational, and it means the app cannot break because a third party
-   did.
+2. **No external requests — with one agreed exception.** No CDN, no web
+   fonts, no analytics. This is what makes the privacy claim true rather
+   than aspirational, and it means the app cannot break because a third
+   party did. **Exception (spec 09, agreed by the owner 2026-10-30):**
+   `assets/js/reach.js` sends one anonymous count to a private Google
+   Sheet when a volunteer or teacher starts an activity — kind, module or
+   game id, number of students, role, site. Nothing else, only from the
+   live site, and the app works the same if it fails. Don't widen this
+   (no analytics, no extra fields) without asking the owner.
 3. **Privacy-safe by design.** No names, no logins, no personal data,
-   nothing sent anywhere. The only stored state is an account-type
+   and nothing sent anywhere except that one count. The only stored state is an account-type
    preference and anonymous confidence tallies, both in `localStorage` on
    the viewer's own device. Every `localStorage` access is wrapped in
    try/catch with an in-memory fallback, because private browsing throws.
@@ -132,8 +140,13 @@ assets/js/lessons.js    ACCOUNT_TYPES, IMPACT_METRICS, GAME_FORMATS,
                         GRADE_PROFILES, DEVICE_GUIDES, PICTURE_ACTIVITIES,
                         LESSON_PACKS, buildLessonPlan(), buildPacket().
 assets/js/metrics.js    Privacy-safe aggregate counters in localStorage.
-assets/js/app.js        Hash router + every screen. The only file with
-                        rendering logic.
+assets/js/reach.js      Sends the students-reached count (spec 09). Holds
+                        the Google Sheet address; see docs/impact-sheet/.
+assets/js/game-bank.js  Rounds for the builder's games (GAME_BANK) and the
+                        extra topics with cited sources (EXTRA_TOPICS).
+assets/js/play.js       Engines for the on-screen games (#/play/<game id>).
+                        Their words live in GAME_FORMATS, not here.
+assets/js/app.js        Hash router + every screen.
 scripts/audit.js        End-to-end browser check (see Testing).
 scripts/4h-build/       The two scripts that derive the 4-H edition.
 ```
@@ -167,7 +180,8 @@ The 4-H repo is **derived from this one**, not developed separately.
 
 ```bash
 # 1. copy the shared files into a working copy
-cp assets/js/app.js assets/js/data.js assets/js/lessons.js  <copy>/assets/js/
+cp assets/js/app.js assets/js/data.js assets/js/helper-kb.js assets/js/lessons.js \
+   assets/js/play.js assets/js/reach.js  <copy>/assets/js/
 cp index.html <copy>/
 
 # 2. remove the Jump$tart-only content
@@ -222,21 +236,49 @@ Worth also checking by hand when relevant, since the audit does not:
 
 ## Decisions worth knowing
 
-**Three account types, not logins.** Volunteer / school / organization is a
-view preference stored on the device. It changes only which impact metrics
-are shown. It is deliberately not an account — no password, no server, no
-personal data.
+**No role question, no Impact tab, no Modules tab (2026-10-30, Sumeet).** The
+"Who's using the toolkit?" pop-up, the header role chip and the Impact page
+were removed. The home page chart still quietly remembers volunteer / school /
+organization on the device, only so the students-reached count (spec 09)
+knows the role; anyone who never picks counts as a volunteer. The Modules tab
+was folded into **Resources**, which only explains what each resource is (no
+games on it). Old `#/modules` and `#/impact` links redirect. Module pages
+(`#/module/:id`) still exist for the builder and prep links.
 
-**Impact metrics per role** (`ACCOUNT_TYPES` in `lessons.js`):
-- volunteer — 7 metrics
-- school — 5 metrics, and the label reads **"Lessons completed"**
-- organization — 7 metrics, four of them tagged "program-wide total", plus
-  the measurement layer and the value-of-volunteer-time figure
+**Volunteer Prep covers every topic.** Modules plus `EXTRA_TOPICS`; age group
+uses `GRADE_PROFILES`, length rescales the timed steps, and answers come only
+from the Standards Helper's cited entries (`searchKB` in `app.js`).
 
-**Games: ten of twelve need no devices.** This is a feature, not a
+**Games: 17 of 21 need no devices.** This is a feature, not a
 limitation. Elementary classrooms often have no student devices and
 unreliable wifi, so a workshop must never depend on a screen. Keep that
 ratio in mind when adding games.
+
+**Game details (spec 06).** Every game has `reinforces`, `levels` (one
+version per age group, keyed by the `GRADE_PROFILES` id), `debrief`,
+`access` and usually `cards`; the games page shows them as dropdowns and
+a downloadable game sheet. The nine newer games are also `multiRound`
+and list their own `topics`; the two on-screen ones add `play`. The
+builder gives a game a bonus for its `topics` (just below a pack's second
+`bestGames` pick) and uses its `levels` text in the main activity step. Topics that point at modules a
+build doesn't have (the 4-H edition drops some) are ignored.
+
+**Builder games (spec 08).** `buildTopicGame()` (game-bank.js) makes a
+game for any module or extra topic: K–2 gets the `picture` rounds (two big
+pictures, read aloud with the browser's own speech), older grades the
+`rounds` set. Every plan shows it up front, and `writeScripts()` in
+lessons.js gives every step word-for-word Say lines and ordered Do steps,
+with a round-by-round script for the main activity. The builder asks only
+**No devices** or **Devices** (old `shared`/`personal` links map to
+devices). No devices: printable answer cards at `#/game-cards`, answer key
+last. Devices: `#/game` on the room's screen, where the volunteer taps an
+answer once per vote counted, then Reveal shows the real split. Students
+can play along on their own device (`&solo=1`), but their taps can't reach
+the screen without a server (spec 10). **The Facilitator dashboard was
+removed on 2026-10-30 at the owner's request**; `#/facilitator` opens the
+builder. Extra topics cite a `KB_SRC` source on every round and have no
+take-home or prep page. The "Other topic?" box only finds written topics
+and never invents one. `game-bank.js` isn't in the 4-H build yet.
 
 **Grades K–2 switches the generated plan to picture mode**: no reading,
 drawing and pointing instead of writing, two vocabulary words instead of
@@ -252,10 +294,21 @@ this specifically. The 4-H clover emblem is a federally protected mark
 (18 U.S.C. §707) and using it needs clearance from the local 4-H or
 Cooperative Extension office. Do not "fix" this back to a clover.
 
-**Standards helper never guesses.** It retrieves from a small curated list
-in `FAQ_KNOWLEDGE` and shows a source label. With no match it says so and
+**Standards helper never guesses.** It retrieves from a curated list
+(`FAQ_KNOWLEDGE` in `assets/js/helper-kb.js`, ~100 entries) and shows a
+source label. With no match it says so and
 points to a trusted adult. Do not wire it to a model that free-forms
 answers to children — the no-match fallback is the safety property.
+Entries without a `tier` come from Jump$tart materials; `tier: "trusted"`
+entries answer questions Jump$tart doesn't cover from a named U.S.
+government consumer-education source (CFPB, FDIC, FTC, SEC, IRS, Federal
+Student Aid, Federal Reserve Education), shown as `source` + `url` under the
+answer. To cover a new question, add a pre-written entry; don't fetch.
+A question only matches an entry if it contains one of that entry's `tags`
+as whole words (plurals folded). Overlapping tags: the longer phrase wins
+("deposit insurance" over "insurance"), so add a specific phrase rather than
+a bare common word when two topics collide. Ties go to the earlier entry,
+and Jump$tart entries are listed first.
 
 ---
 
