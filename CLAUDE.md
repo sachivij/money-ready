@@ -14,6 +14,11 @@ Two people (each with their own Claude) build this app at the same time. Read th
 - Keep pull requests small and merge often, so the two people rarely edit the same lines. `assets/js/app.js` and `assets/js/lessons.js` are shared hot spots; merge `main` into your branch before opening the PR.
 - When a spec is done, set its status to Done in the same pull request.
 
+## Content files (spec 11)
+
+- Standards Helper answers and the approved source list live in `content/` as Markdown files. `assets/js/helper-kb.js` is generated from them by `node scripts/build-content.js` (a GitHub Action does this on every PR and push to `main`). Edit `content/`, never `helper-kb.js`. See `content/README.md`.
+- Lessons, games and modules are still in the JS files until spec 11 moves them.
+
 ## Decisions already made
 
 - The page stays named **Workshop Builder** (not "Generator").

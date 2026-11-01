@@ -1,0 +1,62 @@
+# Weekly check for new Jump$tart Teen Teach-In material (spec 11).
+# Opens a GitHub issue when the resources page links to new or removed files.
+# It never changes the site: new material still goes through a pull request.
+name: Jump$tart watch
+
+on:
+  schedule:
+    - cron: "0 13 * * 1"   # Mondays, 13:00 UTC (9 am Eastern in summer, 8 am in winter)
+  workflow_dispatch:       # "Run workflow" button on the Actions tab
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Read the Jump$tart resources page
+        id: watch
+        run: node scripts/watch-jumpstart.js "$RUNNER_TEMP/issue.md"
+
+      - name: Open an issue about the change
+        if: steps.watch.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ steps.watch.outputs.first }}" = "true" ]; then
+            title="Jump\$tart watch is on: today's Teen Teach-In resources"
+          else
+            title="Jump\$tart posted changes to the Teen Teach-In resources ($(date -u +%Y-%m-%d))"
+          fi
+          gh issue create --title "$title" --body-file "$RUNNER_TEMP/issue.md" --assignee "${{ github.repository_owner }}" \
+            || gh issue create --title "$title" --body-file "$RUNNER_TEMP/issue.md"
+
+      - name: Save this week's list
+        if: steps.watch.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add content/watch/jumpstart-teen-teach-in.txt
+          git commit -m "Jump\$tart watch: update the Teen Teach-In resource list"
+          git push
+
+      - name: Report that the page couldn't be read
+        if: failure() && steps.watch.outputs.failed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Jump\$tart watch couldn't read the resources page"
+          # One open issue is enough; don't add another every week.
+          if [ -z "$(gh issue list --state open --search "in:title \"couldn't read the resources page\"" --json number --jq '.[].number')" ]; then
+            gh issue create --title "$title" --body-file "$RUNNER_TEMP/issue.md"
+          fi

@@ -296,7 +296,9 @@ this specifically. The 4-H clover emblem is a federally protected mark
 Cooperative Extension office. Do not "fix" this back to a clover.
 
 **Standards helper never guesses.** It retrieves from a curated list
-(`FAQ_KNOWLEDGE` in `assets/js/helper-kb.js`, ~100 entries) and shows a
+(`FAQ_KNOWLEDGE`, ~100 entries, one file each in `content/helper/`; spec 11
+generates `assets/js/helper-kb.js` from them, so never edit that file by
+hand, see `content/README.md`) and shows a
 source label. With no match it says so and
 points to a trusted adult. Do not wire it to a model that free-forms
 answers to children — the no-match fallback is the safety property.

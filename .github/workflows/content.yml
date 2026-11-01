@@ -1,0 +1,60 @@
+# Checks the content files and rebuilds the JavaScript the site loads (spec 11).
+# Runs on every pull request and every change to main that touches content.
+# If the generated file changes, it is committed back to the same branch, so
+# the Vercel preview (and the live site, on main) shows the new content.
+name: Content
+
+on:
+  pull_request:
+    paths: ["content/**", "scripts/build-content.js", "assets/js/helper-kb.js", ".github/workflows/content.yml"]
+  push:
+    branches: [main]
+    paths: ["content/**", "scripts/build-content.js", "assets/js/helper-kb.js", ".github/workflows/content.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: content-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # On a pull request, work on the branch itself so the result can be saved to it.
+          ref: ${{ github.head_ref || github.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check the content files and rebuild
+        run: node scripts/build-content.js
+
+      - name: Save the rebuilt file to this branch
+        # Pull requests from forks can't be written to; there the check above is enough.
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          if git diff --quiet; then
+            echo "Nothing to save: the generated files were already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add assets/js/helper-kb.js
+          git commit -m "Rebuild site content from content/ files"
+          git push
+
+      - name: Fail if a fork's generated file is out of date
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          if ! git diff --quiet; then
+            echo "assets/js/helper-kb.js is out of date. Run: node scripts/build-content.js and commit the result."
+            git diff --stat
+            exit 1
+          fi
