@@ -1,6 +1,6 @@
 # Spec 04: 4-H edition, remove the clover
 
-**Status:** Not started
+**Status:** Done (clover gone from the 4-H site; it uses the 💵 mark. Checked again 2026-11-01.)
 
 ## What to build
 Remove the clover mark from the Loudoun 4-H edition (sachivij/money-ready-4h) and replace it with the standard Money Ready logo or a neutral mark. Check 4-H's name-and-emblem rules before using any 4-H wording.
