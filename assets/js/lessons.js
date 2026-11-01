@@ -374,16 +374,16 @@ function buildLessonPlan(moduleId, opts) {
     students: students,
     settingEnergy: setting.energy,
   });
+  // One game per plan. By default it is the topic's own rounds run as the
+  // best-fitting format (Four Corners, Human Bar Graph...). A multi-round
+  // game brings its own rounds, so it only takes over when the volunteer
+  // picks it ("Change the game").
   var mainGame = null;
   for (var gi = 0; gi < ranked.length; gi++) {
     if (ranked[gi].id === opts.game) { mainGame = ranked[gi]; break; }
   }
-  mainGame = mainGame || ranked[0];
-  var alternatives = ranked.filter(function (g) { return g !== mainGame; }).slice(0, 2);
-  // A second, shorter option if there's room in the schedule.
-  var extraGame = ranked.filter(function (g) {
-    return g !== mainGame && g.minutes <= 10;
-  })[0];
+  mainGame = mainGame || ranked.filter(function (g) { return !g.multiRound; })[0] || ranked[0];
+  var alternatives = ranked.filter(function (g) { return g !== mainGame; }).slice(0, 3);
 
   // Build the timed sequence, scaled to the requested length.
   // `how` is the concrete do-this-now instruction, tailored to the grade
@@ -449,10 +449,6 @@ function buildLessonPlan(moduleId, opts) {
       ? "Do it together on the board with drawings, not words. Ask the class to tell you where each picture goes — you hold the marker, they make the decisions."
       : "Do the first one together, the second one in pairs, the third one on their own. Release it gradually.");
 
-  if (long && extraGame) {
-    add("Second activity — " + extraGame.name, extraGame.minutes, extraGame.summary, "",
-      picture ? "Keep this one physical — moving, sorting, or acting. By now they need to be out of their seats." : deviceGuide.voting);
-  }
   if (long) {
     add("Extension", 6,
       pack.extension || "Give students a challenge that stretches the idea further.", "",
@@ -464,7 +460,7 @@ function buildLessonPlan(moduleId, opts) {
     "",
     picture
       ? "Ask the one big idea as a thumbs up or thumbs down question, or have them point to the right picture. Do not ask them to write anything."
-      : "Ask every student to answer, not just volunteers — a quick go-round, a written exit ticket, or the anonymous confidence tap.");
+      : "Ask every student to answer, not just volunteers — a quick go-round or a written exit ticket (no names on it).");
 
   add("Wrap-up & take-home", short ? 3 : 5,
     "Hand out the take-home card: \"" + (mod.takeHome && mod.takeHome.title) + "\". Family question: " +
@@ -575,7 +571,7 @@ function buildLessonPlan(moduleId, opts) {
   // Word-for-word lines and step-by-step actions for every step.
   writeScripts(steps, {
     mod: mod, pack: pack, picture: picture, devices: devices, gradeId: profile.id,
-    vocab: vocabList, mainGame: mainGame, extraGame: extraGame, topicGame: topicGame,
+    vocab: vocabList, mainGame: mainGame, topicGame: topicGame,
   });
   // Official-deck steps carry their own lines; show them as Say / Do too.
   steps.forEach(function (s) {
@@ -738,9 +734,6 @@ function writeScripts(steps, c) {
         pic ? "You hold the marker. Students give the answers by pointing or with thumbs." : "Do the first example together, the next one in pairs.",
         reveal.commonTrap ? "Watch for this mistake: " + reveal.commonTrap + "." : "Praise good reasons, not just right answers.",
       ];
-    } else if (n.indexOf("Second activity") === 0 && c.extraGame) {
-      s.say = ["Let's get moving with one more game: " + c.extraGame.name + "!"];
-      s.do = (c.extraGame.howToPlay || []).slice();
     } else if (n === "Extension") {
       var ext = pack.extension || "Students explain today's idea to someone who missed it.";
       s.say = ["Here's a challenge for you: " + ext.replace(/^Students /, "").replace(/\.$/, "") + "."];
@@ -917,7 +910,7 @@ function planToText(plan, packet) {
   plan.setting.tips.forEach(function (t) { lines.push("  - " + t); });
   lines.push("", "MATERIALS");
   plan.materials.forEach(function (x) { lines.push("[ ] " + x); });
-  if (plan.topicGame) lines.push("", "=".repeat(48), topicGameToText(plan.topicGame));
+  if (plan.topicGame && !(plan.mainGame && plan.mainGame.multiRound)) lines.push("", "=".repeat(48), topicGameToText(plan.topicGame));
   packet.forEach(function (it) {
     lines.push("", "=".repeat(48), it.title.toUpperCase(), "=".repeat(48), it.body);
   });

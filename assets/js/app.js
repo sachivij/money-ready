@@ -1046,8 +1046,8 @@
           " games need no technology at all</strong> — just you, the students, and maybe some paper. " +
           "The rest use one shared screen at the front of the room. Both kinds are here on purpose: young classrooms " +
           "rarely have student devices, but a projector is often available.</p>" +
-        '<p class="muted" style="max-width:66ch">The quick games work with any module — you plug in that topic\'s items, scenario, or vocabulary. ' +
-          "The " + deepCount + " <strong>multi-round games</strong> go deeper: students live with the results of their choices over several rounds. " +
+        '<p class="muted" style="max-width:66ch">Most of these are <strong>ways to play a topic\'s questions</strong>: the Workshop Builder writes the rounds for any topic and picks the game that fits the room, or you pick one here. ' +
+          "The " + deepCount + " <strong>multi-round games</strong> bring their own rounds and go deeper: students live with the results of their choices. " +
           "Every game has a version for each age group, sample cards, questions to close with, and a printable game sheet.</p>" +
       "</div>" +
       '<section class="section tight"><div class="wrap">' +
@@ -1434,12 +1434,13 @@
 
         // Swap the main activity for the next-best fits
         (plan.alternatives && plan.alternatives.length && rebuild
-          ? '<div class="card mt-2 no-print" style="box-shadow:none"><div class="eyebrow">Try a different main activity</div>' +
+          ? '<div class="card mt-2 no-print" style="box-shadow:none"><div class="eyebrow">Change the game</div>' +
+            '<p class="muted" style="font-size:.88rem;margin:0 0 8px">Same questions, a different way to play them. A multi-round game brings its own rounds instead.</p>' +
             '<div class="flex gap wrap-flex">' +
             (plan.official && plan.mainGame ? '<button class="btn btn-secondary" data-swap="">📘 Use the deck\'s own activity</button>' : "") +
             plan.alternatives.map(function (g) {
               return '<button class="btn btn-ghost" data-swap="' + g.id + '">' + g.emoji + " " + esc(g.name) +
-                ' <span class="muted" style="font-size:.85rem">· ' + g.minutes + " min</span></button>"; }).join("") +
+                ' <span class="muted" style="font-size:.85rem">· ' + g.minutes + " min" + (g.multiRound ? " · multi-round" : "") + "</span></button>"; }).join("") +
             "</div></div>"
           : "") +
 
@@ -1528,15 +1529,19 @@
     out.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
   // The ready-to-play game in a plan: play it on screen, or print cards.
+  // The plan's one game. Normally the topic's rounds, run as the chosen
+  // format; a multi-round game picked with "Change the game" brings its
+  // own rounds, so its card stands in for the rounds card.
   function topicGameCard(plan) {
     var g = plan.topicGame;
+    var main = plan.mainGame;
+    if (main && main.multiRound) return formatGameCard(plan, main);
     if (!g || !g.rounds.length) return "";
     var qs = "?topic=" + plan.module.id + "&grade=" + plan.profile.id;
     var noScreen = plan.devices === "none";
-    var main = plan.mainGame && !plan.mainGame.multiRound ? plan.mainGame : null;
     var srcNames = g.sources.map(function (x) { return x.name; });
     return '<div class="card mt-3 topic-game" style="box-shadow:none;border:2px solid var(--green)">' +
-      '<div class="eyebrow">🎮 Your game for this topic · ' + (noScreen ? "no screen needed" : "ready to play") + "</div>" +
+      '<div class="eyebrow">🎮 Your game' + (main ? ": these rounds, played as " + esc(main.name) : "") + " · " + (noScreen ? "no screen needed" : "ready to play") + "</div>" +
       '<h3 style="margin:4px 0">' + esc(g.title) + "</h3>" +
       // At a glance: what the game is, who it is for, how to run it.
       '<div class="game-facts">' +
@@ -1575,6 +1580,29 @@
           "</div>";
       }).join("") + "</div>" +
     "</div>";
+  }
+
+  // A multi-round game's card in the plan: its rules for this age group,
+  // the cards it needs, and where to play or print it.
+  function formatGameCard(plan, g) {
+    var level = g.levels && g.levels[plan.profile.id];
+    var canPlay = g.play && PLAY_ENGINES[g.play.engine] && plan.devices !== "none";
+    return '<div class="card mt-3 topic-game" style="box-shadow:none;border:2px solid var(--green)">' +
+      '<div class="eyebrow">🎮 Your game · multi-round · ' + (g.devices === "none" ? "no screen needed" : "uses a screen") + "</div>" +
+      '<h3 style="margin:4px 0">' + g.emoji + " " + esc(g.name) + "</h3>" +
+      '<div class="game-facts">' +
+        "<div><span>Topic</span><strong>" + esc(plan.module.title) + "</strong></div>" +
+        "<div><span>Made for</span><strong>" + esc(plan.grade) + "</strong></div>" +
+        "<div><span>Time</span><strong>" + g.minutes + " min</strong></div>" +
+        "<div><span>Group</span><strong>" + esc(g.group) + "</strong></div>" +
+      "</div>" +
+      '<p class="muted" style="font-size:.92rem;margin:10px 0 0">' + esc(g.summary) + (level ? " <strong>For " + esc(plan.grade) + ":</strong> " + esc(level) : "") + "</p>" +
+      '<ol class="numbered mt-2" style="font-size:.92rem">' + (g.howToPlay || []).map(function (h) { return "<li>" + esc(h) + "</li>"; }).join("") + "</ol>" +
+      (g.materials && g.materials.length ? '<p class="muted" style="font-size:.88rem"><strong>Bring:</strong> ' + esc(g.materials.join(", ")) + "</p>" : "") +
+      '<div class="flex gap wrap-flex no-print mt-2">' +
+        (canPlay ? '<a class="btn btn-primary" href="#/play/' + g.id + '">▶ Play on screen</a>' : "") +
+        '<a class="btn btn-secondary" href="#/games?topic=' + plan.module.id + '">Rules, cards and game sheet</a>' +
+      "</div></div>";
   }
 
   // #/game-cards?topic=…&grade=… : printable answer cards for rooms with
