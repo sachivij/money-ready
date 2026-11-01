@@ -14,6 +14,6 @@ To claim a spec, put your name in Owner and push to `main` before you start. Eac
 | 08 | [Builder makes playable games, incl. other topics](08-generated-games.md) | Done | Sumeet |
 | 09 | [Count students reached and workshops used](09-impact-tracking.md) | Done | Ridhi Poranki |
 | 10 | [Students join the game live on their own devices](10-live-join.md) | Needs decisions | Sumeet |
-| 11 | [Content lives in plain files, not in the code](11-content-files.md) | Proposal, waiting for OK | Sumeet |
+| 11 | [Content lives in plain files, not in the code](11-content-files.md) | In progress (helper answers done; lessons, games, modules next) | Sumeet |
 
-Ground rules for every spec: plain HTML/CSS/JS, no backend, no personal data, works offline, content stays editable in `assets/js/data.js` and `assets/js/lessons.js`.
+Ground rules for every spec: plain HTML/CSS/JS, no backend, no personal data, works offline, content stays editable without code: helper answers and sources live in `content/` (spec 11; `assets/js/helper-kb.js` is generated from them), the rest is still in `assets/js/data.js`, `lessons.js`, `official-lessons.js` and `game-bank.js` until spec 11 moves it.
