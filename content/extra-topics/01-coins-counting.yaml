@@ -1,0 +1,114 @@
+# Extra topic: Coins and Counting Money
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: coins-counting
+title: Coins and Counting Money
+emoji: 🪙
+sources: ["mint"]
+tags:
+  - coin
+  - penny
+  - nickel
+  - dime
+  - quarter
+  - counting money
+  - count money
+  - dollar
+  - cash
+summary: What each coin is worth and how coins add up to a dollar.
+objective: Students can name each coin, say what it is worth, and count small amounts.
+reveal:
+  keyConcept: Each coin has a value; bigger isn't always worth more
+  discussionPrompt: Why do you think the dime is smaller than the nickel but worth more?
+takeHome:
+  title: Coin Hunt
+  familyQuestion: Can we find a penny, nickel, dime and quarter at home and line them up by value?
+prep:
+  openingScript: Who has ever held a coin? Today we're going to become coin detectives and find out which tiny coin is secretly worth the most.
+  vocab:
+    - term: Penny
+      def: 1 cent
+    - term: Dime
+      def: 10 cents
+    - term: Quarter
+      def: 25 cents
+    - term: Dollar
+      def: 100 cents
+pack:
+  bestGames: ["market-day", "card-sort"]
+  hook: Hold up a dime and a nickel. Ask which is worth more. Most will pick the bigger one.
+  miniLesson: Coins have values: penny 1¢, nickel 5¢, dime 10¢, quarter 25¢. Size doesn't tell you value.
+  guidedPractice: Count a small pile of coins together, biggest value first.
+game_rounds:
+  picture:
+    - q: Which coin is worth the most?
+      opts:
+        - ["🪙", "Quarter, 25 cents"]
+        - ["🟤", "Penny, 1 cent"]
+      best: 0
+      why: A quarter is 25 cents. A penny is 1 cent.
+      src: mint
+    - q: Which is worth more?
+      opts:
+        - ["🪙", "Dime, 10 cents"]
+        - ["🟤", "Penny, 1 cent"]
+      best: 0
+      why: A dime is 10 cents. Small coin, more money!
+      src: mint
+    - q: How many pennies make a nickel?
+      opts:
+        - ["🖐️", "Five"]
+        - ["✌️", "Two"]
+      best: 0
+      why: Five pennies make one nickel.
+      src: mint
+    - q: How many quarters make a dollar?
+      opts:
+        - ["🍀", "Four"]
+        - ["🔟", "Ten"]
+      best: 0
+      why: Four quarters make one dollar.
+      src: mint
+  rounds:
+    - q: Which coin is worth 10 cents?
+      opts:
+        - ["🪙", "Dime"]
+        - ["🟤", "Penny"]
+        - ["⚪", "Nickel"]
+        - ["🔵", "Quarter"]
+      best: 0
+      why: The dime is the smallest coin but worth 10 cents.
+      src: mint
+    - q: You have 2 quarters and 1 dime. How much is that?
+      opts:
+        - ["6️⃣", "60 cents"]
+        - ["3️⃣", "30 cents"]
+        - ["5️⃣", "35 cents"]
+      best: 0
+      why: 25 + 25 + 10 = 60 cents.
+      src: mint
+    - q: Whose face is on the penny?
+      opts:
+        - ["🎩", "Abraham Lincoln"]
+        - ["🗽", "Lady Liberty"]
+        - ["🦅", "An eagle"]
+      best: 0
+      why: Abraham Lincoln is on the penny.
+      src: mint
+    - q: Which group makes exactly one dollar?
+      opts:
+        - ["🔟", "10 dimes"]
+        - ["5️⃣", "5 nickels"]
+        - ["5️⃣", "5 dimes"]
+      best: 0
+      why: 10 dimes × 10 cents = 100 cents = $1.
+      src: mint
+    - q: Which U.S. agency makes coins?
+      opts:
+        - ["🏭", "The U.S. Mint"]
+        - ["🏦", "Your local bank"]
+        - ["🏫", "Schools"]
+      best: 0
+      why: The United States Mint makes the country's coins.
+      src: mint

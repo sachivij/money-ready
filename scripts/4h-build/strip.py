@@ -16,10 +16,17 @@ library, and Resources route all key off whether ANY module carries an
 back to its general layout, so there is no separate 4-H app.js to
 maintain.
 
+It works on the copy's content/ folder (spec 11), then runs
+scripts/build-content.js in the copy to regenerate assets/js/content.js
+and helper-kb.js. The copy needs content/ and scripts/ as well as assets/.
+
 Usage:
     python3 scripts/4h-build/strip.py /path/to/4h/working/copy
 """
+import os
 import re
+import shutil
+import subprocess
 import sys
 
 DEFAULT_ROOT = "/home/user/money-ready-copy"
@@ -28,97 +35,61 @@ DEFAULT_ROOT = "/home/user/money-ready-copy"
 DROP = ["opportunity-costs", "investing-tomorrow", "money-tales"]
 
 
-def drop_module(src, module_id):
-    """Remove one `{ ... }` module object from the MODULES array."""
-    marker = '    id: "%s",' % module_id
-    idx = src.find(marker)
-    if idx < 0:
-        print("  module not found (already removed?):", module_id)
-        return src
-    start = src.rfind("  {", 0, idx)
-    depth, i = 0, start
-    while i < len(src):
-        if src[i] == "{":
-            depth += 1
-        elif src[i] == "}":
-            depth -= 1
-            if depth == 0:
-                break
-        i += 1
-    end = i + 1
-    while end < len(src) and src[end] == ",":
-        end += 1
-    while end < len(src) and src[end] in "\r\n":
-        end += 1
-        if end < len(src) and src[end] not in "\r\n":
-            break
-    print("  removed module:", module_id)
-    return src[:start] + src[end:]
+def drop_key(src, key):
+    """Remove a `key:` line from a content YAML file, plus any lines indented under it."""
+    out, skipping, ind = [], False, 0
+    for line in src.split("\n"):
+        stripped = line.lstrip(" ")
+        this_ind = len(line) - len(stripped)
+        if skipping:
+            if stripped and this_ind > ind:
+                continue
+            skipping = False
+        if re.match(r"%s:( |$)" % re.escape(key), stripped):
+            skipping, ind = True, this_ind
+            continue
+        out.append(line)
+    return "\n".join(out)
 
 
 def main():
     root = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_ROOT
-    data = root + "/assets/js/data.js"
-    lessons = root + "/assets/js/lessons.js"
+    content = os.path.join(root, "content")
+    modules = os.path.join(content, "modules")
 
-    src = open(data, encoding="utf-8").read()
+    # 1. Drop the modules that came from the official Jump$tart sequence
+    #    (their lesson packs and game rounds live in the same file).
+    for name in sorted(os.listdir(modules)):
+        mid = re.sub(r"^\d+-|\.ya?ml$", "", name)
+        if mid in DROP:
+            os.remove(os.path.join(modules, name))
+            print("  removed module:", mid)
 
-    for mid in DROP:
-        src = drop_module(src, mid)
+    # 2. The official Teen Teach-In lessons are Jump$tart-only.
+    official = os.path.join(content, "official-lessons")
+    if os.path.isdir(official):
+        shutil.rmtree(official)
+        print("  removed content/official-lessons/")
 
-    # Removing these tags is what makes app.js fall back to the general
-    # layout: flat module list, no Resources tab, no Grades 1-4 framing.
-    before = src
-    src = re.sub(r"^\s*officialLesson: .*\n", "", src, flags=re.M)
-    src = re.sub(r"^\s*officialMaterials: \[[^\]]*\],\n", "", src, flags=re.M)
-    if src != before:
-        print("  removed officialLesson / officialMaterials tags")
+    # 3. Removing these tags is what makes app.js fall back to the general
+    #    layout: flat module list, no Resources tab, no Grades 1-4 framing.
+    #    Two modules were re-tagged to single grades for the Jump$tart
+    #    sequence; restore their original wider bands.
+    bands = {"needs-vs-wants": ("Grade 1", "Grades 2–5"), "save-or-spend": ("Grade 3", "Grades 3–6")}
+    for name in sorted(os.listdir(modules)):
+        path = os.path.join(modules, name)
+        src = open(path, encoding="utf-8").read()
+        new = drop_key(drop_key(src, "officialLesson"), "officialMaterials")
+        mid = re.sub(r"^\d+-|\.ya?ml$", "", name)
+        if mid in bands:
+            old_band, new_band = bands[mid]
+            new = new.replace("\ngradeBand: %s\n" % old_band, "\ngradeBand: %s\n" % new_band)
+        if new != src:
+            open(path, "w", encoding="utf-8").write(new)
+            print("  updated:", name)
 
-    # Two modules were re-tagged to single grades for the Jump$tart
-    # sequence; restore their original wider bands.
-    for old, new in [
-        ('    id: "needs-vs-wants",\n    title: "Needs vs. Wants",\n    emoji: "\U0001f9fa",\n    gradeBand: "Grade 1",',
-         '    id: "needs-vs-wants",\n    title: "Needs vs. Wants",\n    emoji: "\U0001f9fa",\n    gradeBand: "Grades 2–5",'),
-        ('    id: "save-or-spend",\n    title: "Save or Spend?",\n    emoji: "\U0001f437",\n    gradeBand: "Grade 3",',
-         '    id: "save-or-spend",\n    title: "Save or Spend?",\n    emoji: "\U0001f437",\n    gradeBand: "Grades 3–6",'),
-    ]:
-        if old in src:
-            src = src.replace(old, new)
-            print("  restored original grade band")
-
-    # The helper cites the official Grade 1-4 lessons, which this edition
-    # no longer contains. Make the source labels generic.
-    for old, new in [
-        ("Jump$tart Teen Teach-In · Grade 1 Needs and Wants; Grade 3 Saving and Spending",
-         "Financial literacy curriculum · spending and saving"),
-        ("Jump$tart Teen Teach-In · Grade 3 Saving and Spending",
-         "Financial literacy curriculum · spending and saving"),
-        ("Jump$tart Teen Teach-In · Grade 4 Investing in Tomorrow",
-         "Financial literacy curriculum · saving and investing"),
-        ("Jump$tart Teen Teach-In · Grade 2 Making Financial Choices and Opportunity Costs",
-         "Financial literacy curriculum · choices and opportunity cost"),
-        ("Jump$tart Clearinghouse · credit and debt resources",
-         "Financial literacy curriculum · credit and debt"),
-        ("Jump$tart Clearinghouse · earning income resources",
-         "Financial literacy curriculum · earning income"),
-        ("Jump$tart Clearinghouse · fraud and risk resources",
-         "Financial literacy curriculum · fraud and risk"),
-        ("Jump$tart Clearinghouse · banking resources",
-         "Financial literacy curriculum · banking"),
-    ]:
-        src = src.replace(old, new)
-
-    open(data, "w", encoding="utf-8").write(src)
-
-    # Drop the lesson packs belonging to the removed modules.
-    lsrc = open(lessons, encoding="utf-8").read()
-    for mid in DROP:
-        pat = re.compile(r'  "%s": \{.*?\n  \},\n' % re.escape(mid), re.S)
-        lsrc, n = pat.subn("", lsrc)
-        if n:
-            print("  removed lesson pack:", mid)
-    open(lessons, "w", encoding="utf-8").write(lsrc)
-
+    # 4. Rebuild assets/js/content.js and helper-kb.js from the trimmed content.
+    subprocess.check_call(["node", os.path.join(root, "scripts", "build-content.js")])
     print("done")
 
 

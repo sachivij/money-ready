@@ -1,0 +1,68 @@
+# Official Teen Teach-In lesson: Grade 3: Saving, Spending, Borrowing and Lending
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+module: save-or-spend
+deck: Grade 3: Saving, Spending, Borrowing and Lending
+book:
+  title: If You Made a Million
+  author: David M. Schwartz (illustrated by Steven Kellogg)
+bigIdea: You can spend money or save it. Banks pay interest to savers and charge more interest to borrowers. That difference is how banks make money.
+vocab:
+  - term: Spend
+    def: Use money to buy goods or services.
+  - term: Save
+    def: Keep money for the future instead of spending it now.
+  - term: Interest
+    def: Money a bank pays you for saving, or charges you for borrowing.
+  - term: Loan
+    def: Money you borrow and promise to pay back, plus interest.
+materials:
+  - The book If You Made a Million
+  - Grade 3 worksheet (one per student)
+  - Role-play script cards for saver, borrower, and banker
+  - Play money ($500 and $525 and $510 in bills)
+steps:
+  - name: Welcome & introductions
+    minutes: 3
+    slides: Slides 2–5
+    what: Introduce each presenter. Explain you take a financial literacy class, and that learning about money early gives students a head start.
+    script: We're high school students who study money. Today's lesson is about saving, spending, borrowing, and lending.
+    how: Keep introductions short. Third graders want to get to the story.
+  - name: Story: If You Made a Million
+    minutes: 9
+    slides: Slides 6–8
+    what: Ask what they would do with a million dollars. Hand out the worksheet. While you read, students write next to each dollar amount the things the story says you could do with it.
+    script: What would you do if you made a million dollars? Listen carefully: next to each amount on your worksheet, write what the story says you could do with it.
+    how: Read slowly and pause at each dollar amount so they can write.
+  - name: Saving and spending
+    minutes: 5
+    slides: Slide 9
+    what: Spending means using money to buy goods. Saving means keeping money for the future. Ask how they'd spend a dollar and how they save. Explain that a bank pays interest to savers, for example five cents a year for every dollar.
+    script: How would you spend a dollar? Where do you save your money? Why might someone use a bank instead of a piggy bank?
+    how: Write their answers in two columns: SPEND and SAVE.
+  - name: Borrowing and lending
+    minutes: 4
+    slides: Slides 10–11
+    what: If you want a bike but don't have enough money, you can save, earn, or borrow. A loan means borrowing and promising to repay more than you borrowed, because the bank charges interest. Banks lend out the money savers put in.
+    script: Imagine you want a new bike but don't have enough money. What could you do?
+    how: Let students list ideas before you mention borrowing.
+  - name: Savers and borrowers role-play
+    minutes: 7
+    slides: Slides 12–13
+    activity: true
+    what: Three people act out the script. A saver deposits $500 at 2% interest. A borrower borrows $500 for college at 5% interest. A year later the borrower repays $525 and the saver withdraws $510.
+    script: We're going to show you a little play about saving and borrowing at a bank. Watch where the money goes!
+    how: Print the script on separate cards. You can play the banker and pick two students to be the saver and the borrower.
+  - name: Why banks charge more
+    minutes: 3
+    slides: Slide 14
+    what: Ask why the bank charges borrowers more interest than it pays savers. Banks are businesses: the difference is their profit. When you save in a bank, you make money too.
+    script: The borrower paid $25 in interest, but the saver only got $10. Where did the other $15 go?
+    how: Let students guess before you explain. Suggest they ask a grown-up for a tour of a local bank.
+  - name: Thank you & wrap-up
+    minutes: 2
+    slides: Slide 15
+    what: Thank the class. Saving is a great habit: think before you spend, and save some for the big things.
+    script: It's easy to spend money right away. Saving is a great habit to start now!
+    how: Hand out the parent toolkit or take-home card.

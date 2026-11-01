@@ -1,0 +1,46 @@
+# Game: Sort It Out
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: card-sort
+name: Sort It Out
+emoji: 🗂️
+devices: none
+minutes: 12
+group: Small groups of 3–4
+energy: Calm
+materials: ["Printed item cards", "2–3 labeled bins or paper mats"]
+summary: Teams sort cards into categories, then defend any card they argued about.
+howToPlay:
+  - Give each group a stack of item cards and the category mats.
+  - Groups sort every card as fast as they can.
+  - Set aside any card the group disagreed on — those go in a 'tricky pile'.
+  - Bring the class back together and discuss only the tricky pile.
+  - Point out that the disagreements are where the real learning is.
+teenTip: Don't rush to say which answer is right. The argument about the tricky pile IS the lesson.
+reinforces: Sorting things into categories (needs and wants, save and spend, safe and risky), and noticing that some items depend on the situation.
+levels:
+  35: Three categories with words and pictures. Each group explains one card from its tricky pile.
+  68: Add 'it depends' cards like a phone or a car. Groups must write what would move the card to the other pile.
+  912: Sort a monthly budget into fixed, variable and optional costs, then decide what to cut first if income dropped by 20%.
+  k2: Picture cards only and two mats: a house for 'must have' and a balloon for 'nice to have'. Sort as a whole class while you hold up each card.
+debrief:
+  - Which card did your group argue about most?
+  - Can a want ever become a need? When?
+  - What rule did your group use to decide?
+access: Every card has a picture and a word, and big cards are easier to handle. One student can read while another sorts, so readers and non-readers both have a job.
+cards:
+  title: Sample cards for needs and wants
+  items:
+    - Water
+    - Winter coat
+    - Video game
+    - Lunch
+    - Toothbrush
+    - Candy
+    - Phone
+    - Bus pass
+    - Birthday party
+    - School shoes
+    - Movie ticket
+    - Glasses

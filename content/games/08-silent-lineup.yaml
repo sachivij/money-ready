@@ -1,0 +1,37 @@
+# Game: Silent Line-Up
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: silent-lineup
+name: Silent Line-Up
+emoji: 🤫
+devices: none
+minutes: 8
+group: Groups of 6–8
+energy: Medium
+materials: ["One item card per student"]
+summary: Without talking, students order themselves by price, priority, or need.
+howToPlay:
+  - Give each student a card with one item on it.
+  - The group must line up in order — cheapest to most expensive, or least to most necessary.
+  - No talking allowed. Gestures and showing cards only.
+  - When the line is set, let them talk and fix any mistakes.
+  - Ask what was hardest to place and why.
+teenTip: The silence makes them focus. The fix-it conversation afterwards is where the reasoning comes out.
+reinforces: Comparing prices, priorities or risk — and explaining the order out loud afterwards.
+levels:
+  35: Silent, but pointing and showing cards are allowed. Then fix the line together.
+  68: Order from most to least necessary. There's no single right answer, so the fix-it talk is the lesson.
+  912: Order savings and investments by risk, or loans by total cost.
+  k2: Groups of four with picture cards, ordered from cheapest to most expensive. Talking is allowed — silence is too hard at this age. Use things they know: gum, a ball, a bike, a car.
+debrief:
+  - Which card was hardest to place?
+  - Did anyone get moved? Why?
+  - Would the order change for a different person?
+access: Students who use a wheelchair or prefer to sit can order cards on a table instead of lining up. Every card has a picture, so non-readers can play.
+cards:
+  title: Sample sets
+  items:
+    - "By price: pack of gum, sandwich, sneakers, bike, laptop, car"
+    - "Most to least necessary: water, coat, phone, video game, concert ticket"
+    - "By risk (older students): savings account, bond, index fund, one company's stock"

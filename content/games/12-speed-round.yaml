@@ -1,0 +1,40 @@
+# Game: Speed Round
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+id: speed-round
+name: Speed Round
+emoji: ⏱️
+devices: shared
+minutes: 8
+group: Teams
+energy: High
+materials: ["Screen or whiteboard", "Timer"]
+summary: Rapid-fire questions; teams score points for fast correct answers.
+howToPlay:
+  - Split the class into teams and give each a name.
+  - Ask quick questions from the module vocabulary and quiz.
+  - First team to raise a hand answers; correct answers score a point.
+  - Wrong answers pass the question to the next team.
+  - Keep score on the board and end on a high note.
+teenTip: Keep it fast and light. If one team runs away with it, give the trailing team a double-point round.
+reinforces: Quick recall of the key words and facts so they stick.
+levels:
+  35: Read vocabulary questions aloud; teams write answers on a mini whiteboard and show them together.
+  68: Mix vocabulary with quick math, like 'What is 10% of $50?'
+  912: Use real-world quick calls: fixed or variable expense? Gross or net pay?
+  k2: Use pictures: hold up two and teams point to the answer. No racing — every team answers at the same time.
+debrief:
+  - Which word was hardest?
+  - Which answer would you explain to a friend?
+  - Which word will you use this week?
+access: Answering on whiteboards at the same time means the fastest talker doesn't win every point. Read each question twice.
+cards:
+  title: Sample questions (answers in brackets)
+  items:
+    - What do we call money you keep for later? [savings]
+    - Is food a need or a want? [a need]
+    - What is a budget? [a plan for your money]
+    - What is interest? [money paid for using money — a bank pays you, a lender charges you]
+    - Name one thing a bank does. [keeps money safe, pays interest on savings]
+    - Name one sign of a scam. [hurry, secret, strange payment, too good to be true]

@@ -1,0 +1,59 @@
+# Official Teen Teach-In lesson: Grade 2: Making Financial Choices and Opportunity Costs
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+module: opportunity-costs
+deck: Grade 2: Making Financial Choices and Opportunity Costs
+book:
+  title: Alexander, Who Used to Be Rich Last Sunday
+  author: Judith Viorst
+bigIdea: Nobody can buy everything they want. What you give up when you choose is the opportunity cost, so decide what you want most before you spend.
+vocab:
+  - term: Wants
+    def: Things you want that you have to give something up for.
+  - term: Opportunity cost
+    def: The thing you give up when you make a choice.
+  - term: Financial decision
+    def: Choosing what to do with your money after thinking about what you want most.
+materials:
+  - The book Alexander, Who Used to Be Rich Last Sunday
+  - Chart paper or a board for the subtraction
+  - Grade 2 worksheet (one per student)
+steps:
+  - name: Welcome & introductions
+    minutes: 3
+    slides: Slides 2–5
+    what: Introduce each presenter. Explain you take a financial literacy class, and that some money lessons are worth learning early to get a head start.
+    script: We're high school students who study money in class. Some of these lessons are really useful to learn when you're your age too.
+    how: Keep each introduction to two or three sentences.
+  - name: Story: Alexander, Who Used to Be Rich Last Sunday
+    minutes: 8
+    slides: Slide 6
+    what: Ask who has had their own money to spend and whether it was an allowance or a gift. Then read the book about a boy who had money but didn't spend it wisely.
+    script: How many of you have had your own money? Was it an allowance, or a birthday gift? Let's see what Alexander does with his.
+    how: Write $1.00 at the top of the chart paper before you start reading. You'll need the space next.
+  - name: Track Alexander's dollar
+    minutes: 8
+    slides: Slides 7–8
+    what: Walk back through the story and subtract each thing Alexander spent or lost from his $1.00: bubble gum 15¢, bets 15¢, renting the snake 12¢, bad words 10¢, the toilet and the crack 8¢, Anthony's chocolate bar 11¢, the magic trick 4¢, kicking 5¢, the yard sale 20¢. He ends with zero.
+    script: How rich was Alexander last Sunday? One dollar! What did he buy first? How much does he have left now?
+    how: Let the class do the subtraction with you at each step. Then ask: did Alexander use his money wisely? What should he have done? If they don't say it, don't push. The activity will make the point.
+  - name: Wants & opportunity cost
+    minutes: 5
+    slides: Slide 9
+    what: Teach wants, opportunity cost, and financial decision making. Use the example of a birthday party and a baseball game at the same time: the one you don't go to is your opportunity cost. Alexander's opportunity cost was the walkie-talkie he really wanted.
+    script: If you're invited to a birthday party and a baseball game at the same time, which would you choose? The one you didn't pick is your opportunity cost.
+    how: Let students vote with their hands for party or game before you explain. Nobody, not even the President, has enough money for everything.
+  - name: Choices and opportunity cost activity
+    minutes: 7
+    slides: Slide 10
+    activity: true
+    what: Students complete the Grade 2 worksheet: for each choice, they circle what they would pick and name what they would give up.
+    script: Now it's your turn to choose. For each one, pick what you want most, then tell us what you gave up.
+    how: Do the first one together on the board. Walk around and ask students to say their opportunity cost out loud.
+  - name: Thank you & wrap-up
+    minutes: 2
+    slides: Slide 11
+    what: Thank the class. Remind them every want has an opportunity cost, and to think before spending and save for the big things.
+    script: It's great to buy things we want, but remember there's always something we give up. Think before you spend!
+    how: Hand out the parent toolkit or take-home card.

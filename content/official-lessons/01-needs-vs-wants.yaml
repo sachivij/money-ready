@@ -1,0 +1,66 @@
+# Official Teen Teach-In lesson: Grade 1: Needs and Wants
+# How to edit: content/README.md
+approved_by: Sumeet
+approved_on: 2026-11-01
+module: needs-vs-wants
+deck: Grade 1: Needs and Wants
+book:
+  title: Something Good
+  author: Robert Munsch (pictures by Michael Martchenko)
+bigIdea: Families pay for needs first. Wants come after, if money is left over, because money is a limited resource.
+vocab:
+  - term: Needs
+    def: Things we must have to live, like food, water, and a home.
+  - term: Wants
+    def: Things that would be nice to have but we can live without.
+  - term: Choices
+    def: Deciding what to spend your resources on.
+  - term: Resources (money)
+    def: Things that help you get what you want. Money is the best example.
+materials:
+  - The book Something Good (or an approved read-aloud video)
+  - Need/want picture cards for the game
+steps:
+  - name: Welcome & introductions
+    minutes: 3
+    slides: Slides 2 and 4
+    what: Introduce each presenter with your grade and something about you. Explain you take a financial literacy class that teaches life lessons, and today's lesson is about needs and wants. It begins with a story.
+    script: Hi! We're high school students, and in our class we learn how to be smart with money. Today we brought a lesson about needs and wants, and it starts with a story.
+    how: Add a slide with a photo of each presenter. First graders warm up fast when they see your face on the screen.
+  - name: Today's words
+    minutes: 3
+    slides: Slides 3 and 5
+    what: Introduce needs, wants, choices, and resources. Ask the class for examples of needs and of wants.
+    script: A need is something we must have to live. A want is something nice to have. Who can tell me a need? Who can tell me a want?
+    how: Write two columns on the board, NEEDS and WANTS, and sort their examples as they call them out.
+  - name: Story: Something Good
+    minutes: 8
+    slides: Slides 6–7
+    what: Ask who has gone grocery shopping and what they like at the store. Then read Something Good: Tyya is unhappy because her dad never buys anything "good" at the grocery store.
+    script: Have you ever gone grocery shopping with someone? What do they sell that you like? Let's see what happens when Tyya goes shopping with her dad.
+    how: Show the pictures while you read. Pause at the funny parts and let them laugh.
+  - name: Talk about the story
+    minutes: 5
+    slides: Slide 8
+    what: Ask the story questions: What did Tyya's dad buy? What did Tyya think was "good" food? What did her dad call the food she picked? Why did people think Tyya was a doll? Why do you think her dad paid $29.95 to buy Tyya back?
+    script: Tyya said her dad doesn't buy "good" food. What did he buy? What did Tyya want him to buy?
+    how: Take an answer from a different student each time. The last question is a favorite: Tyya is worth more than anything in the store.
+  - name: Resources and choices
+    minutes: 5
+    slides: Slides 9–12
+    what: Teach that people can't have everything they want because resources are limited: not enough money, not enough hours to work, a limited number of products. Making a choice means deciding what to use your resources on. Spend on needs first, then wants if anything is left.
+    script: Money runs out, so we call it a limited resource. Did Tyya's dad have enough money for all the ice cream and chocolate AND the groceries the family needed? So he had to choose.
+    how: Ask: Did the family need 100 boxes of ice cream? Did they need bread, eggs, and milk? Let them answer out loud together.
+  - name: Needs or Wants game
+    minutes: 6
+    slides: Slides 13–18
+    activity: true
+    what: Show two items at a time. For each one, the class decides: need or want?
+    script: Let's play a game! I'll show you something, and you tell me: is it a need or a want?
+    how: Have students answer with thumbs up for a need and thumbs down for a want, so everyone answers at once. Ask one student to explain why after each pair.
+  - name: Thank you & wrap-up
+    minutes: 2
+    slides: Slide 19
+    what: Thank the class. Remind them that grown-ups have to take care of the family's needs before spending extra on wants.
+    script: Thank you for being great students! Next time you want something extra at the store, remember: families take care of needs first.
+    how: Hand out the parent toolkit or take-home card on the way out.
