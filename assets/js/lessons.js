@@ -720,13 +720,11 @@ function writeScripts(steps, c) {
       }
       s.do.push("At the end, ask: \"" + ((g.debrief || [])[0] || "What did you learn from this game?") + "\"");
     } else if (n === "Guided practice") {
-      var ch = mod.challenge;
-      if (ch && !pic) {
+      if (!pic) {
         s.say = [
-          "Let's try one together. " + ch.scenario,
-          ch.options.map(function (o, k) { return letters[k] + ": " + o; }).join(". ") + ".",
-          "Turn to a partner and pick one. You have 30 seconds.",
-          "The best answer is " + (reveal.bestAnswer || letters[ch.best]) + ". " + (reveal.why || ""),
+          "Let's think about one together. " + (reveal.discussionPrompt || "Who can give me an example from your own life?"),
+          "Turn to a partner: what would you do, and why? You have 30 seconds.",
+          "Remember our big idea: " + big + ".",
         ];
       } else {
         s.say = [

@@ -19,19 +19,7 @@ interactive:
   - Deposit/withdraw reveal
   - Discussion prompt
   - Exit ticket
-challenge:
-  scenario: You get $50 for your birthday. You'll spend some soon but want to keep most safe and growing. Where should most of it go?
-  options:
-    - Under your mattress
-    - A checking account you swipe daily
-    - A savings account
-    - Spend it so it can't be lost
-  best: 2
-  timerSeconds: 30
-  round: 1
 reveal:
-  bestAnswer: C. A savings account
-  why: Savings keeps money safe, out of easy-spend reach, and can even earn a little interest. Checking is for everyday spending; a mattress can be lost or stolen and grows nothing.
   keyConcept: Savings vs. checking — one grows and protects, one spends
   commonTrap: Keeping everything where it's easiest to spend
   discussionPrompt: Why might a bank be safer than keeping cash at home?
@@ -100,6 +88,14 @@ game_rounds:
       best: 0
       why: A bank card lets you use money from your account.
   rounds:
+    - q: You get $50 for your birthday. You'll spend some soon but want to keep most safe and growing. Where should most of it go?
+      opts:
+        - ["🛏️", "Under your mattress"]
+        - ["💳", "A checking account you swipe daily"]
+        - ["🏦", "A savings account"]
+        - ["🛍️", "Spend it so it can't be lost"]
+      best: 2
+      why: Savings keeps money safe, out of easy-spend reach, and can even earn a little interest. Checking is for everyday spending; a mattress can be lost or stolen and grows nothing.
     - q: What is a deposit?
       opts:
         - ["⬇️", "Putting money into your account"]

@@ -22,19 +22,7 @@ interactive:
   - Discussion prompt
   - Take-home reflection
   - Exit ticket
-challenge:
-  scenario: You have $25. You need lunch tomorrow, want a new game skin, and promised to save $5. What do you do?
-  options:
-    - Buy the game skin now
-    - Save $5 first, then plan lunch
-    - Spend all $25 and figure it out later
-    - Ask a friend to pay for lunch
-  best: 1
-  timerSeconds: 30
-  round: 1
 reveal:
-  bestAnswer: B. Save $5 first, then plan lunch
-  why: Paying yourself first protects your promise to save, and lunch is a real need that comes before a want like a game skin. Whatever's left can still go toward fun.
   keyConcept: Tradeoff — every yes is a no to something else
   commonTrap: Spending before planning
   discussionPrompt: What made this decision hard?

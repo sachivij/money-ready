@@ -21,19 +21,7 @@ interactive:
   - Pay-yourself-first demo
   - Reveal screen
   - Take-home reflection
-challenge:
-  scenario: You want a $60 skateboard. You get $10 a week. A store has a $20 gadget on sale today. What's the smart move?
-  options:
-    - Buy the gadget — deals don't wait
-    - Save the full $10 toward the skateboard
-    - Save $5, keep $5 for now
-    - Give up on the skateboard
-  best: 2
-  timerSeconds: 30
-  round: 1
 reveal:
-  bestAnswer: C. Save $5, keep $5 for now
-  why: Saving something every week keeps your goal moving without feeling miserable. Blowing it all on the gadget resets your progress; saving a little consistently wins.
   keyConcept: Delayed gratification — small saving now, bigger reward later
   commonTrap: Letting a 'today only' deal derail a bigger goal
   discussionPrompt: What's a goal worth waiting for?
@@ -110,6 +98,14 @@ game_rounds:
       best: 0
       why: Saving takes time. Keep going!
   rounds:
+    - q: You want a $60 skateboard. You get $10 a week. A store has a $20 gadget on sale today. What's the smart move?
+      opts:
+        - ["📱", "Buy the gadget, deals don't wait"]
+        - ["🐷", "Save the full $10 toward the skateboard"]
+        - ["⚖️", "Save $5, keep $5 for now"]
+        - ["🚫", "Give up on the skateboard"]
+      best: 2
+      why: Saving something every week keeps your goal moving without feeling miserable. Blowing it all on the gadget resets your progress; saving a little every week wins.
     - q: You get $10. You want a $30 game. What is the best plan?
       opts:
         - ["🫙", "Save some each week until you have $30"]

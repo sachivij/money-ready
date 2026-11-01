@@ -197,7 +197,7 @@ function isList(file, v, what) {
   return true;
 }
 
-var MODULE_FIELDS = ["id", "title", "emoji", "gradeBand", "minutes", "keyConcept", "activityType", "color", "materials", "summary", "objective", "interactive", "challenge", "reveal", "takeHome", "prep"];
+var MODULE_FIELDS = ["id", "title", "emoji", "gradeBand", "minutes", "keyConcept", "activityType", "color", "materials", "summary", "objective", "interactive", "reveal", "takeHome", "prep"];
 var MODULE_OPTIONAL = ["officialLesson", "officialMaterials", "takeHomeK2", "lesson_pack", "game_rounds"];
 var PACK_FIELDS = ["bestGames", "hook", "miniLesson", "guidedPractice", "checkUnderstanding", "extension", "unpluggedSwap", "commonQuestions"];
 var EXTRA_FIELDS = ["id", "title", "emoji", "sources", "tags", "summary", "objective", "reveal", "takeHome", "prep", "pack", "game_rounds"];
@@ -243,8 +243,6 @@ listMd(path.join(CONTENT, "modules"), "yaml").forEach(function (file) {
   var m = without(d, META);
   fields(file, m, MODULE_FIELDS, MODULE_OPTIONAL);
   addTopic(file, m.id);
-  if (m.challenge && Array.isArray(m.challenge.options) && (typeof m.challenge.best !== "number" || m.challenge.best < 0 || m.challenge.best >= m.challenge.options.length))
-    problem(file, "challenge best must be the number of the right option, counting from 0.");
   if (m.lesson_pack) {
     fields(file, m.lesson_pack, PACK_FIELDS, [], "lesson_pack");
     packRefs.push([file, m.lesson_pack.bestGames]);

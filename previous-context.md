@@ -148,7 +148,6 @@ assets/js/data.js       STATUS_BADGES, IMPACT_EXAMPLE.
 assets/js/lessons.js    ACCOUNT_TYPES, IMPACT_METRICS, GRADE_PROFILES,
                         DEVICE_GUIDES, PICTURE_ACTIVITIES, SETTINGS,
                         buildLessonPlan(), buildPacket().
-assets/js/metrics.js    Privacy-safe aggregate counters in localStorage.
 assets/js/reach.js      Sends the students-reached count (spec 09). Holds
                         the Google Sheet address; see docs/impact-sheet/.
 assets/js/game-bank.js  buildTopicGame(): turns a topic's rounds into a game.

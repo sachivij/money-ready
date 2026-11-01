@@ -20,19 +20,7 @@ interactive:
   - Group vote
   - Reveal screen
   - Exit ticket
-challenge:
-  scenario: Your team has $40 for the week: bus fare ($15), lunch ($15), a movie ($12), and you want to save $5. You can't afford everything. What gets cut first?
-  options:
-    - Cut the bus fare
-    - Cut lunch
-    - Cut the movie
-    - Cut savings this week
-  best: 2
-  timerSeconds: 40
-  round: 1
 reveal:
-  bestAnswer: C. Cut the movie
-  why: Bus fare and lunch are needs, and skipping savings should be a last resort. The movie is the want — cutting it keeps the plan working. Budgets are about ranking, not having it all.
   keyConcept: Prioritizing — needs and goals before extras
   commonTrap: Protecting fun spending and raiding savings instead
   discussionPrompt: How did your team decide what mattered most?
@@ -101,6 +89,14 @@ game_rounds:
       best: 0
       why: Put some money away to save.
   rounds:
+    - q: "Your team has $40 for the week: bus fare ($15), lunch ($15), a movie ($12), and you want to save $5. What gets cut first?"
+      opts:
+        - ["🚌", "Cut the bus fare"]
+        - ["🥪", "Cut lunch"]
+        - ["🎬", "Cut the movie"]
+        - ["🐷", "Cut savings this week"]
+      best: 2
+      why: Bus fare and lunch are needs, and skipping savings should be a last resort. The movie is the want, so cutting it keeps the plan working. Budgets are about ranking, not having it all.
     - q: What is a budget?
       opts:
         - ["📝", "A plan for how you will use your money"]

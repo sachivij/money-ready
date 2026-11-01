@@ -21,19 +21,7 @@ interactive:
   - Growth reveal
   - Vocabulary check
   - Take-home reflection
-challenge:
-  scenario: You plant a money seed today. A friend says 'dig it up tomorrow to see if it worked!' What should you do to help it grow the most?
-  options:
-    - Dig it up tomorrow to check
-    - Leave it planted and wait, adding a little more over time
-    - Move it somewhere new every day
-    - Forget about it completely
-  best: 1
-  timerSeconds: 30
-  round: 1
 reveal:
-  bestAnswer: B. Leave it planted and wait, adding a little more over time
-  why: Investing is like planting. Money needs time to grow, and digging it up early stops the growing. Adding a little more along the way helps it grow even bigger.
   keyConcept: Growth over time — patience helps money grow
   commonTrap: Wanting results right away and pulling money out too soon
   discussionPrompt: What's something else that only works if you wait for it?
@@ -102,6 +90,14 @@ game_rounds:
       best: 0
       why: Saving or investing for a long time helps money grow.
   rounds:
+    - q: You plant a money seed today. A friend says 'dig it up tomorrow to see if it worked!' What helps it grow the most?
+      opts:
+        - ["⛏️", "Dig it up tomorrow to check"]
+        - ["🌱", "Leave it planted and add a little over time"]
+        - ["🚚", "Move it somewhere new every day"]
+        - ["🙈", "Forget about it completely"]
+      best: 1
+      why: Investing is like planting. Money needs time to grow, and digging it up early stops the growing. Adding a little more along the way helps it grow even bigger.
     - q: What does investing mean?
       opts:
         - - 🌱

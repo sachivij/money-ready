@@ -19,19 +19,7 @@ interactive:
   - Interest reveal
   - Discussion prompt
   - Exit ticket
-challenge:
-  scenario: A store offers a phone for '$0 down, pay later.' You don't have the money yet. What's the responsible move?
-  options:
-    - Take it — it's free right now
-    - Check what you'd owe later and if you can pay it
-    - Borrow from two places to be safe
-    - Ignore the total cost, focus on monthly
-  best: 1
-  timerSeconds: 40
-  round: 1
 reveal:
-  bestAnswer: B. Check what you'd owe later and if you can pay it
-  why: "'Pay later' is still borrowing. Credit isn't free — you usually pay interest, and only paying it back on time keeps it from snowballing. Always know the real total before you say yes."
   keyConcept: Interest — the cost of borrowing money over time
   commonTrap: Looking only at the monthly payment, not the full cost
   discussionPrompt: When is borrowing a smart tool, and when is it a trap?
@@ -100,6 +88,14 @@ game_rounds:
       best: 0
       why: On time is best. It shows you can be trusted.
   rounds:
+    - q: A store offers a phone for '$0 down, pay later.' You don't have the money yet. What's the responsible move?
+      opts:
+        - ["🎁", "Take it, it's free right now"]
+        - ["🔍", "Check what you'd owe later and if you can pay it"]
+        - ["🔁", "Borrow from two places to be safe"]
+        - ["🙈", "Ignore the total cost, focus on monthly"]
+      best: 1
+      why: "'Pay later' is still borrowing. Credit isn't free: you usually pay interest, and only paying it back on time keeps it from snowballing. Always know the real total before you say yes."
     - q: What is credit?
       opts:
         - ["🤝", "Borrowing now and promising to pay later"]

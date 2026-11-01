@@ -456,6 +456,7 @@ var PLAY_ENGINES = (function () {
         '<p class="muted">What we learned:</p>' +
         '<ul class="play-list" style="text-align:left;max-width:560px;margin:0 auto">' +
           order.map(function (x) { return "<li>" + esc(x.r.why) + "</li>"; }).join("") + "</ul>" +
+        talk(game.topic && game.topic.reveal) +
         (counted
           ? '<details class="mt-2" style="text-align:left;max-width:560px;margin-left:auto;margin-right:auto"><summary style="cursor:pointer;font-weight:700">How the class voted (counts only)</summary>' +
             '<pre id="qzSummary" class="qz-summary">' + esc(summary()) + "</pre>" +
@@ -464,7 +465,8 @@ var PLAY_ENGINES = (function () {
         (srcs.length ? '<p class="muted mt-2" style="font-size:.88rem">Sources: ' +
           srcs.map(function (s) { return esc(s.name) + (s.url ? " (" + esc(s.url) + ")" : ""); }).join("; ") + "</p>" : "") +
         '<div class="flex gap wrap-flex mt-3" style="justify-content:center">' +
-          '<button class="btn btn-primary" id="qzAgain">Play again</button></div></div>';
+          '<button class="btn btn-primary" id="qzAgain">Play again</button></div>' +
+        (game.afterHtml || "") + "</div>";
       if (pic) speak((solo ? "You got " : "We got ") + stars + " stars!");
       var copy = document.getElementById("qzCopy");
       if (copy) copy.addEventListener("click", function () {
@@ -473,6 +475,15 @@ var PLAY_ENGINES = (function () {
       });
       document.getElementById("qzAgain").addEventListener("click", intro);
       document.getElementById("qzAgain").focus();
+    }
+    // The topic's talking points (a module's or extra topic's `reveal`),
+    // for the volunteer to lead the discussion after the last round.
+    function talk(rv) {
+      if (!rv || !(rv.keyConcept || rv.commonTrap || rv.discussionPrompt || rv.applyIt)) return "";
+      function row(k, v) { return v ? "<p><strong>" + k + ":</strong> " + esc(v) + "</p>" : ""; }
+      return '<div class="qz-talk"><div class="eyebrow">Talk about it</div>' +
+        row("Key idea", rv.keyConcept) + row("Watch for", rv.commonTrap) +
+        row("Ask the class", rv.discussionPrompt) + row("Try it", rv.applyIt) + "</div>";
     }
 
     intro();
