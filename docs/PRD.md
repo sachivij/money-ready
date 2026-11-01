@@ -1,6 +1,6 @@
 # Money Ready: Product Requirements (PRD)
 
-**Owner:** Sumeet · **Status:** Draft · **Last updated:** October 4, 2026
+**Owner:** Sumeet · **Status:** Draft · **Last updated:** November 1, 2026
 
 ## 1. Problem
 
@@ -8,7 +8,7 @@ Financial literacy lessons for young students are often a slide deck and a lectu
 
 ## 2. Product summary
 
-Money Ready is a free, static web app that turns existing financial literacy topics into a repeatable, interactive workshop: **pick a module, run a live challenge, students vote, reveal the answer, discuss, send a take-home card.** It needs no accounts, no backend, and no personal data, and it works offline. A sister edition for Loudoun 4-H lives in a separate repo.
+Money Ready is a free, static web app that turns existing financial literacy topics into a repeatable, interactive workshop: **pick a topic, play its rounds as a game, students vote, reveal the answer, discuss, send a take-home card.** It needs no accounts, no backend, and no personal data, and it works offline. A sister edition for Loudoun 4-H lives in a separate repo.
 
 ## 3. Target users
 
@@ -28,13 +28,14 @@ Money Ready is a free, static web app that turns existing financial literacy top
 
 ## 5. Current features (what exists today)
 
-- **Module library:** the official Grades 1–4 Teen Teach-In sequence plus extended modules for Grades 5–12 (Needs vs. Wants, Budget Battle, Save or Spend?, Credit Climb, Paycheck Puzzle, Smart Shopping, Fraud & Red Flags, Banking Basics, College Cost Choices, Investing Mythbusters).
-- **Live challenge and reveal:** timer, room code, A–D answers, team score, best answer with discussion prompt.
-- **Games library:** 12 formats (Four Corners, Human Bar Graph, Red Flag / Green Flag, Speed Round, etc.), many needing no devices, plus picture-based options for young kids.
-- **Workshop Builder:** assembles a lesson plan and packet (deck outline, parent letter, checklist, sign-up form) from a module, time, and device setup.
-- **Facilitator dashboard and volunteer prep:** script, vocabulary, timed steps, practice mode.
-- **Role picker:** removed 2026-10-30, together with the Impact tab.
-- **Standards helper, impact snapshot, take-home cards.** (The request / partner portal was removed on 2026-10-30.)
+- **Module library:** the official Grades 1–4 Teen Teach-In sequence plus extended modules for Grades 5–12 (Needs vs. Wants, Budget Battle, Save or Spend?, Credit Climb, Paycheck Puzzle, Smart Shopping, Fraud & Red Flags, Banking Basics, College Cost Choices, Investing Mythbusters). All content lives in `content/` as plain files (spec 11).
+- **One game model:** every topic has pre-written rounds (picture rounds for K–2, three- or four-answer rounds for Grades 3–12), played by one on-screen engine: the volunteer taps the room's votes and reveals the split, or students practice with one tap. The same rounds print as answer cards for rooms with no screen. The module's "student challenge" is these rounds; the end screen carries the key idea, common trap and discussion prompt.
+- **Games library:** 21 ways to run a topic's rounds (Four Corners, Human Bar Graph, Red Flag / Green Flag, Speed Round, and so on), 17 of them with no devices, each with a version per age group, cards, debrief questions and a printable game sheet. Nine multi-round games bring their own rounds; two of those play on screen.
+- **Workshop Builder:** from topic, age group, length, group size, class size, setting and devices it writes a timed run of show with word-for-word Say/Do lines, one game (the topic's rounds as the best-fitting format, swappable), printable cards, a take-home card and the packet (deck guide, practice notes, parent letter, administrator overview, checklist, sign-up sheet, reflection). Official Teen Teach-In lessons follow the deck slide by slide. Grades K–2 switches to picture mode.
+- **Volunteer Prep:** script, vocabulary, timed steps, age tips, answers to questions students ask (from cited sources), practice mode.
+- **Standards Helper:** about 100 pre-written answers, Jump$tart materials first, then U.S. government sources, always cited; never guesses.
+- **Students reached:** volunteers and teachers enter a student count before building a plan or starting a game; the anonymous count goes to a private sheet (spec 09). This is the site's only outbound request.
+- Removed in October 2026: the Facilitator dashboard, the role picker, the Impact tab and example impact figures, the request/partner portal, and the anonymous confidence taps.
 
 ## 6. Roadmap
 
@@ -52,7 +53,7 @@ Money Ready is a free, static web app that turns existing financial literacy top
 ## 7. Non-goals (for now)
 
 - No student accounts, logins, or personal data.
-- No backend or paid hosting; stays a static site (GitHub Pages).
+- No backend or paid hosting; stays a static site (Vercel's free tier, deployed from `main`).
 - Not financial advice, and not a replacement for approved curriculum.
 
 ## 8. Open questions
@@ -68,6 +69,5 @@ Money Ready is a free, static web app that turns existing financial literacy top
 
 - Workshops delivered and students reached per term.
 - Student participation rate (target: 90%+ answer at least one challenge).
-- Average student confidence change, before vs. after (anonymous taps).
 - Volunteer confidence and teacher feedback scores (target: 4/5 or higher).
 - Repeatability: share of volunteers who teach a second workshop.
