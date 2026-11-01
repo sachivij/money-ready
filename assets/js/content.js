@@ -68,6 +68,21 @@ var MODULES = [
       ],
       "familyQuestion": "What is something we'd choose again?"
     },
+    "takeHomeK2": {
+      "title": "Pick One!",
+      "say": "Draw what you picked. Draw what you gave up.",
+      "boxes": [
+        [
+          "👉",
+          "I picked"
+        ],
+        [
+          "👋",
+          "I gave up"
+        ]
+      ],
+      "grownUp": "Ask your child: What did you pick? What did you give up?"
+    },
     "prep": {
       "openingScript": "Hi everyone! Quick question: have you ever wanted two things but could only pick one? That feeling has a name — it's called opportunity cost, and today we're going to become experts on it.",
       "vocab": [
@@ -255,6 +270,21 @@ var MODULES = [
       ],
       "familyQuestion": "What would our family have done?"
     },
+    "takeHomeK2": {
+      "title": "My Story",
+      "say": "Draw the story. Draw what you would pick.",
+      "boxes": [
+        [
+          "📖",
+          "The story"
+        ],
+        [
+          "⭐",
+          "My pick"
+        ]
+      ],
+      "grownUp": "Ask your child: What did the character choose? What would you choose?"
+    },
     "prep": {
       "openingScript": "Today we get to hear a story! Stories are sneaky — while you're having fun, you're also learning something real. Listen for the moment the character has to make a money choice.",
       "vocab": [
@@ -348,6 +378,21 @@ var MODULES = [
         "Tradeoff"
       ],
       "familyQuestion": "What is one thing we want to save for?"
+    },
+    "takeHomeK2": {
+      "title": "Need or Want?",
+      "say": "Draw one thing you need. Draw one thing you want.",
+      "boxes": [
+        [
+          "🏠",
+          "I need"
+        ],
+        [
+          "🧸",
+          "I want"
+        ]
+      ],
+      "grownUp": "Ask your child: Which one comes first? Why?"
     },
     "prep": {
       "openingScript": "Hi everyone! I'm a teen volunteer and today we're money detectives. Our big question: what's the difference between something you NEED to live and something you just WANT? Let's find out together — there are no wrong answers here.",
@@ -531,6 +576,21 @@ var MODULES = [
         "Wait for it"
       ],
       "familyQuestion": "How much could we set aside each week?"
+    },
+    "takeHomeK2": {
+      "title": "Save or Spend?",
+      "say": "Draw something to save for. Draw something to spend on.",
+      "boxes": [
+        [
+          "🐷",
+          "Save for"
+        ],
+        [
+          "🛍️",
+          "Spend on"
+        ]
+      ],
+      "grownUp": "Ask your child: What is worth waiting for?"
     },
     "prep": {
       "openingScript": "Saving money means keeping some instead of spending it all right now. Sounds hard — but it's a superpower. Today we'll see how a little bit, over and over, adds up faster than you'd think.",

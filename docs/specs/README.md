@@ -8,7 +8,7 @@ To claim a spec, put your name in Owner and push to `main` before you start. Eac
 | 02 | [Landing page "where do I go?" flow chart](02-landing-flow-chart.md) | Done | Ridhi Poranki |
 | 03 | [Works on school computers](03-school-computers.md) | Not started | |
 | 04 | [4-H edition: remove the clover](04-4h-branding.md) | Done (💵 mark, confirmed on the 4-H site 2026-10-30) | Sumeet |
-| 05 | [K–2 picture mode](05-k2-picture-mode.md) | In progress (K–2 games first) | Sumeet |
+| 05 | [K–2 picture mode](05-k2-picture-mode.md) | Done (K–2 games, module pages, picture challenge, picture take-home cards) | Sumeet |
 | 06 | [More games](06-more-games.md) | Done | Ridhi Poranki |
 | 07 | [Volunteer and school matching](07-matching.md) | Needs decisions | |
 | 08 | [Builder makes playable games, incl. other topics](08-generated-games.md) | Done | Sumeet |

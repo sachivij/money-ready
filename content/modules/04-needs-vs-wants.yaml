@@ -44,6 +44,14 @@ takeHome:
   prompt: Pick one family purchase this week. Was it a need, a want, or both?
   boxes: ["Need", "Want", "Tradeoff"]
   familyQuestion: What is one thing we want to save for?
+# K–2 picture take-home card (spec 05): one sentence, two boxes to draw in.
+takeHomeK2:
+  title: "Need or Want?"
+  say: Draw one thing you need. Draw one thing you want.
+  boxes:
+    - ["🏠", "I need"]
+    - ["🧸", "I want"]
+  grownUp: Ask your child: Which one comes first? Why?
 prep:
   openingScript: Hi everyone! I'm a teen volunteer and today we're money detectives. Our big question: what's the difference between something you NEED to live and something you just WANT? Let's find out together — there are no wrong answers here.
   vocab:

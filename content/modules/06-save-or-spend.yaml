@@ -43,6 +43,14 @@ takeHome:
   prompt: Draw or name one thing your family would like to save for.
   boxes: ["Save", "Spend", "Wait for it"]
   familyQuestion: How much could we set aside each week?
+# K–2 picture take-home card (spec 05): one sentence, two boxes to draw in.
+takeHomeK2:
+  title: "Save or Spend?"
+  say: Draw something to save for. Draw something to spend on.
+  boxes:
+    - ["🐷", "Save for"]
+    - ["🛍️", "Spend on"]
+  grownUp: Ask your child: What is worth waiting for?
 prep:
   openingScript: Saving money means keeping some instead of spending it all right now. Sounds hard — but it's a superpower. Today we'll see how a little bit, over and over, adds up faster than you'd think.
   vocab:

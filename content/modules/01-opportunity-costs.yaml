@@ -44,6 +44,14 @@ takeHome:
   prompt: Talk about one choice your family made this week.
   boxes: ["We chose", "We gave up", "Worth it?"]
   familyQuestion: What is something we'd choose again?
+# K–2 picture take-home card (spec 05): one sentence, two boxes to draw in.
+takeHomeK2:
+  title: "Pick One!"
+  say: Draw what you picked. Draw what you gave up.
+  boxes:
+    - ["👉", "I picked"]
+    - ["👋", "I gave up"]
+  grownUp: Ask your child: What did you pick? What did you give up?
 prep:
   openingScript: Hi everyone! Quick question: have you ever wanted two things but could only pick one? That feeling has a name — it's called opportunity cost, and today we're going to become experts on it.
   vocab:
