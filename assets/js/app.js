@@ -13,6 +13,7 @@
  *   #/builder        Toolkit builder (guided packet workflow)
  *   #/helper         Standards-grounded helper (retrieval only)
  *   #/take-home/:id  Printable take-home card
+ *   (module, challenge and take-home take ?k2=1 / ?k2=0 for K–2 picture mode)
  */
 (function () {
   "use strict";
@@ -373,11 +374,60 @@
   }
 
   // ================================================================
+  // K–2 PICTURE MODE (spec 05)
+  // A module page, its student challenge and its take-home card each have
+  // a picture version for Grades K–2: two big picture buttons, one short
+  // sentence per screen, and a 🔊 button that reads it aloud with the
+  // browser's own voice. The challenge uses the same picture rounds as the
+  // builder's K–2 game (GAME_BANK[id].picture). `?k2=1` turns it on,
+  // `?k2=0` off; Grade 1 and Grade 2 modules start with it on.
+  // ================================================================
+  function k2Rounds(m) {
+    var g = typeof GAME_BANK !== "undefined" && GAME_BANK[m.id];
+    return g && g.picture && g.picture.length ? g.picture : null;
+  }
+  function k2Default(m) {
+    var nums = (m.gradeBand || "").match(/\d+/g);
+    return !!nums && Math.max.apply(null, nums.map(Number)) <= 2;
+  }
+  function k2On(m, query) {
+    if (!k2Rounds(m)) return false;
+    if (query && query.k2 === "1") return true;
+    if (query && query.k2 === "0") return false;
+    return k2Default(m);
+  }
+  // Query string that keeps the mode when moving between a module's pages.
+  function k2q(m, on) {
+    if (!k2Rounds(m)) return "";
+    return on === k2Default(m) ? "" : (on ? "?k2=1" : "?k2=0");
+  }
+  function k2Toggle(m, on, page) {
+    if (!k2Rounds(m)) return "";
+    return '<a class="k2-toggle no-print' + (on ? " on" : "") + '" href="#/' + page + "/" + m.id +
+      (on ? "?k2=0" : "?k2=1") + '" title="Big pictures, one short sentence, read aloud">' +
+      "🖼️ K–2 picture mode: <strong>" + (on ? "On" : "Off") + "</strong></a>";
+  }
+  function say(text) {
+    try {
+      if (!window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no voice on this device; the volunteer reads aloud */ }
+  }
+  var canSay = typeof window !== "undefined" && !!window.speechSynthesis;
+  function hearBtn(id, label) {
+    return canSay ? '<button class="k2-hear" id="' + id + '" aria-label="Hear it">🔊' + (label ? " " + label : "") + "</button>" : "";
+  }
+
+  // ================================================================
   // LESSON TRANSFORMATION (module detail)
   // ================================================================
-  function renderModule(id) {
+  function renderModule(id, query) {
     var m = moduleById(id);
     if (!m) return renderNotFound();
+    var k2 = k2On(m, query), kq = k2q(m, k2);
     var staticItems = ["Read the topic aloud", "Show a definition slide", "Ask if there are questions",
       "Hand out a worksheet", "Move on to the next topic"];
     app.innerHTML =
@@ -387,9 +437,11 @@
           '<span style="font-size:2.4rem">' + m.emoji + "</span>" +
           "<div><div class=\"eyebrow\">Lesson transformation</div><h1 style=\"margin-bottom:2px\">" + esc(m.title) + "</h1>" +
           '<span class="badge gray">' + esc(m.gradeBand) + '</span> <span class="badge gray">' + m.minutes + ' min</span></div>' +
+          k2Toggle(m, k2, "module") +
         "</div>" +
         '<div class="card mt-3" style="border-left:5px solid var(--green)">' +
           "<strong>Learning objective:</strong> " + esc(m.objective) + "</div>" +
+        (k2 ? k2ModulePanel(m) : "") +
       "</div>" +
       '<section class="section tight"><div class="wrap">' +
         "<h2 class=\"center\" style=\"margin-bottom:8px\">From static lesson to live learning moment</h2>" +
@@ -404,20 +456,36 @@
           "</ul></div>" +
         "</div>" +
         '<div class="hero-cta" style="justify-content:center;margin-top:32px">' +
-          '<a class="btn btn-primary btn-lg" href="#/challenge/' + m.id + '">▶ Run the student challenge</a>' +
-          '<a class="btn btn-secondary" href="#/prep?topic=' + m.id + '">Volunteer prep</a>' +
-          '<a class="btn btn-secondary" href="#/take-home/' + m.id + '">Take-home card</a>' +
+          '<a class="btn btn-primary btn-lg" href="#/challenge/' + m.id + kq + '">▶ Run the ' + (k2 ? "picture " : "student ") + "challenge</a>" +
+          '<a class="btn btn-secondary" href="#/prep?topic=' + m.id + (k2 ? "&grade=k2" : "") + '">Volunteer prep</a>' +
+          '<a class="btn btn-secondary" href="#/take-home/' + m.id + kq + '">' + (k2 && m.takeHomeK2 ? "Picture take-home card" : "Take-home card") + "</a>" +
         "</div>" +
       "</div></section>";
     wireNav();
   }
 
+  // What the K–2 version of a module looks like, for the volunteer.
+  function k2ModulePanel(m) {
+    var rounds = k2Rounds(m);
+    return '<div class="card mt-3 k2-panel">' +
+      '<div class="eyebrow">🖼️ K–2 picture mode is on</div>' +
+      '<p style="margin:4px 0 12px">Students do not need to read. Each screen has one short question, two big pictures ' +
+        "to tap or point at, and a 🔊 button that reads it aloud." + (m.takeHomeK2 ? " The take-home card is pictures and drawing." : "") + "</p>" +
+      '<div class="k2-preview">' + rounds.map(function (r) {
+        return '<div class="k2-preview-round"><div class="k2-preview-q">' + esc(r.q) + "</div>" +
+          '<div class="k2-preview-pics">' + r.opts.map(function (o) {
+            return '<span><span class="k2-preview-emoji" aria-hidden="true">' + o[0] + "</span>" + esc(o[1]) + "</span>";
+          }).join("") + "</div></div>";
+      }).join("") + "</div></div>";
+  }
+
   // ================================================================
   // STUDENT CHALLENGE + REVEAL
   // ================================================================
-  function renderChallenge(id, practice) {
+  function renderChallenge(id, practice, query) {
     var m = moduleById(id);
     if (!m) return renderNotFound();
+    if (k2On(m, query)) return renderChallengeK2(m, practice);
     var c = m.challenge;
     var code = roomCode();
     var teamScore = 40;
@@ -425,8 +493,9 @@
 
     app.innerHTML =
       '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · ' +
-        '<a href="#/module/' + m.id + '">' + esc(m.title) + "</a> · Student challenge" +
-        (practice ? ' · <span class="pill-note">Practice mode</span>' : "") + "</div></div>" +
+        '<a href="#/module/' + m.id + k2q(m, false) + '">' + esc(m.title) + "</a> · Student challenge" +
+        (practice ? ' · <span class="pill-note">Practice mode</span>' : "") + "</div>" +
+        k2Toggle(m, false, "challenge") + "</div>" +
       '<section class="section tight"><div class="wrap">' +
         '<div class="challenge-stage" id="stage">' +
           '<div class="challenge-topbar">' +
@@ -491,6 +560,94 @@
     wireNav();
   }
 
+  // K–2 challenge: the module's picture rounds, one at a time. Two big
+  // pictures, the question read aloud, a star for each right answer, and
+  // one short sentence that says why. No timer and nothing to read.
+  function renderChallengeK2(m, practice) {
+    var rounds = k2Rounds(m);
+    var at = 0, stars = 0;
+    app.innerHTML =
+      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · ' +
+        '<a href="#/module/' + m.id + k2q(m, true) + '">' + esc(m.title) + "</a> · Picture challenge" +
+        (practice ? ' · <span class="pill-note">Practice mode</span>' : "") + "</div>" +
+        k2Toggle(m, true, "challenge") + "</div>" +
+      '<section class="section tight"><div class="wrap"><div class="k2-stage" id="k2Stage"></div></div></section>';
+    var stage = document.getElementById("k2Stage");
+
+    function dots() {
+      return '<div class="k2-dots" aria-label="Picture ' + (at + 1) + " of " + rounds.length + '">' +
+        rounds.map(function (r, i) {
+          return '<span class="' + (i < at ? "done" : i === at ? "now" : "") + '"></span>';
+        }).join("") + "</div>";
+    }
+    function showRound() {
+      var r = rounds[at];
+      // Shuffle so the right picture is not always first.
+      var order = r.opts.map(function (o, i) { return i; });
+      if (Math.random() < 0.5) order.reverse();
+      stage.innerHTML =
+        '<div class="k2-top">' + dots() + '<span class="k2-stars" aria-label="' + stars + ' stars">' +
+          (stars ? new Array(stars + 1).join("⭐") : "") + "</span></div>" +
+        '<div class="k2-q">' + esc(r.q) + " " + hearBtn("k2Hear") + "</div>" +
+        '<div class="k2-opts">' + order.map(function (i) {
+          var o = r.opts[i];
+          return '<button class="k2-opt" data-i="' + i + '" aria-label="' + esc(o[1]) + '">' +
+            '<span class="k2-pic" aria-hidden="true">' + o[0] + '</span><span class="k2-word">' + esc(o[1]) + "</span></button>";
+        }).join("") + "</div>" +
+        '<div id="k2Result" aria-live="polite"></div>';
+      var hear = document.getElementById("k2Hear");
+      if (hear) hear.addEventListener("click", function () { say(r.q); });
+      stage.querySelectorAll(".k2-opt").forEach(function (b) {
+        b.addEventListener("click", function () { pick(Number(b.getAttribute("data-i"))); });
+      });
+      say(r.q);
+    }
+    function pick(i) {
+      var r = rounds[at];
+      var right = r.best < 0 || i === r.best;
+      if (right) stars++;
+      stage.querySelectorAll(".k2-opt").forEach(function (b) {
+        var j = Number(b.getAttribute("data-i"));
+        b.disabled = true;
+        if (r.best < 0 ? j === i : j === r.best) b.classList.add("right");
+        else if (j === i) b.classList.add("miss");
+        else b.classList.add("dim");
+      });
+      var last = at === rounds.length - 1;
+      document.getElementById("k2Result").innerHTML =
+        '<div class="k2-why"><span class="k2-why-mark" aria-hidden="true">' + (right ? "⭐" : "💡") + "</span>" +
+          "<span>" + esc(r.why) + "</span> " + hearBtn("k2HearWhy") + "</div>" +
+        '<button class="k2-next" id="k2Next">' + (last ? "🏁 Done" : "▶ Next") + "</button>";
+      var hw = document.getElementById("k2HearWhy");
+      if (hw) hw.addEventListener("click", function () { say(r.why); });
+      document.getElementById("k2Next").addEventListener("click", function () {
+        if (last) showEnd(); else { at++; showRound(); }
+      });
+      say((right ? "Yes! " : "") + r.why);
+    }
+    function showEnd() {
+      var line = "We got " + stars + (stars === 1 ? " star!" : " stars!");
+      stage.innerHTML =
+        '<div class="k2-end">' +
+          '<div class="k2-end-stars" aria-hidden="true">' + (stars ? new Array(stars + 1).join("⭐") : m.emoji) + "</div>" +
+          '<div class="k2-q">' + line + " " + hearBtn("k2HearEnd") + "</div>" +
+          '<div class="k2-end-actions no-print">' +
+            '<button class="k2-next" id="k2Again">🔁 Again</button>' +
+            (m.takeHomeK2 ? '<a class="k2-next" href="#/take-home/' + m.id + k2q(m, true) + '">🖍️ Take-home card</a>' : "") +
+          "</div>" +
+          '<p class="muted mt-2">For the volunteer: ' +
+            '<a href="#/prep?topic=' + m.id + '&grade=k2">K–2 volunteer prep</a> · ' +
+            '<a href="#/builder?topic=' + m.id + '&grade=' + encodeURIComponent("Grades K–2") + '">Build a K–2 workshop on this</a></p>' +
+        "</div>";
+      var he = document.getElementById("k2HearEnd");
+      if (he) he.addEventListener("click", function () { say(line); });
+      document.getElementById("k2Again").addEventListener("click", function () { at = 0; stars = 0; showRound(); });
+      say(line);
+    }
+    showRound();
+    wireNav();
+  }
+
   function showReveal(m, chosen) {
     var r = m.reveal;
     var correct = chosen === m.challenge.best;
@@ -511,7 +668,7 @@
           '<div class="reveal-row"><div class="rk">Apply it</div><div class="apply-box">🎯 ' + esc(r.applyIt) + "</div></div>" +
           confidenceRow(m) +
           '<div class="flex gap wrap-flex mt-2 no-print">' +
-            '<a class="btn btn-primary" href="#/take-home/' + m.id + '">Get the take-home card</a>' +
+            '<a class="btn btn-primary" href="#/take-home/' + m.id + k2q(m, false) + '">Get the take-home card</a>' +
             '<a class="btn btn-secondary" href="#/builder?topic=' + m.id + '">Build a workshop on this</a>' +
             '<a class="btn btn-ghost" href="#/prep?topic=' + m.id + '">Volunteer prep</a>' +
           "</div>" +
@@ -713,7 +870,8 @@
             "<p style=\"margin:4px 0\"><strong>" + esc(t.takeHome.title) + "</strong></p>" +
             '<p class="muted" style="margin:0 0 10px">Family question: ' + esc(t.takeHome.familyQuestion) + "</p>" +
             (p.printables ? p.printables.map(function (x) { return '<span class="chip" style="font-size:.85rem;margin:0 6px 6px 0;display:inline-block">🖨 ' + esc(x) + "</span>"; }).join("") : "") +
-            (moduleById(t.id) ? '<div class="mt-2"><a class="btn btn-secondary" href="#/take-home/' + t.id + '">Open take-home card →</a></div>' : "") +
+            (moduleById(t.id) ? '<div class="mt-2"><a class="btn btn-secondary" href="#/take-home/' + t.id +
+              (prof.pictureBased && t.takeHomeK2 ? "?k2=1" : "") + '">Open ' + (prof.pictureBased && t.takeHomeK2 ? "picture " : "") + "take-home card →</a></div>" : "") +
           "</div>" +
         "</div>" +
         '<div class="card mt-3"><div class="eyebrow">Questions students might ask</div>' +
@@ -898,15 +1056,17 @@
   // ================================================================
   // TAKE-HOME CARD (printable)
   // ================================================================
-  function renderTakeHome(id) {
+  function renderTakeHome(id, query) {
     var m = moduleById(id);
     if (!m) return renderNotFound();
+    if (m.takeHomeK2 && k2On(m, query)) return renderTakeHomeK2(m);
     var t = m.takeHome;
     app.innerHTML =
       '<div class="wrap page-head no-print"><div class="breadcrumb"><a href="#/">Home</a> · ' +
-        '<a href="#/module/' + m.id + '">' + esc(m.title) + "</a> · Take-home card</div>" +
+        '<a href="#/module/' + m.id + k2q(m, false) + '">' + esc(m.title) + "</a> · Take-home card</div>" +
         '<div class="flex items-center wrap-flex gap" style="justify-content:space-between">' +
           "<div><div class=\"eyebrow\">Take-home activity</div><h1 style=\"margin-bottom:0\">Fridge-friendly & printable</h1></div>" +
+          (m.takeHomeK2 ? k2Toggle(m, false, "take-home") : "") +
           '<button class="btn btn-primary" onclick="window.print()">🖨 Print this card</button>' +
         "</div>" +
         '<p class="muted mt-2">This should feel like a warm conversation starter — not homework.</p>' +
@@ -927,6 +1087,43 @@
             "A proposed Virginia Jump$tart pilot, pending review</div>" +
         "</div>" +
       "</div></section>";
+    wireNav();
+  }
+
+  // K–2 take-home card: a big picture, one sentence to hear, two boxes to
+  // draw in, and a question for the grown-up to ask. Prints on one page.
+  function renderTakeHomeK2(m) {
+    var t = m.takeHomeK2;
+    var spoken = t.title + " " + t.say;
+    app.innerHTML =
+      '<div class="wrap page-head no-print"><div class="breadcrumb"><a href="#/">Home</a> · ' +
+        '<a href="#/module/' + m.id + k2q(m, true) + '">' + esc(m.title) + "</a> · Picture take-home card</div>" +
+        '<div class="flex items-center wrap-flex gap" style="justify-content:space-between">' +
+          "<div><div class=\"eyebrow\">Take-home activity · Grades K–2</div><h1 style=\"margin-bottom:0\">Draw it, take it home</h1></div>" +
+          k2Toggle(m, true, "take-home") +
+          '<button class="btn btn-primary" onclick="window.print()">🖨 Print this card</button>' +
+        "</div>" +
+        '<p class="muted mt-2">Read the sentence aloud (or tap 🔊), then students draw in the boxes. The grown-up question is for home.</p>' +
+      "</div>" +
+      '<section class="section tight"><div class="wrap">' +
+        '<div class="takehome k2-card">' +
+          '<div class="th-head"><div class="k2-card-hero" aria-hidden="true">' + m.emoji + "</div>" +
+            '<div class="th-title">' + esc(t.title) + "</div></div>" +
+          '<div class="th-prompt k2-card-say">' + esc(t.say) + " " + hearBtn("k2HearCard") + "</div>" +
+          '<div class="th-boxes k2-card-boxes">' +
+            t.boxes.map(function (b) {
+              return '<div class="th-box k2-card-box"><div class="k2-card-lab"><span aria-hidden="true">' + b[0] + "</span> " + esc(b[1]) +
+                '</div><div class="k2-card-draw" aria-hidden="true">✏️</div></div>';
+            }).join("") +
+          "</div>" +
+          '<div class="th-family"><div class="eyebrow">For a grown-up</div>' +
+            '<div class="q">' + esc(t.grownUp) + "</div></div>" +
+          '<div class="th-foot">Educational only · Privacy-safe · No personal information needed · ' +
+            "A proposed Virginia Jump$tart pilot, pending review</div>" +
+        "</div>" +
+      "</div></section>";
+    var h = document.getElementById("k2HearCard");
+    if (h) h.addEventListener("click", function () { say(spoken); });
     wireNav();
   }
 
@@ -1478,7 +1675,8 @@
         "</ul>" +
 
         '<div class="flex gap wrap-flex mt-3 no-print">' +
-          (m.extraTopic ? "" : '<a class="btn btn-primary" href="#/take-home/' + m.id + '">Take-home card</a>') +
+          (m.extraTopic ? "" : '<a class="btn btn-primary" href="#/take-home/' + m.id +
+            (plan.pictureBased && m.takeHomeK2 ? "?k2=1" : "") + '">' + (plan.pictureBased && m.takeHomeK2 ? "Picture take-home card" : "Take-home card") + "</a>") +
           '<a class="btn btn-secondary" href="#/games?devices=' + (plan.devices === "none" ? "none" : "all") + '">Browse games</a>' +
           (m.extraTopic ? "" : '<a class="btn btn-ghost" href="#/prep?topic=' + m.id + '">Full volunteer prep</a>') +
         "</div>" +
@@ -1704,8 +1902,8 @@
       case "play": return renderPlay(seg[1]);
       case "game": return renderTopicGame(query);
       case "game-cards": return renderGameCards(query);
-      case "module": return renderModule(seg[1]);
-      case "challenge": return renderChallenge(seg[1], query.practice === "1");
+      case "module": return renderModule(seg[1], query);
+      case "challenge": return renderChallenge(seg[1], query.practice === "1", query);
       // The Facilitator dashboard was folded into the builder's game.
       case "facilitator": return renderBuilderCombined(query);
       case "prep": return renderPrep(query);
@@ -1715,7 +1913,7 @@
       case "helper": return renderHelper();
       // The Impact tab was removed; old links land on the home page.
       case "impact": location.replace("#/"); return;
-      case "take-home": return renderTakeHome(seg[1]);
+      case "take-home": return renderTakeHome(seg[1], query);
       default: return renderNotFound();
     }
   }

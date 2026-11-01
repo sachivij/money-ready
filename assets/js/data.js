@@ -14,6 +14,7 @@
  *   challenge    -> a Student Challenge scenario (4 options, best answer)
  *   reveal       -> the satisfying Reveal after students answer
  *   takeHome     -> a fridge-friendly, printable take-home card
+ *   takeHomeK2   -> optional K–2 picture card: { title, say, boxes: [[emoji, word]], grownUp }
  *   prep         -> everything a teen volunteer needs to prep & practice
  */
 
@@ -69,6 +70,14 @@ const MODULES = [
       prompt: "Talk about one choice your family made this week.",
       boxes: ["We chose", "We gave up", "Worth it?"],
       familyQuestion: "What is something we'd choose again?",
+    },
+    // K–2 picture version of the card (spec 05): one short sentence, a big
+    // picture and one or two words per box, and a question for a grown-up.
+    takeHomeK2: {
+      title: "Pick One!",
+      say: "Draw what you picked. Draw what you gave up.",
+      boxes: [["👉", "I picked"], ["👋", "I gave up"]],
+      grownUp: "Ask your child: What did you pick? What did you give up?",
     },
     prep: {
       openingScript:
@@ -218,6 +227,12 @@ const MODULES = [
       boxes: ["What happened", "Their choice", "My choice"],
       familyQuestion: "What would our family have done?",
     },
+    takeHomeK2: {
+      title: "My Story",
+      say: "Draw the story. Draw what you would pick.",
+      boxes: [["📖", "The story"], ["⭐", "My pick"]],
+      grownUp: "Ask your child: What did the character choose? What would you choose?",
+    },
     prep: {
       openingScript:
         "Today we get to hear a story! Stories are sneaky — while you're having fun, you're also learning something real. Listen for the moment the character has to make a money choice.",
@@ -292,6 +307,12 @@ const MODULES = [
       prompt: "Pick one family purchase this week. Was it a need, a want, or both?",
       boxes: ["Need", "Want", "Tradeoff"],
       familyQuestion: "What is one thing we want to save for?",
+    },
+    takeHomeK2: {
+      title: "Need or Want?",
+      say: "Draw one thing you need. Draw one thing you want.",
+      boxes: [["🏠", "I need"], ["🧸", "I want"]],
+      grownUp: "Ask your child: Which one comes first? Why?",
     },
     prep: {
       openingScript:
@@ -437,6 +458,12 @@ const MODULES = [
       prompt: "Draw or name one thing your family would like to save for.",
       boxes: ["Save", "Spend", "Wait for it"],
       familyQuestion: "How much could we set aside each week?",
+    },
+    takeHomeK2: {
+      title: "Save or Spend?",
+      say: "Draw something to save for. Draw something to spend on.",
+      boxes: [["🐷", "Save for"], ["🛍️", "Spend on"]],
+      grownUp: "Ask your child: What is worth waiting for?",
     },
     prep: {
       openingScript:
