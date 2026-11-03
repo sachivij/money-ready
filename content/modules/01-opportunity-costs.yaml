@@ -22,19 +22,7 @@ interactive:
   - Discussion prompt
   - Take-home reflection
   - Exit ticket
-challenge:
-  scenario: You have $5 and only enough time to pick one thing: a book you've wanted, or ice cream with a friend. You choose the book. What is the opportunity cost?
-  options:
-    - The $5 you spent
-    - The ice cream with your friend that you gave up
-    - Nothing — you got what you wanted
-    - The book you bought
-  best: 1
-  timerSeconds: 30
-  round: 1
 reveal:
-  bestAnswer: B. The ice cream with your friend that you gave up
-  why: Opportunity cost is the next-best thing you gave up when you chose. You didn't lose the $5 — you traded it for the book. What you gave up was the ice cream.
   keyConcept: Opportunity cost — what you give up when you choose
   commonTrap: Thinking the cost is only the money spent
   discussionPrompt: What did you give up the last time you picked one thing over another?

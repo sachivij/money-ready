@@ -65,16 +65,31 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
     await go('#/module/' + id);
     if (!(await p.$('#app h1'))) probs.push('module ' + id + ': no h1');
 
-    for (let i = 0; i < 4; i++) {
-      await go('#/challenge/' + id + '?k2=0');
-      await jsClick('#answers .answer-btn[data-i="' + i + '"]');
-      const ok = await p.waitForSelector('#reveal', { timeout: 2500 }).then(() => 1).catch(() => 0);
-      if (!ok) { probs.push('challenge ' + id + ' ans' + i + ': no reveal'); continue; }
-      const t = await p.$eval('#reveal', e => e.textContent);
-      ['Best answer', 'Why it works', 'Key concept', 'Common trap', 'Discuss', 'Apply it']
-        .forEach(k => { if (t.indexOf(k) < 0) probs.push('reveal ' + id + ': missing ' + k); });
-      await jsClick('#confidence .chip-toggle[data-n="3"]');
+    // The student challenge is the module's rounds in the shared game
+    // engine: start, count a vote, reveal, play to the end screen, which
+    // carries the module's talking points and the take-home link.
+    await go('#/challenge/' + id + '?k2=0');
+    if (!(await p.$('#qzGo'))) { probs.push('challenge ' + id + ': no start button'); }
+    else {
+      await jsClick('#qzGo');
+      await jsClick('.qz-opt');
+      if (!(await p.$('#qzReveal'))) probs.push('challenge ' + id + ': no reveal button (should count the room\'s votes)');
+      for (let i = 0; i < 30 && !(await p.$('#qzAgain')); i++) {
+        await p.evaluate(() => {
+          const n = document.querySelector('#qzNext'); if (n) return n.click();
+          const o = document.querySelector('.qz-opt'); if (o) o.click();
+          const r = document.querySelector('#qzReveal'); if (r) r.click();
+        });
+      }
+      const end = await p.$eval('#playRoot', e => e.textContent).catch(() => '');
+      if (end.indexOf('Talk about it') < 0 || end.indexOf('Ask the class') < 0) probs.push('challenge ' + id + ': end screen has no talking points');
+      if (!(await p.$('#playRoot a[href^="#/take-home/' + id + '"]'))) probs.push('challenge ' + id + ': end screen has no take-home link');
     }
+    // Practice mode answers with one tap.
+    await go('#/challenge/' + id + '?k2=0&practice=1');
+    await jsClick('#qzGo');
+    await jsClick('.qz-opt');
+    if (!(await p.$('#qzNext'))) probs.push('challenge ' + id + ' practice: one tap should answer');
 
     await go('#/take-home/' + id + '?k2=0');
     if ((await p.$$eval('.th-box', e => e.length)) !== 3) probs.push('take-home ' + id + ': wrong box count');
@@ -84,9 +99,10 @@ const B = process.env.BASE || 'http://localhost:8000/index.html';
     const hasPics = await p.evaluate(x => !!(GAME_BANK[x] && GAME_BANK[x].picture && GAME_BANK[x].picture.length), id);
     if (hasPics) {
       await go('#/challenge/' + id + '?k2=1');
-      if ((await p.$$eval('.k2-opt', e => e.length)) !== 2) probs.push('challenge ' + id + ' k2: not two pictures');
-      await jsClick('.k2-opt');
-      if (!(await p.$('#k2Next'))) probs.push('challenge ' + id + ' k2: no next button after a pick');
+      await jsClick('#qzGo');
+      if ((await p.$$eval('.qz-opt', e => e.length)) !== 2) probs.push('challenge ' + id + ' k2: not two pictures');
+      await jsClick('.qz-opt');
+      if (!(await p.$('#qzNext'))) probs.push('challenge ' + id + ' k2: no next button after a pick');
     }
     const hasCard = await p.evaluate(x => !!MODULES.filter(m => m.id === x)[0].takeHomeK2, id);
     if (hasCard) {

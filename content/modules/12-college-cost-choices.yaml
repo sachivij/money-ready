@@ -19,19 +19,7 @@ interactive:
   - Debt reveal
   - Discussion prompt
   - Exit ticket
-challenge:
-  scenario: Two paths to the same career: School A costs $10k/year with a scholarship; School B costs $40k/year with a loan. Both get you there. What's the wise first question?
-  options:
-    - Which has the nicer campus?
-    - Which will I owe the least on after graduation?
-    - Which do my friends pick?
-    - Which has the cooler mascot?
-  best: 1
-  timerSeconds: 45
-  round: 1
 reveal:
-  bestAnswer: B. Which will I owe the least on after graduation?
-  why: When two paths lead to the same goal, cost and debt matter a lot. Big loans shape your choices for years. Scholarships, community college, and aid can reach the same destination for far less.
   keyConcept: Return on investment — weighing cost against what you gain
   commonTrap: Choosing on prestige or vibes and ignoring the debt
   discussionPrompt: How could a big loan limit choices after graduation?
@@ -100,6 +88,14 @@ game_rounds:
       best: 0
       why: Scholarships are money you don't pay back.
   rounds:
+    - q: "Two paths to the same career: School A costs $10k a year with a scholarship; School B costs $40k a year with a loan. What's the wise first question?"
+      opts:
+        - ["🏛️", "Which has the nicer campus?"]
+        - ["📉", "Which will I owe the least on after graduation?"]
+        - ["👯", "Which do my friends pick?"]
+        - ["🦅", "Which has the cooler mascot?"]
+      best: 1
+      why: When two paths lead to the same goal, cost and debt matter a lot. Big loans shape your choices for years. Scholarships, community college and aid can reach the same place for far less.
     - q: What is the FAFSA?
       opts:
         - - 📄

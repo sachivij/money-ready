@@ -19,19 +19,7 @@ interactive:
   - Red-flag reveal
   - Discussion prompt
   - Exit ticket
-challenge:
-  scenario: A text says: 'You won a $500 gift card! Click now and enter your bank info in the next 10 minutes or lose it.' What do you do?
-  options:
-    - Click fast before it expires
-    - Enter your info — it's just a card
-    - Don't click; it's a scam (urgency + info request)
-    - Forward it to friends so they can win too
-  best: 2
-  timerSeconds: 30
-  round: 1
 reveal:
-  bestAnswer: C. Don't click; it's a scam
-  why: Two huge red flags: a rush ('10 minutes!') and a request for private info. Real prizes don't need your bank details in a hurry. When in doubt: stop, don't click, and ask a trusted adult.
   keyConcept: Red flag — a warning sign that something is a scam
   commonTrap: Acting fast because a message creates panic or excitement
   discussionPrompt: Why do scammers try to make you rush?

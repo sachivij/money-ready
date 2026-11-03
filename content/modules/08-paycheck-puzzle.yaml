@@ -19,19 +19,7 @@ interactive:
   - Deduction reveal
   - Discussion prompt
   - Exit ticket
-challenge:
-  scenario: You earn $200 this week (that's your gross pay). Your paycheck says $170. Where did the other $30 most likely go?
-  options:
-    - The company kept it for no reason
-    - Taxes and required deductions
-    - It's a mistake — you should get it all
-    - A tip to your manager
-  best: 1
-  timerSeconds: 40
-  round: 1
 reveal:
-  bestAnswer: B. Taxes and required deductions
-  why: Gross pay is what you earn; net pay ('take-home') is what lands in your pocket after taxes and deductions. Knowing the gap helps you budget with the real number, not the big one.
   keyConcept: Net pay — your real take-home amount
   commonTrap: Budgeting off gross pay and coming up short
   discussionPrompt: Why might your take-home be different from a friend's for the same job?
@@ -100,6 +88,14 @@ game_rounds:
       best: 0
       why: For hourly jobs, more hours means more pay.
   rounds:
+    - q: You earn $200 this week (your gross pay). Your paycheck says $170. Where did the other $30 most likely go?
+      opts:
+        - ["🏢", "The company kept it for no reason"]
+        - ["🧾", "Taxes and required deductions"]
+        - ["❌", "It's a mistake, you should get it all"]
+        - ["💸", "A tip to your manager"]
+      best: 1
+      why: Gross pay is what you earn; net pay (take-home) is what lands in your pocket after taxes and deductions. Knowing the gap helps you budget with the real number, not the big one.
     - q: What is gross pay?
       opts:
         - ["💵", "Pay before anything is taken out"]

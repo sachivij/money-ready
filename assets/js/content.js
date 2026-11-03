@@ -38,21 +38,7 @@ var MODULES = [
       "Take-home reflection",
       "Exit ticket"
     ],
-    "challenge": {
-      "scenario": "You have $5 and only enough time to pick one thing: a book you've wanted, or ice cream with a friend. You choose the book. What is the opportunity cost?",
-      "options": [
-        "The $5 you spent",
-        "The ice cream with your friend that you gave up",
-        "Nothing — you got what you wanted",
-        "The book you bought"
-      ],
-      "best": 1,
-      "timerSeconds": 30,
-      "round": 1
-    },
     "reveal": {
-      "bestAnswer": "B. The ice cream with your friend that you gave up",
-      "why": "Opportunity cost is the next-best thing you gave up when you chose. You didn't lose the $5 — you traded it for the book. What you gave up was the ice cream.",
       "keyConcept": "Opportunity cost — what you give up when you choose",
       "commonTrap": "Thinking the cost is only the money spent",
       "discussionPrompt": "What did you give up the last time you picked one thing over another?",
@@ -147,21 +133,7 @@ var MODULES = [
       "Vocabulary check",
       "Take-home reflection"
     ],
-    "challenge": {
-      "scenario": "You plant a money seed today. A friend says 'dig it up tomorrow to see if it worked!' What should you do to help it grow the most?",
-      "options": [
-        "Dig it up tomorrow to check",
-        "Leave it planted and wait, adding a little more over time",
-        "Move it somewhere new every day",
-        "Forget about it completely"
-      ],
-      "best": 1,
-      "timerSeconds": 30,
-      "round": 1
-    },
     "reveal": {
-      "bestAnswer": "B. Leave it planted and wait, adding a little more over time",
-      "why": "Investing is like planting. Money needs time to grow, and digging it up early stops the growing. Adding a little more along the way helps it grow even bigger.",
       "keyConcept": "Growth over time — patience helps money grow",
       "commonTrap": "Wanting results right away and pulling money out too soon",
       "discussionPrompt": "What's something else that only works if you wait for it?",
@@ -240,21 +212,7 @@ var MODULES = [
       "Reveal screen",
       "Take-home reflection"
     ],
-    "challenge": {
-      "scenario": "In the story, a character finds a tree that grows money — but only if it's cared for patiently. They want to shake all the money off right now. What would you tell them?",
-      "options": [
-        "Shake it — take everything today",
-        "Care for it and take a little at a time so it keeps growing",
-        "Chop it down and sell the wood",
-        "Ignore the tree completely"
-      ],
-      "best": 1,
-      "timerSeconds": 30,
-      "round": 1
-    },
     "reveal": {
-      "bestAnswer": "B. Care for it and take a little at a time so it keeps growing",
-      "why": "Taking everything at once ends the story. Caring for something and taking a little at a time keeps it going — which is exactly how saving and growing money works in real life.",
       "keyConcept": "Patience and care make good things last",
       "commonTrap": "Grabbing everything at once and having nothing left",
       "discussionPrompt": "Which character made the choice you would have made?",
@@ -349,21 +307,7 @@ var MODULES = [
       "Take-home reflection",
       "Exit ticket"
     ],
-    "challenge": {
-      "scenario": "You have $25. You need lunch tomorrow, want a new game skin, and promised to save $5. What do you do?",
-      "options": [
-        "Buy the game skin now",
-        "Save $5 first, then plan lunch",
-        "Spend all $25 and figure it out later",
-        "Ask a friend to pay for lunch"
-      ],
-      "best": 1,
-      "timerSeconds": 30,
-      "round": 1
-    },
     "reveal": {
-      "bestAnswer": "B. Save $5 first, then plan lunch",
-      "why": "Paying yourself first protects your promise to save, and lunch is a real need that comes before a want like a game skin. Whatever's left can still go toward fun.",
       "keyConcept": "Tradeoff — every yes is a no to something else",
       "commonTrap": "Spending before planning",
       "discussionPrompt": "What made this decision hard?",
@@ -453,21 +397,7 @@ var MODULES = [
       "Reveal screen",
       "Exit ticket"
     ],
-    "challenge": {
-      "scenario": "Your team has $40 for the week: bus fare ($15), lunch ($15), a movie ($12), and you want to save $5. You can't afford everything. What gets cut first?",
-      "options": [
-        "Cut the bus fare",
-        "Cut lunch",
-        "Cut the movie",
-        "Cut savings this week"
-      ],
-      "best": 2,
-      "timerSeconds": 40,
-      "round": 1
-    },
     "reveal": {
-      "bestAnswer": "C. Cut the movie",
-      "why": "Bus fare and lunch are needs, and skipping savings should be a last resort. The movie is the want — cutting it keeps the plan working. Budgets are about ranking, not having it all.",
       "keyConcept": "Prioritizing — needs and goals before extras",
       "commonTrap": "Protecting fun spending and raiding savings instead",
       "discussionPrompt": "How did your team decide what mattered most?",
@@ -547,21 +477,7 @@ var MODULES = [
       "Reveal screen",
       "Take-home reflection"
     ],
-    "challenge": {
-      "scenario": "You want a $60 skateboard. You get $10 a week. A store has a $20 gadget on sale today. What's the smart move?",
-      "options": [
-        "Buy the gadget — deals don't wait",
-        "Save the full $10 toward the skateboard",
-        "Save $5, keep $5 for now",
-        "Give up on the skateboard"
-      ],
-      "best": 2,
-      "timerSeconds": 30,
-      "round": 1
-    },
     "reveal": {
-      "bestAnswer": "C. Save $5, keep $5 for now",
-      "why": "Saving something every week keeps your goal moving without feeling miserable. Blowing it all on the gadget resets your progress; saving a little consistently wins.",
       "keyConcept": "Delayed gratification — small saving now, bigger reward later",
       "commonTrap": "Letting a 'today only' deal derail a bigger goal",
       "discussionPrompt": "What's a goal worth waiting for?",
@@ -650,21 +566,7 @@ var MODULES = [
       "Discussion prompt",
       "Exit ticket"
     ],
-    "challenge": {
-      "scenario": "A store offers a phone for '$0 down, pay later.' You don't have the money yet. What's the responsible move?",
-      "options": [
-        "Take it — it's free right now",
-        "Check what you'd owe later and if you can pay it",
-        "Borrow from two places to be safe",
-        "Ignore the total cost, focus on monthly"
-      ],
-      "best": 1,
-      "timerSeconds": 40,
-      "round": 1
-    },
     "reveal": {
-      "bestAnswer": "B. Check what you'd owe later and if you can pay it",
-      "why": "'Pay later' is still borrowing. Credit isn't free — you usually pay interest, and only paying it back on time keeps it from snowballing. Always know the real total before you say yes.",
       "keyConcept": "Interest — the cost of borrowing money over time",
       "commonTrap": "Looking only at the monthly payment, not the full cost",
       "discussionPrompt": "When is borrowing a smart tool, and when is it a trap?",
@@ -738,21 +640,7 @@ var MODULES = [
       "Discussion prompt",
       "Exit ticket"
     ],
-    "challenge": {
-      "scenario": "You earn $200 this week (that's your gross pay). Your paycheck says $170. Where did the other $30 most likely go?",
-      "options": [
-        "The company kept it for no reason",
-        "Taxes and required deductions",
-        "It's a mistake — you should get it all",
-        "A tip to your manager"
-      ],
-      "best": 1,
-      "timerSeconds": 40,
-      "round": 1
-    },
     "reveal": {
-      "bestAnswer": "B. Taxes and required deductions",
-      "why": "Gross pay is what you earn; net pay ('take-home') is what lands in your pocket after taxes and deductions. Knowing the gap helps you budget with the real number, not the big one.",
       "keyConcept": "Net pay — your real take-home amount",
       "commonTrap": "Budgeting off gross pay and coming up short",
       "discussionPrompt": "Why might your take-home be different from a friend's for the same job?",
@@ -826,21 +714,7 @@ var MODULES = [
       "Discussion prompt",
       "Exit ticket"
     ],
-    "challenge": {
-      "scenario": "Two snack packs: a 4-pack for $2 or a 12-pack for $5. You'll definitely eat them all. Which is the better value?",
-      "options": [
-        "The 4-pack — smaller price",
-        "The 12-pack — lower cost per snack",
-        "They're exactly the same",
-        "Whichever has cooler packaging"
-      ],
-      "best": 1,
-      "timerSeconds": 30,
-      "round": 1
-    },
     "reveal": {
-      "bestAnswer": "B. The 12-pack — lower cost per snack",
-      "why": "4-pack = 50¢ each; 12-pack ≈ 42¢ each. Unit price (cost per item) shows the real deal. But value also means you'll actually use them — buying more only wins if you'd finish it.",
       "keyConcept": "Value — what you get for the money, not just the price",
       "commonTrap": "Grabbing the lowest sticker price without checking unit price",
       "discussionPrompt": "When is buying more NOT the better deal?",
@@ -914,21 +788,7 @@ var MODULES = [
       "Discussion prompt",
       "Exit ticket"
     ],
-    "challenge": {
-      "scenario": "A text says: 'You won a $500 gift card! Click now and enter your bank info in the next 10 minutes or lose it.' What do you do?",
-      "options": [
-        "Click fast before it expires",
-        "Enter your info — it's just a card",
-        "Don't click; it's a scam (urgency + info request)",
-        "Forward it to friends so they can win too"
-      ],
-      "best": 2,
-      "timerSeconds": 30,
-      "round": 1
-    },
     "reveal": {
-      "bestAnswer": "C. Don't click; it's a scam",
-      "why": "Two huge red flags: a rush ('10 minutes!') and a request for private info. Real prizes don't need your bank details in a hurry. When in doubt: stop, don't click, and ask a trusted adult.",
       "keyConcept": "Red flag — a warning sign that something is a scam",
       "commonTrap": "Acting fast because a message creates panic or excitement",
       "discussionPrompt": "Why do scammers try to make you rush?",
@@ -1002,21 +862,7 @@ var MODULES = [
       "Discussion prompt",
       "Exit ticket"
     ],
-    "challenge": {
-      "scenario": "You get $50 for your birthday. You'll spend some soon but want to keep most safe and growing. Where should most of it go?",
-      "options": [
-        "Under your mattress",
-        "A checking account you swipe daily",
-        "A savings account",
-        "Spend it so it can't be lost"
-      ],
-      "best": 2,
-      "timerSeconds": 30,
-      "round": 1
-    },
     "reveal": {
-      "bestAnswer": "C. A savings account",
-      "why": "Savings keeps money safe, out of easy-spend reach, and can even earn a little interest. Checking is for everyday spending; a mattress can be lost or stolen and grows nothing.",
       "keyConcept": "Savings vs. checking — one grows and protects, one spends",
       "commonTrap": "Keeping everything where it's easiest to spend",
       "discussionPrompt": "Why might a bank be safer than keeping cash at home?",
@@ -1090,21 +936,7 @@ var MODULES = [
       "Discussion prompt",
       "Exit ticket"
     ],
-    "challenge": {
-      "scenario": "Two paths to the same career: School A costs $10k/year with a scholarship; School B costs $40k/year with a loan. Both get you there. What's the wise first question?",
-      "options": [
-        "Which has the nicer campus?",
-        "Which will I owe the least on after graduation?",
-        "Which do my friends pick?",
-        "Which has the cooler mascot?"
-      ],
-      "best": 1,
-      "timerSeconds": 45,
-      "round": 1
-    },
     "reveal": {
-      "bestAnswer": "B. Which will I owe the least on after graduation?",
-      "why": "When two paths lead to the same goal, cost and debt matter a lot. Big loans shape your choices for years. Scholarships, community college, and aid can reach the same destination for far less.",
       "keyConcept": "Return on investment — weighing cost against what you gain",
       "commonTrap": "Choosing on prestige or vibes and ignoring the debt",
       "discussionPrompt": "How could a big loan limit choices after graduation?",
@@ -1178,21 +1010,7 @@ var MODULES = [
       "Discussion prompt",
       "Exit ticket"
     ],
-    "challenge": {
-      "scenario": "Two people invest the same total. Ana starts at 16 and stops at 26. Ben starts at 26 and invests twice as long. Who usually ends up with more?",
-      "options": [
-        "Ben — he invested longer",
-        "Ana — she started earlier (compound growth)",
-        "Exactly the same",
-        "Neither — investing is just luck"
-      ],
-      "best": 1,
-      "timerSeconds": 40,
-      "round": 1
-    },
     "reveal": {
-      "bestAnswer": "B. Ana — she started earlier",
-      "why": "Because of compound growth, money earns returns, and those returns earn more returns. Starting early often beats investing more later. Time is an investor's biggest advantage.",
       "keyConcept": "Compound growth — earnings that earn their own earnings",
       "commonTrap": "Believing it's too early to start or that it's all luck",
       "discussionPrompt": "Why is time such a powerful ingredient in investing?",
@@ -1762,6 +1580,29 @@ var GAME_BANK = {
     ],
     "rounds": [
       {
+        "q": "You plant a money seed today. A friend says 'dig it up tomorrow to see if it worked!' What helps it grow the most?",
+        "opts": [
+          [
+            "⛏️",
+            "Dig it up tomorrow to check"
+          ],
+          [
+            "🌱",
+            "Leave it planted and add a little over time"
+          ],
+          [
+            "🚚",
+            "Move it somewhere new every day"
+          ],
+          [
+            "🙈",
+            "Forget about it completely"
+          ]
+        ],
+        "best": 1,
+        "why": "Investing is like planting. Money needs time to grow, and digging it up early stops the growing. Adding a little more along the way helps it grow even bigger."
+      },
+      {
         "q": "What does investing mean?",
         "opts": [
           [
@@ -2245,6 +2086,29 @@ var GAME_BANK = {
     ],
     "rounds": [
       {
+        "q": "Your team has $40 for the week: bus fare ($15), lunch ($15), a movie ($12), and you want to save $5. What gets cut first?",
+        "opts": [
+          [
+            "🚌",
+            "Cut the bus fare"
+          ],
+          [
+            "🥪",
+            "Cut lunch"
+          ],
+          [
+            "🎬",
+            "Cut the movie"
+          ],
+          [
+            "🐷",
+            "Cut savings this week"
+          ]
+        ],
+        "best": 2,
+        "why": "Bus fare and lunch are needs, and skipping savings should be a last resort. The movie is the want, so cutting it keeps the plan working. Budgets are about ranking, not having it all."
+      },
+      {
         "q": "What is a budget?",
         "opts": [
           [
@@ -2406,6 +2270,29 @@ var GAME_BANK = {
     ],
     "rounds": [
       {
+        "q": "You want a $60 skateboard. You get $10 a week. A store has a $20 gadget on sale today. What's the smart move?",
+        "opts": [
+          [
+            "📱",
+            "Buy the gadget, deals don't wait"
+          ],
+          [
+            "🐷",
+            "Save the full $10 toward the skateboard"
+          ],
+          [
+            "⚖️",
+            "Save $5, keep $5 for now"
+          ],
+          [
+            "🚫",
+            "Give up on the skateboard"
+          ]
+        ],
+        "best": 2,
+        "why": "Saving something every week keeps your goal moving without feeling miserable. Blowing it all on the gadget resets your progress; saving a little every week wins."
+      },
+      {
         "q": "You get $10. You want a $30 game. What is the best plan?",
         "opts": [
           [
@@ -2566,6 +2453,29 @@ var GAME_BANK = {
       }
     ],
     "rounds": [
+      {
+        "q": "A store offers a phone for '$0 down, pay later.' You don't have the money yet. What's the responsible move?",
+        "opts": [
+          [
+            "🎁",
+            "Take it, it's free right now"
+          ],
+          [
+            "🔍",
+            "Check what you'd owe later and if you can pay it"
+          ],
+          [
+            "🔁",
+            "Borrow from two places to be safe"
+          ],
+          [
+            "🙈",
+            "Ignore the total cost, focus on monthly"
+          ]
+        ],
+        "best": 1,
+        "why": "'Pay later' is still borrowing. Credit isn't free: you usually pay interest, and only paying it back on time keeps it from snowballing. Always know the real total before you say yes."
+      },
       {
         "q": "What is credit?",
         "opts": [
@@ -2731,6 +2641,29 @@ var GAME_BANK = {
       }
     ],
     "rounds": [
+      {
+        "q": "You earn $200 this week (your gross pay). Your paycheck says $170. Where did the other $30 most likely go?",
+        "opts": [
+          [
+            "🏢",
+            "The company kept it for no reason"
+          ],
+          [
+            "🧾",
+            "Taxes and required deductions"
+          ],
+          [
+            "❌",
+            "It's a mistake, you should get it all"
+          ],
+          [
+            "💸",
+            "A tip to your manager"
+          ]
+        ],
+        "best": 1,
+        "why": "Gross pay is what you earn; net pay (take-home) is what lands in your pocket after taxes and deductions. Knowing the gap helps you budget with the real number, not the big one."
+      },
       {
         "q": "What is gross pay?",
         "opts": [
@@ -3225,6 +3158,29 @@ var GAME_BANK = {
     ],
     "rounds": [
       {
+        "q": "You get $50 for your birthday. You'll spend some soon but want to keep most safe and growing. Where should most of it go?",
+        "opts": [
+          [
+            "🛏️",
+            "Under your mattress"
+          ],
+          [
+            "💳",
+            "A checking account you swipe daily"
+          ],
+          [
+            "🏦",
+            "A savings account"
+          ],
+          [
+            "🛍️",
+            "Spend it so it can't be lost"
+          ]
+        ],
+        "best": 2,
+        "why": "Savings keeps money safe, out of easy-spend reach, and can even earn a little interest. Checking is for everyday spending; a mattress can be lost or stolen and grows nothing."
+      },
+      {
         "q": "What is a deposit?",
         "opts": [
           [
@@ -3388,6 +3344,29 @@ var GAME_BANK = {
       }
     ],
     "rounds": [
+      {
+        "q": "Two paths to the same career: School A costs $10k a year with a scholarship; School B costs $40k a year with a loan. What's the wise first question?",
+        "opts": [
+          [
+            "🏛️",
+            "Which has the nicer campus?"
+          ],
+          [
+            "📉",
+            "Which will I owe the least on after graduation?"
+          ],
+          [
+            "👯",
+            "Which do my friends pick?"
+          ],
+          [
+            "🦅",
+            "Which has the cooler mascot?"
+          ]
+        ],
+        "best": 1,
+        "why": "When two paths lead to the same goal, cost and debt matter a lot. Big loans shape your choices for years. Scholarships, community college and aid can reach the same place for far less."
+      },
       {
         "q": "What is the FAFSA?",
         "opts": [
@@ -3553,6 +3532,29 @@ var GAME_BANK = {
       }
     ],
     "rounds": [
+      {
+        "q": "Two people invest the same total. Ana starts at 16 and stops at 26. Ben starts at 26 and invests twice as long. Who usually ends up with more?",
+        "opts": [
+          [
+            "⏳",
+            "Ben, he invested longer"
+          ],
+          [
+            "🌱",
+            "Ana, she started earlier"
+          ],
+          [
+            "⚖️",
+            "Exactly the same"
+          ],
+          [
+            "🎲",
+            "Neither, investing is just luck"
+          ]
+        ],
+        "best": 1,
+        "why": "Because of compound growth, money earns returns, and those returns earn more returns. Starting early often beats investing more later. Time is an investor's biggest advantage."
+      },
       {
         "q": "Myth or fact: 'You need to be rich to start investing.'",
         "opts": [

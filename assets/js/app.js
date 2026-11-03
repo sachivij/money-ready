@@ -7,7 +7,7 @@
  * Screens:
  *   #/               Landing page
  *   #/module/:id     Lesson transformation
- *   #/challenge/:id  Student challenge + reveal
+ *   #/challenge/:id  Student challenge: the module's rounds in the game engine
  *   #/prep           Teen volunteer prep (any topic, age, length)
  *   #/resources      What each official resource is
  *   #/builder        Toolkit builder (guided packet workflow)
@@ -33,12 +33,6 @@
   function clearTimers() {
     timers.forEach(function (t) { clearInterval(t); clearTimeout(t); });
     timers = [];
-  }
-  function roomCode() {
-    var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    var s = "";
-    for (var i = 0; i < 4; i++) s += chars[Math.floor(Math.random() * chars.length)];
-    return "PLAY-" + s;
   }
   function download(filename, text) {
     var blob = new Blob([text], { type: "text/plain" });
@@ -480,238 +474,47 @@
   }
 
   // ================================================================
-  // STUDENT CHALLENGE + REVEAL
+  // STUDENT CHALLENGE
   // ================================================================
+  // A module's rounds (content/modules/*.yaml, `game_rounds`), played in
+  // the same engine as the Workshop Builder's game (play.js "quiz"). For
+  // Grades 3+ the volunteer taps the room's votes; K–2 picture mode and
+  // practice mode answer with one tap. The end screen adds the module's
+  // key concept, common trap and discussion prompt (`reveal`).
+  function challengeGrade(m) {
+    var nums = (m.gradeBand || "").match(/\d+/g);
+    var top = nums ? Math.max.apply(null, nums.map(Number)) : 5;
+    return top <= 2 ? "k2" : top <= 5 ? "35" : top <= 8 ? "68" : "912";
+  }
   function renderChallenge(id, practice, query) {
     var m = moduleById(id);
     if (!m) return renderNotFound();
-    if (k2On(m, query)) return renderChallengeK2(m, practice);
-    var c = m.challenge;
-    var code = roomCode();
-    var teamScore = 40;
-    var answered = false;
-
-    app.innerHTML =
-      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · ' +
-        '<a href="#/module/' + m.id + k2q(m, false) + '">' + esc(m.title) + "</a> · Student challenge" +
-        (practice ? ' · <span class="pill-note">Practice mode</span>' : "") + "</div>" +
-        k2Toggle(m, false, "challenge") + "</div>" +
-      '<section class="section tight"><div class="wrap">' +
-        '<div class="challenge-stage" id="stage">' +
-          '<div class="challenge-topbar">' +
-            '<span class="pill"><span class="lab">Round</span>' + c.round + "</span>" +
-            '<span class="pill room-code"><span class="lab">Room</span>' + code + "</span>" +
-            '<span class="pill"><span class="lab">Module</span>' + esc(m.title) + "</span>" +
-            '<span class="timer-ring">⏱ <span id="timeLeft">' + c.timerSeconds + "</span>s</span>" +
-          "</div>" +
-          '<div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>' +
-          '<div class="challenge-q">' + esc(c.scenario) + "</div>" +
-          '<div class="answers" id="answers">' +
-            c.options.map(function (opt, i) {
-              var key = String.fromCharCode(65 + i);
-              return '<button class="answer-btn" data-i="' + i + '">' +
-                '<span class="key">' + key + "</span><span>" + esc(opt) + "</span></button>";
-            }).join("") +
-          "</div>" +
-          '<div class="challenge-foot">' +
-            '<span class="muted" style="color:#bcd2cd;font-size:.85rem">Students answer on a shared screen or their own device — no login, no names.</span>' +
-            '<span class="team-score">🏆 Team score (optional): <span id="teamScore">' + teamScore + "</span></span>" +
-          "</div>" +
-        "</div>" +
-        '<div id="revealSlot"></div>' +
-      "</div></section>";
-
-    // Timer
-    var total = c.timerSeconds, left = total;
-    var fill = document.getElementById("timerFill");
-    var timeLeftEl = document.getElementById("timeLeft");
-    fill.style.width = "100%";
-    var tick = setInterval(function () {
-      left--;
-      timeLeftEl.textContent = Math.max(left, 0);
-      var pct = Math.max(left / total, 0) * 100;
-      fill.style.width = pct + "%";
-      if (pct < 30) fill.classList.add("low");
-      if (left <= 0) { clearInterval(tick); if (!answered) lockIn(-1); }
-    }, 1000);
-    timers.push(tick);
-
-    function lockIn(chosen) {
-      if (answered) return;
-      answered = true;
-      clearInterval(tick);
-      var btns = document.querySelectorAll("#answers .answer-btn");
-      btns.forEach(function (b) {
-        var i = Number(b.getAttribute("data-i"));
-        b.disabled = true;
-        if (i === c.best) b.classList.add("correct");
-        else if (i === chosen) b.classList.add("wrong");
-      });
-      if (chosen === c.best) {
-        teamScore += 10;
-        document.getElementById("teamScore").textContent = teamScore;
-      }
-      showReveal(m, chosen);
-    }
-
-    document.querySelectorAll("#answers .answer-btn").forEach(function (b) {
-      b.addEventListener("click", function () { lockIn(Number(b.getAttribute("data-i"))); });
-    });
-    wireNav();
-  }
-
-  // K–2 challenge: the module's picture rounds, one at a time. Two big
-  // pictures, the question read aloud, a star for each right answer, and
-  // one short sentence that says why. No timer and nothing to read.
-  function renderChallengeK2(m, practice) {
-    var rounds = k2Rounds(m);
-    var at = 0, stars = 0;
-    app.innerHTML =
-      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · ' +
-        '<a href="#/module/' + m.id + k2q(m, true) + '">' + esc(m.title) + "</a> · Picture challenge" +
-        (practice ? ' · <span class="pill-note">Practice mode</span>' : "") + "</div>" +
-        k2Toggle(m, true, "challenge") + "</div>" +
-      '<section class="section tight"><div class="wrap"><div class="k2-stage" id="k2Stage"></div></div></section>';
-    var stage = document.getElementById("k2Stage");
-
-    function dots() {
-      return '<div class="k2-dots" aria-label="Picture ' + (at + 1) + " of " + rounds.length + '">' +
-        rounds.map(function (r, i) {
-          return '<span class="' + (i < at ? "done" : i === at ? "now" : "") + '"></span>';
-        }).join("") + "</div>";
-    }
-    function showRound() {
-      var r = rounds[at];
-      // Shuffle so the right picture is not always first.
-      var order = r.opts.map(function (o, i) { return i; });
-      if (Math.random() < 0.5) order.reverse();
-      stage.innerHTML =
-        '<div class="k2-top">' + dots() + '<span class="k2-stars" aria-label="' + stars + ' stars">' +
-          (stars ? new Array(stars + 1).join("⭐") : "") + "</span></div>" +
-        '<div class="k2-q">' + esc(r.q) + " " + hearBtn("k2Hear") + "</div>" +
-        '<div class="k2-opts">' + order.map(function (i) {
-          var o = r.opts[i];
-          return '<button class="k2-opt" data-i="' + i + '" aria-label="' + esc(o[1]) + '">' +
-            '<span class="k2-pic" aria-hidden="true">' + o[0] + '</span><span class="k2-word">' + esc(o[1]) + "</span></button>";
-        }).join("") + "</div>" +
-        '<div id="k2Result" aria-live="polite"></div>';
-      var hear = document.getElementById("k2Hear");
-      if (hear) hear.addEventListener("click", function () { say(r.q); });
-      stage.querySelectorAll(".k2-opt").forEach(function (b) {
-        b.addEventListener("click", function () { pick(Number(b.getAttribute("data-i"))); });
-      });
-      say(r.q);
-    }
-    function pick(i) {
-      var r = rounds[at];
-      var right = r.best < 0 || i === r.best;
-      if (right) stars++;
-      stage.querySelectorAll(".k2-opt").forEach(function (b) {
-        var j = Number(b.getAttribute("data-i"));
-        b.disabled = true;
-        if (r.best < 0 ? j === i : j === r.best) b.classList.add("right");
-        else if (j === i) b.classList.add("miss");
-        else b.classList.add("dim");
-      });
-      var last = at === rounds.length - 1;
-      document.getElementById("k2Result").innerHTML =
-        '<div class="k2-why"><span class="k2-why-mark" aria-hidden="true">' + (right ? "⭐" : "💡") + "</span>" +
-          "<span>" + esc(r.why) + "</span> " + hearBtn("k2HearWhy") + "</div>" +
-        '<button class="k2-next" id="k2Next">' + (last ? "🏁 Done" : "▶ Next") + "</button>";
-      var hw = document.getElementById("k2HearWhy");
-      if (hw) hw.addEventListener("click", function () { say(r.why); });
-      document.getElementById("k2Next").addEventListener("click", function () {
-        if (last) showEnd(); else { at++; showRound(); }
-      });
-      say((right ? "Yes! " : "") + r.why);
-    }
-    function showEnd() {
-      var line = "We got " + stars + (stars === 1 ? " star!" : " stars!");
-      stage.innerHTML =
-        '<div class="k2-end">' +
-          '<div class="k2-end-stars" aria-hidden="true">' + (stars ? new Array(stars + 1).join("⭐") : m.emoji) + "</div>" +
-          '<div class="k2-q">' + line + " " + hearBtn("k2HearEnd") + "</div>" +
-          '<div class="k2-end-actions no-print">' +
-            '<button class="k2-next" id="k2Again">🔁 Again</button>' +
-            (m.takeHomeK2 ? '<a class="k2-next" href="#/take-home/' + m.id + k2q(m, true) + '">🖍️ Take-home card</a>' : "") +
-          "</div>" +
-          '<p class="muted mt-2">For the volunteer: ' +
-            '<a href="#/prep?topic=' + m.id + '&grade=k2">K–2 volunteer prep</a> · ' +
-            '<a href="#/builder?topic=' + m.id + '&grade=' + encodeURIComponent("Grades K–2") + '">Build a K–2 workshop on this</a></p>' +
-        "</div>";
-      var he = document.getElementById("k2HearEnd");
-      if (he) he.addEventListener("click", function () { say(line); });
-      document.getElementById("k2Again").addEventListener("click", function () { at = 0; stars = 0; showRound(); });
-      say(line);
-    }
-    showRound();
-    wireNav();
-  }
-
-  function showReveal(m, chosen) {
-    var r = m.reveal;
-    var correct = chosen === m.challenge.best;
-    var slot = document.getElementById("revealSlot");
-    slot.innerHTML =
-      '<div class="reveal mt-3" id="reveal">' +
-        '<div class="reveal-hero">' +
-          '<div class="tick">' + (correct ? "🎉" : "💡") + "</div>" +
-          "<h2>" + (correct ? "Nice — that's the strongest answer!" : "Great thinking — here's the strongest answer") + "</h2>" +
-          '<p class="mb-0" style="opacity:.9">Every answer helps the discussion. Let\'s see why this one works.</p>' +
-        "</div>" +
-        '<div class="reveal-body">' +
-          revealRow("Best answer", esc(r.bestAnswer)) +
-          revealRow("Why it works", esc(r.why)) +
-          revealRow("Key concept", '<span class="reveal-tag">' + esc(r.keyConcept) + "</span>") +
-          '<div class="reveal-row trap"><div class="rk">Common trap</div><div>⚠️ ' + esc(r.commonTrap) + "</div></div>" +
-          revealRow("Discuss", "<strong>" + esc(r.discussionPrompt) + "</strong>") +
-          '<div class="reveal-row"><div class="rk">Apply it</div><div class="apply-box">🎯 ' + esc(r.applyIt) + "</div></div>" +
-          confidenceRow(m) +
-          '<div class="flex gap wrap-flex mt-2 no-print">' +
-            '<a class="btn btn-primary" href="#/take-home/' + m.id + k2q(m, false) + '">Get the take-home card</a>' +
-            '<a class="btn btn-secondary" href="#/builder?topic=' + m.id + '">Build a workshop on this</a>' +
-            '<a class="btn btn-ghost" href="#/prep?topic=' + m.id + '">Volunteer prep</a>' +
-          "</div>" +
-        "</div>" +
+    var k2 = k2On(m, query);
+    var grade = k2 ? "k2" : (/^(35|68|912)$/.test(query.grade || "") ? query.grade : challengeGrade(m));
+    var g = buildTopicGame(m.id, grade);
+    if (!g || !g.rounds.length) return renderNotFound();
+    var gradeName = Object.keys(GRADE_PROFILES).filter(function (k) { return GRADE_PROFILES[k].id === grade; })[0];
+    g.solo = practice || k2;
+    g.afterHtml =
+      '<div class="flex gap wrap-flex mt-3 no-print" style="justify-content:center">' +
+        '<a class="btn btn-primary" href="#/take-home/' + m.id + k2q(m, k2) + '">' + (k2 && m.takeHomeK2 ? "🖍️ Picture take-home card" : "Get the take-home card") + "</a>" +
+        '<a class="btn btn-secondary" href="#/builder?topic=' + m.id + "&grade=" + encodeURIComponent(gradeName) + '">Build a workshop on this</a>' +
+        '<a class="btn btn-ghost" href="#/prep?topic=' + m.id + "&grade=" + grade + '">Volunteer prep</a>' +
       "</div>";
-    var reveal = document.getElementById("reveal");
-    reveal.scrollIntoView({ behavior: "smooth", block: "start" });
-    wireConfidence(m);
-  }
-  function revealRow(k, v) {
-    return '<div class="reveal-row"><div class="rk">' + esc(k) + "</div><div>" + v + "</div></div>";
-  }
-  function confidenceRow(m) {
-    return '<div class="reveal-row"><div class="rk">Confidence check</div><div>' +
-      '<p class="muted" style="margin-bottom:8px;font-size:.9rem">Anonymous & optional — tap how sure you feel now (helps us improve; no names stored).</p>' +
-      '<div class="chips-select" id="confidence">' +
-        [1, 2, 3, 4, 5].map(function (n) {
-          return '<button class="chip-toggle" data-n="' + n + '">' +
-            (["😳 1", "🙁 2", "😐 3", "🙂 4", "😄 5"][n - 1]) + "</button>";
-        }).join("") +
-      '</div><div id="confThanks" class="muted mt-1" style="font-size:.85rem"></div></div></div>';
-  }
-  function wireConfidence(m) {
-    var wrap = document.getElementById("confidence");
-    if (!wrap) return;
-    wrap.querySelectorAll(".chip-toggle").forEach(function (b) {
-      b.addEventListener("click", function () {
-        wrap.querySelectorAll(".chip-toggle").forEach(function (x) { x.classList.remove("on"); });
-        b.classList.add("on");
-        var n = Number(b.getAttribute("data-n"));
-        // Record privacy-safe, aggregate-only (a single anonymous tap).
-        var counts = [0, 0, 0, 0, 0]; counts[n - 1] = 1;
-        Metrics.saveSession({
-          id: "conf-" + Date.now(),
-          workshopId: m.id, workshopTitle: m.title,
-          dateISO: new Date().toISOString().slice(0, 10),
-          participants: 0,
-          confidence: { counts: counts },
-        });
-        document.getElementById("confThanks").textContent =
-          "Thanks! Recorded anonymously on this device only.";
-      });
-    });
+    app.innerHTML =
+      '<div class="wrap page-head"><div class="breadcrumb"><a href="#/">Home</a> · ' +
+        '<a href="#/module/' + m.id + k2q(m, k2) + '">' + esc(m.title) + "</a> · " + (k2 ? "Picture challenge" : "Student challenge") +
+        (practice ? ' · <span class="pill-note">Practice mode</span>' : "") + "</div>" +
+        k2Toggle(m, k2, "challenge") +
+        '<div class="eyebrow">' + m.emoji + (k2 ? " Two big pictures, read aloud" : practice ? " Practice on this screen" : " Play on the room's screen") + " · " + esc(gradeName) + "</div>" +
+        "<h1>" + esc(g.title.replace(/^\S+ /, "")) + "</h1>" +
+      "</div>" +
+      '<section class="section tight"><div class="wrap">' +
+        '<div id="playRoot" class="play-root"></div>' +
+        '<p class="muted center mt-3" style="font-size:.88rem">🔒 Nothing is saved or sent anywhere. The game runs only on this screen.</p>' +
+      "</div></section>";
+    PLAY_ENGINES.quiz(document.getElementById("playRoot"), g);
+    wireNav();
   }
 
   // ================================================================

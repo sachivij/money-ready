@@ -21,19 +21,7 @@ interactive:
   - Character discussion
   - Reveal screen
   - Take-home reflection
-challenge:
-  scenario: In the story, a character finds a tree that grows money — but only if it's cared for patiently. They want to shake all the money off right now. What would you tell them?
-  options:
-    - Shake it — take everything today
-    - Care for it and take a little at a time so it keeps growing
-    - Chop it down and sell the wood
-    - Ignore the tree completely
-  best: 1
-  timerSeconds: 30
-  round: 1
 reveal:
-  bestAnswer: B. Care for it and take a little at a time so it keeps growing
-  why: Taking everything at once ends the story. Caring for something and taking a little at a time keeps it going — which is exactly how saving and growing money works in real life.
   keyConcept: Patience and care make good things last
   commonTrap: Grabbing everything at once and having nothing left
   discussionPrompt: Which character made the choice you would have made?

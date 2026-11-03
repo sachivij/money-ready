@@ -26,7 +26,6 @@ FILES = [
     "assets/js/data.js",
     "assets/js/helper-kb.js",
     "assets/js/lessons.js",
-    "assets/js/metrics.js",
 ]
 
 # (old, new) applied IN ORDER.

@@ -23,19 +23,7 @@ interactive:
   - Reveal screen
   - Discussion prompt
   - Exit ticket
-challenge:
-  scenario: Two people invest the same total. Ana starts at 16 and stops at 26. Ben starts at 26 and invests twice as long. Who usually ends up with more?
-  options:
-    - Ben — he invested longer
-    - Ana — she started earlier (compound growth)
-    - Exactly the same
-    - Neither — investing is just luck
-  best: 1
-  timerSeconds: 40
-  round: 1
 reveal:
-  bestAnswer: B. Ana — she started earlier
-  why: Because of compound growth, money earns returns, and those returns earn more returns. Starting early often beats investing more later. Time is an investor's biggest advantage.
   keyConcept: Compound growth — earnings that earn their own earnings
   commonTrap: Believing it's too early to start or that it's all luck
   discussionPrompt: Why is time such a powerful ingredient in investing?
@@ -104,6 +92,14 @@ game_rounds:
       best: 0
       why: Over a long time, it usually grows.
   rounds:
+    - q: Two people invest the same total. Ana starts at 16 and stops at 26. Ben starts at 26 and invests twice as long. Who usually ends up with more?
+      opts:
+        - ["⏳", "Ben, he invested longer"]
+        - ["🌱", "Ana, she started earlier"]
+        - ["⚖️", "Exactly the same"]
+        - ["🎲", "Neither, investing is just luck"]
+      best: 1
+      why: Because of compound growth, money earns returns, and those returns earn more returns. Starting early often beats investing more later. Time is an investor's biggest advantage.
     - q: Myth or fact: 'You need to be rich to start investing.'
       opts:
         - ["❌", "Myth"]

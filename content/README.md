@@ -4,7 +4,7 @@ All of the app's teaching content lives here as plain text files: modules, lesso
 
 | Folder | What's in it | Format |
 | --- | --- | --- |
-| `modules/` | One file per module (workshop): the card, challenge, reveal, take-home card and volunteer prep. Each file also holds the module's `lesson_pack` (the extra teaching the Workshop Builder adds) and its `game_rounds` (the questions for the builder's game). | YAML |
+| `modules/` | One file per module (workshop): the card, the reveal (key idea, common trap, discussion prompt), take-home card and volunteer prep. Each file also holds the module's `lesson_pack` (the extra teaching the Workshop Builder adds) and its `game_rounds` (the questions for the builder's game and the module's student challenge, which are the same game). | YAML |
 | `extra-topics/` | Topics that aren't modules (coins, insurance, taxes and so on), each written from a trusted source, with its `game_rounds`. | YAML |
 | `games/` | One file per game format (Four Corners, Budget Relay and so on): how to play, a version per age group, printable cards. | YAML |
 | `official-lessons/` | The official Jump$tart Teen Teach-In lessons, step by step, following each slide deck. | YAML |
@@ -59,17 +59,19 @@ title: Needs vs. Wants
 minutes: 30
 summary: Students sort everyday items into needs and wants.
 materials: ["Picture cards", "Sorting mat"]
-challenge:
-  scenario: You have $10. Which should you buy first?
-  options:
-    - A sandwich for lunch
-    - A new sticker pack
-  best: 0
+game_rounds:
+  rounds:
+    - q: You have $10. Which should you buy first?
+      opts:
+        - ["🥪", "A sandwich for lunch"]
+        - ["🌟", "A new sticker pack"]
+      best: 0
+      why: Lunch is a need. Stickers are a want.
 ```
 
 The rules that matter:
 
-- **Indent with spaces, never tabs.** Things inside a group sit 2 spaces further in, like `scenario:` under `challenge:`.
+- **Indent with spaces, never tabs.** Things inside a group sit 2 spaces further in, like `rounds:` under `game_rounds:`.
 - **A list** is one item per line starting with `- `. A short list can go on one line: `["one", "two"]`.
 - **Counting starts at 0.** `best: 0` means the first option is right, `best: 1` the second. In a game round, `best: -1` means any answer is OK.
 - **Use double quotes** around text that starts with a quote, a bracket, `- ` or `#`, or that is only a number or true/false: `"42"`.

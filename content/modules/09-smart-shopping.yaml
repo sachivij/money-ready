@@ -19,19 +19,7 @@ interactive:
   - Ad-trick spotting
   - Discussion prompt
   - Exit ticket
-challenge:
-  scenario: Two snack packs: a 4-pack for $2 or a 12-pack for $5. You'll definitely eat them all. Which is the better value?
-  options:
-    - The 4-pack — smaller price
-    - The 12-pack — lower cost per snack
-    - They're exactly the same
-    - Whichever has cooler packaging
-  best: 1
-  timerSeconds: 30
-  round: 1
 reveal:
-  bestAnswer: B. The 12-pack — lower cost per snack
-  why: 4-pack = 50¢ each; 12-pack ≈ 42¢ each. Unit price (cost per item) shows the real deal. But value also means you'll actually use them — buying more only wins if you'd finish it.
   keyConcept: Value — what you get for the money, not just the price
   commonTrap: Grabbing the lowest sticker price without checking unit price
   discussionPrompt: When is buying more NOT the better deal?
