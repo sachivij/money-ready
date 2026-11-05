@@ -195,8 +195,8 @@
     var official = officialModules();
     var elementary = official.length > 0;
     // The page reads top to bottom as: where do I go (hero chart), how a
-    // workshop works, every page explained, why it works, and the pilot
-    // plan for organizers. The lessons themselves live on the Modules page.
+    // workshop works, every page explained, why it works, and the
+    // status strip. The lessons themselves live on the Modules page.
     app.innerHTML =
       // Hero: what this is, and the "what do you want to do?" chart
       '<section class="hero"><div class="wrap hero-grid">' +
@@ -280,20 +280,8 @@
         "</div>" +
       "</div></section>" +
 
-      // Status, then the pilot plan for organizers
-      badgeStrip() +
-      '<section class="section" style="background:var(--white)"><div class="wrap">' +
-        '<div class="center" style="margin-bottom:30px"><div class="eyebrow">Pilot plan</div>' +
-          "<h2>A practical, repeatable model to test with real workshops</h2></div>" +
-        '<div class="timeline" style="max-width:820px;margin:0 auto">' +
-          tl("Phase 1", "Review & align", "Share this prototype with Virginia Jump$tart leadership; align modules to approved standards and resources.") +
-          tl("Phase 2", "Small pilot", elementary ? "Run 2–3 Teen Teach-In workshops in Grade 1–4 classrooms with teen volunteers, using one or two modules." : "Run 2–3 Teen Teach-In–style workshops with teen volunteers using one or two modules.") +
-          tl("Phase 3", "Measure", "Collect privacy-safe, aggregate feedback: participation, confidence, and facilitator notes.") +
-          tl("Phase 4", "Refine & repeat", "Improve modules from what we learn, then expand to more schools and partners.") +
-        "</div>" +
-        '<p class="center muted mt-3" style="font-size:.85rem">This is a concept for discussion — a proposed pilot, ' +
-          "pending review and approval by Virginia Jump$tart.</p>" +
-      "</div></section>";
+      // Status strip
+      badgeStrip();
     // Picking a path in the chart also sets the role, so the Impact page
     // already matches. The link itself does the navigating.
     app.querySelectorAll(".path-chart [data-role]").forEach(function (a) {
@@ -363,12 +351,6 @@
       '<span class="badge" style="margin:6px 0 8px">Go to ' + esc(tab) + " →</span>" +
       '<span class="muted" style="display:block;font-size:.9rem">' + esc(does) + "</span></span></a>";
   }
-  function tl(phase, t, body) {
-    return '<div class="tl-item"><div class="tl-phase">' + esc(phase) + '</div>' +
-      '<div class="card"><h3 style="margin-bottom:4px">' + esc(t) + '</h3>' +
-      '<p class="muted mb-0">' + esc(body) + "</p></div></div>";
-  }
-
   function metaRow(k, v) {
     return '<li><span class="k">' + esc(k) + '</span><span class="v">' + esc(v) + "</span></li>";
   }

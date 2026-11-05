@@ -391,12 +391,6 @@ a { color: var(--green-dark); }
 .privacy-list li { display: flex; gap: 10px; align-items: flex-start; }
 .privacy-list .ok { color: var(--green); font-weight: 800; flex: none; }
 
-/* ---------- Pilot plan timeline ---------- */
-.timeline { display: grid; gap: 16px; }
-.tl-item { display: grid; grid-template-columns: 120px 1fr; gap: 18px; align-items: start; }
-.tl-phase { font-weight: 800; color: var(--green-dark); }
-.tl-item .card { padding: 16px 18px; }
-
 /* ---------- Footer ---------- */
 .site-footer { background: #16333c; color: #cfe0dc; padding: 44px 0 30px; margin-top: 40px; }
 .site-footer a { color: #fff; }
@@ -621,7 +615,6 @@ a { color: var(--green-dark); }
   .grid-2, .grid-3, .grid-4, .module-grid, .steps { grid-template-columns: 1fr; }
   .answers { grid-template-columns: 1fr; }
   .th-boxes { grid-template-columns: 1fr; }
-  .tl-item { grid-template-columns: 1fr; gap: 6px; }
   .section { padding: 44px 0; }
   .path-go { margin-left: 0; }
 }
